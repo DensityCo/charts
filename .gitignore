@@ -1,2 +1,4 @@
 node_modules/
 charts/*/node_modules/
+
+npm-debug.log
