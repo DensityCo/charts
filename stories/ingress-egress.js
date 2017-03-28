@@ -1,1 +1,1 @@
-/Users/ryan/w/densityco/react-charts/charts/ingress-egress/story.js
+../charts/ingress-egress/story.js

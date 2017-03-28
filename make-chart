@@ -28,7 +28,9 @@ for f in $(ls charts/$CHARTDASH); do
 done
 
 echo "* Linking $CHARTDASH story to stories folder..."
-ln -s $PWD/charts/$CHARTDASH/story.js $PWD/stories/$CHARTDASH.js
+cd stories
+ln -s ../charts/$CHARTDASH/story.js $CHARTDASH.js
+cd ..
 
 echo "Done!"
 echo "You have a new chart in charts/$CHARTDASH:"
