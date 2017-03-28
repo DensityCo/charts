@@ -22,7 +22,7 @@ function generateRandomCountChangeEvents() {
   return acc;
 }
 
-storiesOf('Ingress Egress', module)
+storiesOf('Ingress Egress Chart', module)
   .add('With a few set datapoints', () => (
     <IngressEgress
       events={[
