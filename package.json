@@ -7,7 +7,8 @@
     "start": "npm run storybook",
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "installall": "for i in $(find charts/* -type d ! -path '*node_modules*' ! -name 'template' ); do cd $i && npm install && cd -; done"
   },
   "keywords": [
     "charts",

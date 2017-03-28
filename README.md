@@ -24,6 +24,15 @@ a component while developing. Basically, it's awesome.
     └── drift-chart.js -> ../charts/drift-chart/story.js
 ```
 
+## Getting started
+```
+$ git clone git@github.com:densityco/charts.git
+$ cd charts/
+$ npm install
+$ npm run installall # install all dependencies in each chart subpackage
+# npm run storybook # start the storybook
+```
+
 ## Chart structure
 Each chart contains a `index.js`, which must default-ly export a function. That function must accept
 two arguments: a DOM element, and an object containing props:
@@ -55,7 +64,7 @@ You're full of great questions today. Luckily, there's a helper function to do j
 
 ```javascript
 import {chartAsReactComponent} from './charts';
-import myChart frm './charts/my-chart';
+import myChart from './charts/my-chart';
 const MyChartComponent = chartAsReactComponent(myChart);
 
 // ...
