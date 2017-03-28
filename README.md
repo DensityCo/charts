@@ -24,6 +24,62 @@ a component while developing. Basically, it's awesome.
     └── drift-chart.js -> ../charts/drift-chart/story.js
 ```
 
+## Chart structure
+Each chart contains a `index.js`, which must default-ly export a function. That function must accept
+two arguments: a DOM element, and an object containing props:
+
+```javascript
+export default function myChart(elem, props={}) {
+  elem.innerHTML = "Foo " + (props.oneProp || 'Default');
+}
+```
+
+The function is initially called when the chart first renders, and then called afterward when any
+value in `props` changes.
+
+### Why do it this way over a stateless React component?
+Great question. We forsee a future where not all of our projects will be react-based. In fact, many
+of our existing "web" projects aren't, including the marketing site and may of our internal customer
+projects. Therefore, we feel that favoring react over any other technology and forcing ourselves to
+use react into the future is a bad idea.
+
+Instead, basing our charts on the raw DOM api gives us a few benefits:
+- Using libraries like D3 are a pain in the context of React since they both try to control the DOM.
+  Exposing a raw DOM api eliminates this problem.
+- Our charts will work anywhere that the DOM api is available (Read: every browser ever.), which
+  includes non-react based projects and react-based projects alike.
+- A chart is just a function - no classes to worry about.
+
+### Hold on, then how do I render my chart in my react app? 
+You're full of great questions today. Luckily, there's a helper function to do just that:
+
+```javascript
+import {chartAsReactComponent} from './charts';
+import myChart frm './charts/my-chart';
+const MyChartComponent = chartAsReactComponent(myChart);
+
+// ...
+
+ReactDOM.render(<MyChartComponent oneProp="foo" />, document.body);
+```
+
+### Whoa. But then how do I make a react-based chart? DID YOU THINK OF THAT? HUH? HUH?
+
+```javascript
+import * as React from 'react';
+import ReactDOM from 'react-dom';
+
+function MyChartComponent({foo}) {
+  return <span>{foo}</span>;
+}
+
+export default function myChart(elem, props={}) {
+  ReactDOM.render(<MyChartComponent {...props} />, elem);
+}
+```
+
+
+
 ## Creating a new chart
 ```
 $ ./make-chart
