@@ -18,8 +18,8 @@
   "license": "UNLICENSED",
   "dependencies": {
     "debug": "^2.6.3",
-    "rebct": "^15.4.2",
-    "rebct-dom": "^15.4.2"
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "@kbdirb/storybook": "^2.21.0",
