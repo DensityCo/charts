@@ -28,6 +28,7 @@ export function IngressEgressChart({
   stackEventDistance,
   relativeTimeSmoothing,
 }) {
+  console.log(events);
   let graphDurationInMs = graphDurationInMin * 60 * 1000;
 
   // Given a time, convert it the the percentage of the graph that it should be displayed at.
@@ -135,7 +136,6 @@ export function IngressEgressChart({
     />;
   });
 
-
   return <svg width="100%" height="100%">
     {eventRectangles}
 
@@ -160,7 +160,7 @@ IngressEgressChart.defaultProps = {
 
 
 
-export function IngressEgressCard({events, ...graphProps}) {
+export function IngressEgressCard(graphProps) {
   // Get the graph's length in minutes for drawing the scale below.
   let maxStep = graphProps.graphDurationInMin || 10;
 
@@ -176,7 +176,7 @@ export function IngressEgressCard({events, ...graphProps}) {
       <div className="rect rect-out" style={{width: eventMarkerWidthInPx, height: eventMarkerHeightInPx}} />
       Out
     </span>
-    <IngressEgressChart {...graphProps} events={events} />
+    <IngressEgressChart {...graphProps} />
     <ul className="real-time-card-labels">
       <li>{maxStep}m ago</li>
       <li>{maxStep * 0.75}m ago</li>
