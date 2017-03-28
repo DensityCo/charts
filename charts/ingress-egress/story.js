@@ -35,3 +35,13 @@ storiesOf('Ingress Egress', module)
   .add('With a bunch of random data', () => (
     <IngressEgress events={generateRandomCountChangeEvents()} />
   ))
+  .add('With a shorter duration (ie, 1 min)', () => (
+    <IngressEgress
+      events={[
+        {count_change: 1, timestamp: new Date().getTime() - 10000},
+        {count_change: -1, timestamp: new Date().getTime() - 7500 },
+        {count_change: 1, timestamp: new Date().getTime() -  50000 },
+      ]}
+      graphDurationInMin={1}
+    />
+  ))
