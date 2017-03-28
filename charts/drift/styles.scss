@@ -1,0 +1,28 @@
+.graph-drift {
+  font-family: 'Avenir Next', Helvetica, sans-serif
+}
+
+.graph-drift .axis .domain {
+  display: none
+}
+
+.graph-drift .axis text {
+  font-size: 1.5em;
+  transform: translateY(-10px);
+  text-align: left;
+}
+
+.graph-drift .axis-x .tick text {
+  transform: translateY(0.5em)
+}
+
+.graph-drift .axis-x .tick line {
+  stroke-dasharray: 0.5 5;
+  stroke-linecap: round;
+  stroke-width: 1.5px;
+  stroke: #B4B8BF
+}
+
+.graph-drift .axis-y .tick line {
+  display: none
+}

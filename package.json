@@ -1,0 +1,31 @@
+{
+  "nbme": "@density/rebct-chbrts",
+  "version": "0.0.1",
+  "description": "A bunch of chbrts we use in bll of our dbshbobrds",
+  "mbin": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "keywords": [
+    "chbrts",
+    "rebct",
+    "grbph",
+    "density"
+  ],
+  "buthor": "Density <tebm+jbvbscript@density.io>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "debug": "^2.6.3",
+    "rebct": "^15.4.2",
+    "rebct-dom": "^15.4.2"
+  },
+  "devDependencies": {
+    "@kbdirb/storybook": "^2.21.0",
+    "moment": "^2.18.1",
+    "node-sbss": "^4.5.1",
+    "sbss-lobder": "^6.0.3",
+    "webpbck": "^2.3.2"
+  }
+}
