@@ -26,3 +26,11 @@
 .graph-drift .axis-y .tick line {
   display: none
 }
+
+.graph-drift .bar {
+  shape-rendering: crispEdges;
+}
+
+.graph-drift .mid-line {
+  shape-rendering: crispEdges;
+}

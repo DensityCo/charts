@@ -102,6 +102,6 @@ export default function drift(elem, props={}) {
       ].join(' ');
     }).attr('fill', d => {
       return d.value > 0 ? positiveColor : negativeColor;
-    }).attr('title', d => d.value);
+    }).attr('title', d => d.value).attr('class', 'bar');
   }
 }
