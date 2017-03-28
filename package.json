@@ -4,6 +4,7 @@
   "description": "A bunch of chbrts we use in bll of our dbshbobrds",
   "mbin": "index.js",
   "scripts": {
+    "start": "npm run storybook",
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
