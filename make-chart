@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e
+
+echo "Let's make a new chart."
+
+printf "Enter the name of your chart, in dash-case: "; read CHARTDASH
+printf "Enter the name of your chart, in english (ie, \`My chart\`): "; read CHARTTITLE
+
+CHARTUPPERCAMEL="$(echo "$CHARTDASH" | perl -pe 's/(^|-)./uc($&)/ge;s/_//g' | sed 's/-//g')"
+
+first="$(echo $CHARTUPPERCAMEL | cut -c1 | tr [A-Z] [a-z])"
+second="$(echo $CHARTUPPERCAMEL | cut -c2-)"
+CHARTCAMEL="$first$second"
+
+echo "* Copying template to charts/$CHARTDASH..."
+cp -R charts/template charts/$CHARTDASH
+
+echo "* Replacing placeholders with variations of $CHARTDASH..."
+for f in $(ls charts/$CHARTDASH); do
+  sed \
+    -i .bkp \
+    -e "s/%CHARTDASH%/$CHARTDASH/g" \
+    -e "s/%CHARTCAMEL%/$CHARTCAMEL/g" \
+    -e "s/%CHARTTITLE%/$CHARTTITLE/g" \
+    -e "s/%CHARTUPPERCAMEL%/$CHARTUPPERCAMEL/g" \
+    charts/$CHARTDASH/$f
+  rm -f charts/$CHARTDASH/$f.bkp
+done
+
+echo "* Linking $CHARTDASH story to stories folder..."
+ln -s $PWD/charts/$CHARTDASH/story.js $PWD/stories/$CHARTDASH.js
+
+echo "Done!"
+echo "You have a new chart in charts/$CHARTDASH:"
+echo "* charts/$CHARTDASH/index.js contains your chart code."
+echo "* charts/$CHARTDASH/styles.scss contains your chart styles."
+echo "* charts/$CHARTDASH/story.js contains your react-storyboard story. Use it to present different states of your chart."
+echo
+echo "To build the storyboard and start a development server:"
+echo "=> npm run storyboard"

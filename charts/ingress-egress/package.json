@@ -1,0 +1,12 @@
+{
+  "name": "@density/chart-ingress-egress",
+  "version": "0.0.1",
+  "description": "Ingress Egress chart",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Density <team+javascript@density.io>",
+  "license": "UNLICENSED",
+  "dependencies": {}
+}
