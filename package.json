@@ -19,6 +19,7 @@
   "author": "Density <team+javascript@density.io>",
   "license": "UNLICENSED",
   "dependencies": {
+    "@density/chart-drift": "0.0.2",
     "react": "^15.4.2"
   },
   "devDependencies": {
@@ -28,7 +29,7 @@
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",
     "moment": "^2.18.1",
-    "node-sass": "^4.5.1",
+    "node-sass": "^4.5.2",
     "sass-loader": "^6.0.3",
     "webpack": "^2.3.2"
   },

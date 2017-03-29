@@ -1,0 +1,68 @@
+.graph-countgraph .axis-group text {
+  font-size: 1.5em;
+  fill: #bfc2c7;
+  font-weight: 600;
+}
+
+/* X Axis */
+
+.graph-countgraph .axis-x .tick line {
+  display: none;
+}
+.graph-countgraph .axis-x .domain {
+  display: none;
+}
+
+/* Y Axis */
+
+.graph-countgraph .axis-y .tick line {
+  stroke-dasharray: 0.5 5;
+  stroke-linecap: round;
+  stroke-width: 1.5px;
+  stroke: #D1D2D3;
+}
+.graph-countgraph .axis-y .domain {
+  display: none;
+}
+
+/* Graph */
+
+.graph-countgraph .graph-path {
+  fill: #cbcfd6;
+  shape-rendering: crispEdges;
+}
+
+/* Overlay marker line (the line with the circle that tracks the mouse cursor) */
+
+.graph-countgraph .overlay-line path {
+  stroke: #8e9298;
+  stroke-width: 1;
+}
+
+.graph-countgraph .overlay-line circle {
+  fill: #4198ff;
+}
+
+/* Overlay marker dialog (the popup with time / count in it) */
+
+.graph-countgraph .overlay-dialog-bg {
+  fill: #FFF;
+  stroke-width: 0.5;
+  user-select: none;
+}
+.graph-countgraph .overlay-dialog-bg-primary {
+  fill: #4198ff;
+  user-select: none;
+}
+
+.graph-countgraph .overlay-dialog-time {
+  fill: #FFF;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.graph-countgraph .overlay-dialog-count {
+  font-size: 16px;
+  fill: #4198ff;
+  font-weight: 600;
+}

@@ -9,9 +9,10 @@ CHART_PATH_DIST = $(CHART_PATH)/dist
 CHART_SOURCE_FILES = $(shell ls $(CHART_PATH)/*.js)
 
 BABEL = ./node_modules/.bin/babel
+NODE_SASS = ./node_modules/.bin/node-sass
 
 .PHONY: build
-build: $(foreach i,$(CHART_SOURCE_FILES),$(CHART_PATH_DIST)/$(notdir $i))
+build: $(foreach i,$(CHART_SOURCE_FILES),$(CHART_PATH_DIST)/$(notdir $i)) $(CHART_PATH_DIST)/styles.css
 
 .PHONY: publish
 publish: clean build
@@ -33,3 +34,9 @@ $(CHART_PATH_DIST)/%.js: $(CHART_PATH_DIST)
 		--plugins=babel-plugin-transform-object-rest-spread \
 		| sed -n '/styles.scss/!p' \
 		> $@
+
+# To make each stylesheet, compile to css.
+# ie, charts/$CHART/styles.scss => charts/$CHART/dist/{_styles.scss,styles.css}
+$(CHART_PATH_DIST)/styles.css: $(CHART_PATH_DIST)
+	cp $(CHART_PATH)/styles.scss $(CHART_PATH_DIST)/_styles.scss
+	$(NODE_SASS) $(CHART_PATH)/styles.scss > $@
