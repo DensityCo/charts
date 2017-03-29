@@ -1,16 +1,20 @@
-import * as React from 'react';
+const React = require('react');
 
-export function chartAsReactComponent(chart) {
+function chartAsReactComponent(chart) {
   return class extends React.Component {
     constructor(props) {
       super(props);
     }
     render() {
-      return <div ref={ref => {
-        if (ref !== null) {
-          chart(ref, this.props);
+      return React.createElement('div', {
+        ref: ref => {
+          if (ref !== null) {
+            chart(ref, this.props);
+          }
         }
-      }} />;
+      });
     }
   }
 }
+
+module.exports = {chartAsReactComponent};
