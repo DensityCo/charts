@@ -5,6 +5,7 @@ echo "Let's make a new chart."
 
 printf "Enter the name of your chart, in dash-case: "; read CHARTDASH
 printf "Enter the name of your chart, in english (ie, \`My chart\`): "; read CHARTTITLE
+printf "Describe your chart: "; read CHARTDESC
 
 CHARTUPPERCAMEL="$(echo "$CHARTDASH" | perl -pe 's/(^|-)./uc($&)/ge;s/_//g' | sed 's/-//g')"
 
@@ -23,6 +24,7 @@ for f in $(ls charts/$CHARTDASH); do
     -e "s/%CHARTCAMEL%/$CHARTCAMEL/g" \
     -e "s/%CHARTTITLE%/$CHARTTITLE/g" \
     -e "s/%CHARTUPPERCAMEL%/$CHARTUPPERCAMEL/g" \
+    -e "s/%CHARTDESC%/$CHARTDESC/g" \
     charts/$CHARTDASH/$f
   rm -f charts/$CHARTDASH/$f.bkp
 done
