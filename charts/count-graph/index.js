@@ -81,7 +81,7 @@ export default function countGraph(elem, props={}) {
   const lastEvent = data[data.length - 1];
   const lastCount = lastEvent ? lastEvent.count : 0;
   const lastTimestamp = lastEvent ? moment.min(
-    moment.max(moment(lastEvent.timestamp), moment()),
+    moment(lastEvent.timestamp),
     moment(props.end)
   ) : moment();
 
