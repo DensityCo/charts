@@ -8,5 +8,8 @@
   },
   "author": "Density <team+javascript@density.io>",
   "license": "UNLICENSED",
-  "dependencies": {}
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "http://npmregistry.density.rodeo"
+  }
 }

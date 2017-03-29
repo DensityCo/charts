@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = countGraph;
 
-require('./styles.scss');
 
 var _moment = require('moment');
 
@@ -83,7 +82,7 @@ function countGraph(elem) {
   // Get last values for using in computations
   var lastEvent = data[data.length - 1];
   var lastCount = lastEvent ? lastEvent.count : 0;
-  var lastTimestamp = lastEvent ? _moment2.default.min(_moment2.default.max((0, _moment2.default)(lastEvent.timestamp), (0, _moment2.default)()), (0, _moment2.default)(props.end)) : (0, _moment2.default)();
+  var lastTimestamp = lastEvent ? _moment2.default.min((0, _moment2.default)(lastEvent.timestamp), (0, _moment2.default)(props.end)) : (0, _moment2.default)();
 
   var start = props.start || firstTimestamp;
   var end = props.end || lastTimestamp;
@@ -244,3 +243,4 @@ function countGraph(elem) {
     overlaySelection.exit().remove('.overlay-line');
   }
 }
+
