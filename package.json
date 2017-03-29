@@ -1,5 +1,6 @@
 {
   "name": "@density/react-charts",
+  "private": true,
   "version": "0.0.1",
   "description": "A bunch of charts we use in all of our dashboards",
   "main": "index.js",
@@ -19,12 +20,15 @@
   "author": "Density <team+javascript@density.io>",
   "license": "UNLICENSED",
   "dependencies": {
-    "debug": "^2.6.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",
+    "babel-cli": "^6.24.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
     "moment": "^2.18.1",
     "node-sass": "^4.5.1",
     "sass-loader": "^6.0.3",
