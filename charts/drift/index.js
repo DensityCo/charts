@@ -15,8 +15,9 @@ const grayDark = '#8E9299';
 const positiveColor = brandPrimary;
 const negativeColor = '#fbbf58';
 
-const leftMargin = 48;
-const topMargin = 32;
+const leftMargin = 16;
+const topMargin = 16;
+const bottomMargin = 32;
 
 export default function drift(elem) {
 
@@ -43,7 +44,7 @@ export default function drift(elem) {
     const height = props.height || 350;
 
     const graphWidth = width - (2 * leftMargin);
-    const graphHeight = height - (2 * topMargin);
+    const graphHeight = height - topMargin - bottomMargin;
 
     // Adjust svg attributes depending on props
     svg
