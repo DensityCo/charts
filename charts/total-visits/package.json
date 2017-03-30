@@ -1,0 +1,15 @@
+{
+  "name": "@density/chart-total-visits",
+  "version": "0.0.1",
+  "description": "Total Visits chart",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Density <team+javascript@density.io>",
+  "license": "UNLICENSED",
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "http://npmregistry.density.rodeo"
+  }
+}
