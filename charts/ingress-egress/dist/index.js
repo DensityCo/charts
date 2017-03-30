@@ -54,7 +54,6 @@ function IngressEgressChart(_ref) {
       stackEventDistance = _ref.stackEventDistance,
       relativeTimeSmoothing = _ref.relativeTimeSmoothing;
 
-  console.log(events);
   var graphDurationInMs = graphDurationInMin * 60 * 1000;
 
   // Given a time, convert it the the percentage of the graph that it should be displayed at.
@@ -237,8 +236,9 @@ function IngressEgressCard(graphProps) {
 }
 
 function ingressEgress(elem) {
-  var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  _reactDom2.default.render(_react2.default.createElement(IngressEgressCard, props), elem);
+  return function () {
+    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    return _reactDom2.default.render(_react2.default.createElement(IngressEgressCard, props), elem);
+  };
 }
 

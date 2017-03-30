@@ -1,0 +1,47 @@
+.chart-current-count {
+  height: 162px;
+}
+
+.chart-current-count .chart-current-count-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-current-count .chart-current-count-body .chart-current-count-header {
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.chart-current-count .chart-current-count-last-event {
+  color: rgb(180, 184, 191);
+}
+
+
+
+// The large text that shows the count in a space.
+.chart-current-count .chart-current-count-text {
+  flex: 1 1 0%;
+  height: 70px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 48px;
+  font-weight: 600;
+  color: rgb(65, 152, 255);
+}
+
+.chart-current-count .chart-current-count-body .chart-current-count-footer {
+  height: 52px;
+
+  // Progress bar showing capacity of the space.
+  .chart-current-count-progress-bar {
+    width: 100%;
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin-top: 8px;
+  }
+  .chart-current-count-progress-meter {
+    background-color: rgb(65, 152, 255);
+    height: 100%;
+  }
+}
