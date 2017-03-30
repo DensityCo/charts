@@ -30,6 +30,7 @@
     "babel-preset-react": "^6.23.0",
     "moment": "^2.18.1",
     "node-sass": "^4.5.2",
+    "react-dom": "^15.4.2",
     "sass-loader": "^6.0.3",
     "webpack": "^2.3.2"
   },
