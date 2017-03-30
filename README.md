@@ -97,8 +97,8 @@ function MyChartComponent({foo}) {
   return <span>{foo}</span>;
 }
 
-export default function myChart(elem, props={}) {
-  ReactDOM.render(<MyChartComponent {...props} />, elem);
+export default function myChart(elem) {
+  return props => ReactDOM.render(<MyChartComponent {...props} />, elem);
 }
 ```
 
@@ -125,7 +125,13 @@ To build the storyboard and start a development server:
 ```
 
 ## Publishing to our NPM Registry
-Coming soon. But will probably look like:
-```
-$ make publish CHART=foo-bar
-```
+
+Even though all of our charts live in one repository, they all have seperate packages on our private
+npm registry. Each chart has the package name of `@density/chart-MY-CHART-NAME`. Once you have a new
+change and want to publish it, it's pretty easy:
+
+1. First, make sure you have an account on our private npm registry and are logged in. Talk to @ryan
+   on slack if you need to get set up.
+2. Bump the version of the package (FOLLOW SEMVER!): `cd charts/my-chart && npm version [patch|minor|major]`
+3. `make publish CHART=my-chart` will build the chart clean and publish the new version to the npm
+   registry.
