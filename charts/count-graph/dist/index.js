@@ -70,6 +70,11 @@ function countGraph(elem) {
     throw new Error('A \'data\' prop is required.');
   }
 
+  // Must have data to render the chart.
+  if (data.length === 0) {
+    return;
+  }
+
   // Get the drawn graph size, minus the borders.
   var graphWidth = width - leftMargin;
   var graphHeight = height - topMargin - bottomMargin;

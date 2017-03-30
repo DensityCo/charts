@@ -19,24 +19,36 @@ function uncompressData(data) {
 const CountGraph = chartAsReactComponent(countGraph);
 
 storiesOf('Count Graph', module)
-  .add(`With a day's worth of data`, () => (
+  .add(`With a day's worth of data, with an explicit start / end.`, () => (
     <CountGraph
       data={uncompressData(fullDayOfData)}
       start={moment("2017-03-28T12:00:00.000Z")}
       end={moment("2017-03-29T12:00:00.000Z")}
+      resets={[{count: 0, timestamp: "2017-03-29T06:00:00.000Z"}]}
     />
   ))
-  .add(`With a partial day's worth of data`, () => (
+  .add(`With a partial day's worth of data, with an explicit start / end.`, () => (
     <CountGraph
       data={uncompressData(partialDayOfData)}
       start={moment("2017-03-29T12:00:00.000Z")}
       end={moment("2017-03-30T12:00:00.000Z")}
     />
   ))
-  .add(`Without start / end on a partial day's data`, () => (
+  .add(`Without start / end on a partial day's data, the graph scales to fit the data.`, () => (
     <CountGraph
       data={uncompressData(partialDayOfData)}
     />
+  ))
+  .add(`With only a partial day's worth of data, and a start / end time.
+        Notice that the overlay line only shows when hovering over the data, and not the whitespace.`, () => (
+    <CountGraph
+      data={uncompressData(partialDayOfData)}
+      start={moment("2017-03-29T10:00:00.000Z")}
+      end={moment("2017-03-29T18:00:00.000Z")}
+    />
+  ))
+  .add(`Without any data`, () => (
+    <CountGraph data={[]} />
   ))
 
 

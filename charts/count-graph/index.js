@@ -33,6 +33,12 @@ export default function countGraph(elem, props={}) {
   const width = props.width || 1000;
   const height = props.height || 400;
   const data = props.data;
+  const resets = props.resets;
+
+  // When no data is specified, don't render anything.
+  if (data.length === 0) {
+    return
+  }
 
   const svg = d3.select(elem)
     .selectAll('svg').data([props.data])
@@ -53,6 +59,11 @@ export default function countGraph(elem, props={}) {
   const axisGroup = svg.append('g')
     .attr('class', 'axis-group');
 
+  // Resets are all stuck in this group, must be above the axes, otehrwise the horizontal axis rules
+  // cross over the reset line and make it look like a dotted line.
+  const resetGroup = svg.append('g')
+    .attr('class', 'reset-group');
+
   // Put all the overlay stuff in here (the line and dialog)
   const overlayGroup = svg.append('g')
     .attr('class', 'overlay-group');
@@ -65,8 +76,6 @@ export default function countGraph(elem, props={}) {
   if (!Array.isArray(data)) {
     throw new Error(`A 'data' prop is required.`);
   }
-
-
 
   // Get the drawn graph size, minus the borders.
   const graphWidth = width - leftMargin;
@@ -167,6 +176,21 @@ export default function countGraph(elem, props={}) {
 
 
 
+  // Generate reset lines
+  const resetSelection = resetGroup.selectAll('.reset-line').data(resets);
+
+  resetSelection.enter()
+    .append('path')
+    .attr('class', 'reset-line')
+  .merge(resetSelection)
+    .attr('d', d => {
+      const resetPosition = xScale(momentToNumber(d.timestamp));
+      return `M${resetPosition},0V${graphHeight}`;
+    });
+
+  resetSelection.exit().remove('.reset-line');
+
+
 
   // Draw the overlay line
   overlayRect.append('rect')
@@ -186,21 +210,24 @@ export default function countGraph(elem, props={}) {
   function updateOverlayLine(mouseX) {
     // Calculate, given a mouse X coordinate, the count and time at that x coordinate.
     const bisect = d3.bisector(d => momentToNumber(d.timestamp)).right;
-    let timeAtPosition, itemIndexAtOverlayPosition, countAtPosition;
-    if (typeof mouseX === 'number') {
-      timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
-      itemIndexAtOverlayPosition = bisect(data, timeAtPosition) - 1; // Where on the line is that time?
+    let timeAtPosition, itemIndexAtOverlayPosition, countAtPosition, dataToJoin;
+    timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
+    itemIndexAtOverlayPosition = bisect(data, timeAtPosition) - 1; // Where on the line is that time?
 
-      if (!data[itemIndexAtOverlayPosition]) {
-        throw new Error(`The count data at the given mouse coordinate doesn't exist. Make sure you set 'start' and 'end' values that are within your dataset or omit them to have your graph fit to your data.`);
-      }
+    // FIXME: another bug: data.length must be > 0
+    // If the user is hovering over where the data is in the chart...
+    if (firstTimestamp <= timeAtPosition && timeAtPosition <= lastTimestamp) {
+      // ... get the count where the user is hovering.
+      countAtPosition = data[itemIndexAtOverlayPosition].count;
 
-      countAtPosition = data[itemIndexAtOverlayPosition].count; // What's the count where the user is hovering?
+      // If a mouse position was passed that is null, (ie, the mouse isn't in the chart any longer)
+      // then disregard it so the overlay line will be deleted.
+      dataToJoin = mouseX === null ? [] : [mouseX];
+    } else {
+      // The user isn't hovering over any data, so remove the overlay line.
+      dataToJoin = [];
     }
 
-    // If a mouse position was passed that is null, then disregard it so the overlay line will be
-    // deleted.
-    const dataToJoin = mouseX === null ? [] : [mouseX];
     const overlaySelection = overlayGroup.selectAll('.overlay-line').data(dataToJoin);
 
     //
