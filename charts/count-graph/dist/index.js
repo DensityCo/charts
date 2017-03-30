@@ -51,6 +51,12 @@ function countGraph(elem) {
   var width = props.width || 1000;
   var height = props.height || 400;
   var data = props.data;
+  var resets = props.resets;
+
+  // When no data is specified, don't render anything.
+  if (data.length === 0) {
+    return;
+  }
 
   var svg = d3.select(elem).selectAll('svg').data([props.data]).enter().append('svg').attr('class', 'graph-countgraph').attr('width', '100%').attr('height', height).attr('viewBox', '0 0 ' + width + ' ' + height).append('g').attr('transform', 'translate(' + leftMargin + ',' + topMargin + ')');
 
@@ -60,6 +66,10 @@ function countGraph(elem) {
   // The axes go in here.
   var axisGroup = svg.append('g').attr('class', 'axis-group');
 
+  // Resets are all stuck in this group, must be above the axes, otehrwise the horizontal axis rules
+  // cross over the reset line and make it look like a dotted line.
+  var resetGroup = svg.append('g').attr('class', 'reset-group');
+
   // Put all the overlay stuff in here (the line and dialog)
   var overlayGroup = svg.append('g').attr('class', 'overlay-group');
 
@@ -68,11 +78,6 @@ function countGraph(elem) {
 
   if (!Array.isArray(data)) {
     throw new Error('A \'data\' prop is required.');
-  }
-
-  // Must have data to render the chart.
-  if (data.length === 0) {
-    return;
   }
 
   // Get the drawn graph size, minus the borders.
@@ -142,6 +147,16 @@ function countGraph(elem) {
   axisGroup.append("g").attr("class", "axis axis-y").attr("transform", 'translate(' + (graphWidth - 5) + ',0)').call(yAxis);
   axisGroup.append("g").attr("class", "axis axis-x").attr("transform", 'translate(0,' + (graphHeight + 5) + ')').call(xAxis);
 
+  // Generate reset lines
+  var resetSelection = resetGroup.selectAll('.reset-line').data(resets);
+
+  resetSelection.enter().append('path').attr('class', 'reset-line').merge(resetSelection).attr('d', function (d) {
+    var resetPosition = xScale(momentToNumber(d.timestamp));
+    return 'M' + resetPosition + ',0V' + graphHeight;
+  });
+
+  resetSelection.exit().remove('.reset-line');
+
   // Draw the overlay line
   overlayRect.append('rect').attr('x', 0).attr('y', 0).attr('width', graphWidth).attr('height', graphHeight).attr('fill', 'transparent').on('mousemove', function () {
     var mouseX = d3.mouse(overlayRect.node())[0];
@@ -157,21 +172,25 @@ function countGraph(elem) {
     }).right;
     var timeAtPosition = void 0,
         itemIndexAtOverlayPosition = void 0,
-        countAtPosition = void 0;
-    if (typeof mouseX === 'number') {
-      timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
-      itemIndexAtOverlayPosition = bisect(data, timeAtPosition) - 1; // Where on the line is that time?
+        countAtPosition = void 0,
+        dataToJoin = void 0;
+    timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
+    itemIndexAtOverlayPosition = bisect(data, timeAtPosition) - 1; // Where on the line is that time?
 
-      if (!data[itemIndexAtOverlayPosition]) {
-        throw new Error('The count data at the given mouse coordinate doesn\'t exist. Make sure you set \'start\' and \'end\' values that are within your dataset or omit them to have your graph fit to your data.');
-      }
+    // FIXME: another bug: data.length must be > 0
+    // If the user is hovering over where the data is in the chart...
+    if (firstTimestamp <= timeAtPosition && timeAtPosition <= lastTimestamp) {
+      // ... get the count where the user is hovering.
+      countAtPosition = data[itemIndexAtOverlayPosition].count;
 
-      countAtPosition = data[itemIndexAtOverlayPosition].count; // What's the count where the user is hovering?
+      // If a mouse position was passed that is null, (ie, the mouse isn't in the chart any longer)
+      // then disregard it so the overlay line will be deleted.
+      dataToJoin = mouseX === null ? [] : [mouseX];
+    } else {
+      // The user isn't hovering over any data, so remove the overlay line.
+      dataToJoin = [];
     }
 
-    // If a mouse position was passed that is null, then disregard it so the overlay line will be
-    // deleted.
-    var dataToJoin = mouseX === null ? [] : [mouseX];
     var overlaySelection = overlayGroup.selectAll('.overlay-line').data(dataToJoin);
 
     //

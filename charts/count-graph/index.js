@@ -32,13 +32,8 @@ function momentToNumber(date) {
 export default function countGraph(elem, props={}) {
   const width = props.width || 1000;
   const height = props.height || 400;
-  const data = props.data;
-  const resets = props.resets;
-
-  // When no data is specified, don't render anything.
-  if (data.length === 0) {
-    return
-  }
+  const data = props.data || [];
+  const resets = props.resets || [];
 
   const svg = d3.select(elem)
     .selectAll('svg').data([props.data])
@@ -50,6 +45,12 @@ export default function countGraph(elem, props={}) {
         .attr('viewBox', `0 0 ${width} ${height}`)
           .append('g')
             .attr('transform', `translate(${leftMargin},${topMargin})`);
+
+  // When no data is specified, don't render anything.
+  if (data.length === 0) {
+    return
+  }
+
 
   // The graph path that shows the data goes in here.
   const graphGroup = svg.append('g')
@@ -105,9 +106,10 @@ export default function countGraph(elem, props={}) {
       momentToNumber(start),
     ]);
   const largestCount = Math.max.apply(Math, data.map(i => i.count));
+  const smallestCount = Math.min.apply(Math, data.map(i => i.count));
   const yScale = d3.scaleLinear()
     .rangeRound([graphHeight, 0])
-    .domain([0, largestCount]);
+    .domain([smallestCount, largestCount]);
 
   const lastX = xScale(lastTimestamp);
   const lastY = yScale(lastCount);

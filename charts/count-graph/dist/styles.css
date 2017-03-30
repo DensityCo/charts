@@ -25,6 +25,10 @@
   fill: #cbcfd6;
   shape-rendering: crispEdges; }
 
+/* Reset lines */
+.graph-countgraph .reset-line {
+  stroke: #4198ff; }
+
 /* Overlay marker line (the line with the circle that tracks the mouse cursor) */
 .graph-countgraph .overlay-line path {
   stroke: #8e9298;
