@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-ingress-egress",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Ingress Egress chart",
   "main": "drift/index.js",
   "scripts": {
