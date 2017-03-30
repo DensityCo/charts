@@ -14,7 +14,12 @@ import %CHARTCAMEL% from '@density/%CHARTDASH%';
 
 const element = document.getElementById('chart-container');
 const props = {name: 'Bob'};
-%CHARTCAMEL%(element, props);
+
+// Make your chart
+const updateData = %CHARTCAMEL%(element);
+
+// Give it new data
+updateData(props);
 ```
 
 In addition, if you'd like to render a chart in a context where the DOM is abstracted away from you,
