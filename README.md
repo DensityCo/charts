@@ -39,7 +39,7 @@ a single element: a DOM element. This function contructs your chart and returns 
 that can be used to inject props to your chart. Here's an example:
 
 ```javascript
-export default function myChart(elem, props={}) {
+export default function myChart(elem) {
   // Here's where any constructing logic can happen, if required for your chart.
   // Typically here you create all the parts of your chart.
   const div = document.createElement('div');
