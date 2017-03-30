@@ -35,12 +35,27 @@ $ npm run installall # install all dependencies in each chart subpackage
 
 ## Chart structure
 Each chart contains a `index.js`, which must default-ly export a function. That function must accept
-two arguments: a DOM element, and an object containing props:
+a single element: a DOM element. This function contructs your chart and returns another fucntion
+that can be used to inject props to your chart. Here's an example:
 
 ```javascript
 export default function myChart(elem, props={}) {
-  elem.innerHTML = "Foo " + (props.oneProp || 'Default');
+  // Here's where any constructing logic can happen, if required for your chart.
+  // Typically here you create all the parts of your chart.
+  const div = document.createElement('div');
+  elem.appendChild(div);
+
+  return (props={}) => {
+    // And in here, you provide any update logic. Since variables in the construting function are
+    // closed over you can use them down here, too.
+
+    div.innerHTML = `Hello ${props.name || 'World'}! I'm a super-basic chart!`;
+  }
 }
+
+// Use a chart like this:
+const updateMyChart = myChart(document.getElementById('my-chart-root'));
+updateMyChart({name: 'Bob'});
 ```
 
 The function is initially called when the chart first renders, and then called afterward when any
