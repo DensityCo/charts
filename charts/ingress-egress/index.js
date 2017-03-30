@@ -188,6 +188,6 @@ export function IngressEgressCard(graphProps) {
 }
 
 
-export default function ingressEgress(elem, props={}) {
-  ReactDOM.render(<IngressEgressCard {...props} />, elem);
+export default function ingressEgress(elem) {
+  return (props={}) => ReactDOM.render(<IngressEgressCard {...props} />, elem);
 }

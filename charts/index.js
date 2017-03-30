@@ -10,7 +10,10 @@ function chartAsReactComponent(chart) {
       return React.createElement('div', {
         ref: ref => {
           if (ref !== null) {
-            chart(ref, this.props);
+            if (!this.updateChart) {
+              this.updateChart = chart(ref);
+            }
+            this.updateChart(this.props);
           }
         }
       });
