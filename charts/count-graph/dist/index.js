@@ -50,13 +50,8 @@ function countGraph(elem) {
 
   var width = props.width || 1000;
   var height = props.height || 400;
-  var data = props.data;
-  var resets = props.resets;
-
-  // When no data is specified, don't render anything.
-  if (data.length === 0) {
-    return;
-  }
+  var data = props.data || [];
+  var resets = props.resets || [];
 
   var svg = d3.select(elem).selectAll('svg').data([props.data]).enter().append('svg').attr('class', 'graph-countgraph').attr('width', '100%').attr('height', height).attr('viewBox', '0 0 ' + width + ' ' + height).append('g').attr('transform', 'translate(' + leftMargin + ',' + topMargin + ')');
 
@@ -78,6 +73,11 @@ function countGraph(elem) {
 
   if (!Array.isArray(data)) {
     throw new Error('A \'data\' prop is required.');
+  }
+
+  // When no data is specified, don't render anything.
+  if (data.length === 0) {
+    return;
   }
 
   // Get the drawn graph size, minus the borders.
@@ -102,7 +102,10 @@ function countGraph(elem) {
   var largestCount = Math.max.apply(Math, data.map(function (i) {
     return i.count;
   }));
-  var yScale = d3.scaleLinear().rangeRound([graphHeight, 0]).domain([0, largestCount]);
+  var smallestCount = Math.min.apply(Math, data.map(function (i) {
+    return i.count;
+  }));
+  var yScale = d3.scaleLinear().rangeRound([graphHeight, 0]).domain([smallestCount, largestCount]);
 
   var lastX = xScale(lastTimestamp);
   var lastY = yScale(lastCount);

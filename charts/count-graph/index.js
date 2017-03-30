@@ -46,12 +46,6 @@ export default function countGraph(elem, props={}) {
           .append('g')
             .attr('transform', `translate(${leftMargin},${topMargin})`);
 
-  // When no data is specified, don't render anything.
-  if (data.length === 0) {
-    return
-  }
-
-
   // The graph path that shows the data goes in here.
   const graphGroup = svg.append('g')
     .attr('class', 'graph-group');
@@ -76,6 +70,11 @@ export default function countGraph(elem, props={}) {
 
   if (!Array.isArray(data)) {
     throw new Error(`A 'data' prop is required.`);
+  }
+
+  // When no data is specified, don't render anything.
+  if (data.length === 0) {
+    return
   }
 
   // Get the drawn graph size, minus the borders.
