@@ -58,14 +58,6 @@ export default function countGraph(elem) {
   const overlayRect = svgGroup.append('g')
     .attr('class', 'overlay-rect');
 
-  // Draw the zero line
-  overlayRect.append('rect')
-    .attr('x', 0)
-    .attr('y', graphHeight - 1)
-    .attr('width', graphWidth)
-    .attr('height', 2)
-    .attr('class', 'zero-line');
-
   return function update(props={}) {
     const width = props.width || 1000;
     const height = props.height || 400;
@@ -202,6 +194,17 @@ export default function countGraph(elem) {
       });
 
     resetSelection.exit().remove('.reset-line');
+
+
+
+    // Draw the zero line
+    overlayRect.selectAll('.zero-line').remove();
+    overlayRect.append('rect')
+      .attr('x', 0)
+      .attr('y', graphHeight - 1)
+      .attr('width', graphWidth)
+      .attr('height', 2)
+      .attr('class', 'zero-line');
 
 
 
