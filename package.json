@@ -19,7 +19,6 @@
   "author": "Density <team+javascript@density.io>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@density/chart-drift": "0.0.2",
     "react": "^15.4.2"
   },
   "devDependencies": {
