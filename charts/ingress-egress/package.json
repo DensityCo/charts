@@ -1,8 +1,8 @@
 {
   "name": "@density/chart-ingress-egress",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ingress Egress chart",
-  "main": "drift/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
