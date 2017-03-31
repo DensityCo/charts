@@ -2,11 +2,8 @@
 const React = require('react');
 
 function chartAsReactComponent(chart) {
-  return class extends React.Component {
-    constructor(props) {
-      super(props);
-    }
-    render() {
+  return React.createClass({
+    render: function () {
       return React.createElement('div', {
         ref: ref => {
           if (ref !== null) {
@@ -18,7 +15,7 @@ function chartAsReactComponent(chart) {
         }
       });
     }
-  }
+  });
 }
 
 module.exports = {chartAsReactComponent};
