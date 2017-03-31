@@ -4,13 +4,14 @@ const React = require('react');
 function chartAsReactComponent(chart) {
   return React.createClass({
     render: function () {
+      const cmp = this;
       return React.createElement('div', {
-        ref: ref => {
+        ref: function(ref) {
           if (ref !== null) {
-            if (!this.updateChart) {
-              this.updateChart = chart(ref);
+            if (!cmp.updateChart) {
+              cmp.updateChart = chart(ref);
             }
-            this.updateChart(this.props);
+            cmp.updateChart(cmp.props);
           }
         }
       });
