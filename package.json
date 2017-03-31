@@ -19,7 +19,8 @@
   "author": "Density <team+javascript@density.io>",
   "license": "UNLICENSED",
   "dependencies": {
-    "react": "^15.4.2"
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",
