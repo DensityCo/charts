@@ -19,4 +19,4 @@ function chartAsReactComponent(chart) {
   });
 }
 
-module.exports = {chartAsReactComponent};
+module.exports = {chartAsReactComponent: chartAsReactComponent};
