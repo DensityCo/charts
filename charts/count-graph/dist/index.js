@@ -66,6 +66,9 @@ function countGraph(elem) {
   // The hidden rectangle to use to detect mouse position
   var overlayRect = svgGroup.append('g').attr('class', 'overlay-rect');
 
+  // Draw the zero line
+  overlayRect.append('rect').attr('x', 0).attr('y', graphHeight - 1).attr('width', graphWidth).attr('height', 2).attr('class', 'zero-line');
+
   return function update() {
     var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -169,9 +172,6 @@ function countGraph(elem) {
     });
 
     resetSelection.exit().remove('.reset-line');
-
-    // Draw the zero line
-    overlayRect.append('rect').attr('x', 0).attr('y', graphHeight - 1).attr('width', graphWidth).attr('height', 2).attr('class', 'zero-line');
 
     // Draw the overlay line
     overlayRect.append('rect').attr('x', 0).attr('y', 0).attr('width', graphWidth).attr('height', graphHeight).attr('fill', 'transparent').on('mousemove', function () {
