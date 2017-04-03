@@ -21,6 +21,8 @@ const overlayDialogDistanceToLine = 10;
 // the other side of the line.
 const overlayDialogBreakToLeftPadding = 20;
 
+const bisect = d3.bisector(d => momentToNumber(d.timestamp)).right;
+
 function momentToNumber(date) {
   if (date instanceof moment) {
     return date.valueOf()
@@ -182,18 +184,38 @@ export default function countGraph(elem) {
 
 
     // Generate reset lines
-    const resetSelection = resetGroup.selectAll('.reset-line').data(resets);
+    // Each consists of a `g.reset` wrapper, with a `path.reset-line` and `text.reset-line-label`
+    // inside.
+    const resetSelection = resetGroup.selectAll('.reset').data(resets);
 
-    resetSelection.enter()
-      .append('path')
+    const resetEnterSelection = resetSelection.enter().append('g')
+      .attr('class', 'reset')
+    resetEnterSelection.append('line')
       .attr('class', 'reset-line')
-    .merge(resetSelection)
-      .attr('d', d => {
-        const resetPosition = xScale(momentToNumber(d.timestamp));
-        return `M${resetPosition},0V${graphHeight}`;
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', graphHeight)
+    resetEnterSelection.append('text')
+      .attr('class', 'reset-line-label')
+
+    const resetMergeSelection = resetEnterSelection.merge(resetSelection)
+    // Move the group / line / text to the reset's position
+    resetMergeSelection
+      .attr('transform', d => `translate(${xScale(momentToNumber(d.timestamp))},0)`)
+
+    // Adjust if the graph height changed
+    resetMergeSelection.select('.reset-line')
+      .attr('y2', graphHeight)
+
+    // Adjust the reset label
+    resetMergeSelection.select('.reset-line-label')
+      .text(d => {
+        const index = bisect(data, momentToNumber(d.timestamp)) - 1; // Where on the line is that time?
+        return data[index] ? data[index].count : '';
       });
 
-    resetSelection.exit().remove('.reset-line');
+    resetSelection.exit().remove('.reset');
 
 
 
@@ -225,7 +247,6 @@ export default function countGraph(elem) {
 
     function updateOverlayLine(mouseX) {
       // Calculate, given a mouse X coordinate, the count and time at that x coordinate.
-      const bisect = d3.bisector(d => momentToNumber(d.timestamp)).right;
       let timeAtPosition, itemIndexAtOverlayPosition, countAtPosition, dataToJoin;
       timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
       itemIndexAtOverlayPosition = bisect(data, timeAtPosition) - 1; // Where on the line is that time?
