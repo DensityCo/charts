@@ -1,7 +1,7 @@
 # Total Visits
 Shows the total number of visits per day over a given period of time
 
-*TODO: ADD PICTURE OF CHART*
+![Here's what it looks like.](http://i.imgur.com/Pxw2ie3.png)
 
 # Using this chart
 This chart has a single default export. This exported function takes two arguments: a dom element,
@@ -13,7 +13,7 @@ import totalVisits from '@density/total-visits';
 // or: const totalVisits = require('@density/total-visits').default;
 
 const element = document.getElementById('chart-container');
-const props = {name: 'Bob'};
+const props = {dates: [], totalVisits: []};
 totalVisits(element, props);
 ```
 
