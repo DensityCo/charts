@@ -2,20 +2,21 @@
 const React = require('react');
 
 function chartAsReactComponent(chart) {
-  return class extends React.Component {
-    constructor(props) {
-      super(props);
-    }
-    render() {
+  return React.createClass({
+    render: function () {
+      const cmp = this;
       return React.createElement('div', {
-        ref: ref => {
+        ref: function(ref) {
           if (ref !== null) {
-            chart(ref, this.props);
+            if (!cmp.updateChart) {
+              cmp.updateChart = chart(ref);
+            }
+            cmp.updateChart(cmp.props);
           }
         }
       });
     }
-  }
+  });
 }
 
-module.exports = {chartAsReactComponent};
+module.exports = {chartAsReactComponent: chartAsReactComponent};

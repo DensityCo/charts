@@ -35,12 +35,27 @@ $ npm run installall # install all dependencies in each chart subpackage
 
 ## Chart structure
 Each chart contains a `index.js`, which must default-ly export a function. That function must accept
-two arguments: a DOM element, and an object containing props:
+a single element: a DOM element. This function contructs your chart and returns another fucntion
+that can be used to inject props to your chart. Here's an example:
 
 ```javascript
-export default function myChart(elem, props={}) {
-  elem.innerHTML = "Foo " + (props.oneProp || 'Default');
+export default function myChart(elem) {
+  // Here's where any constructing logic can happen, if required for your chart.
+  // Typically here you create all the parts of your chart.
+  const div = document.createElement('div');
+  elem.appendChild(div);
+
+  return (props={}) => {
+    // And in here, you provide any update logic. Since variables in the construting function are
+    // closed over you can use them down here, too.
+
+    div.innerHTML = `Hello ${props.name || 'World'}! I'm a super-basic chart!`;
+  }
 }
+
+// Use a chart like this:
+const updateMyChart = myChart(document.getElementById('my-chart-root'));
+updateMyChart({name: 'Bob'});
 ```
 
 The function is initially called when the chart first renders, and then called afterward when any
@@ -82,8 +97,8 @@ function MyChartComponent({foo}) {
   return <span>{foo}</span>;
 }
 
-export default function myChart(elem, props={}) {
-  ReactDOM.render(<MyChartComponent {...props} />, elem);
+export default function myChart(elem) {
+  return props => ReactDOM.render(<MyChartComponent {...props} />, elem);
 }
 ```
 
@@ -110,7 +125,13 @@ To build the storyboard and start a development server:
 ```
 
 ## Publishing to our NPM Registry
-Coming soon. But will probably look like:
-```
-$ make publish CHART=foo-bar
-```
+
+Even though all of our charts live in one repository, they all have seperate packages on our private
+npm registry. Each chart has the package name of `@density/chart-MY-CHART-NAME`. Once you have a new
+change and want to publish it, it's pretty easy:
+
+1. First, make sure you have an account on our private npm registry and are logged in. Talk to @ryan
+   on slack if you need to get set up.
+2. Bump the version of the package (FOLLOW SEMVER!): `cd charts/my-chart && npm version [patch|minor|major]`
+3. `make publish CHART=my-chart` will build the chart clean and publish the new version to the npm
+   registry.

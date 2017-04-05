@@ -28,7 +28,6 @@ export function IngressEgressChart({
   stackEventDistance,
   relativeTimeSmoothing,
 }) {
-  console.log(events);
   let graphDurationInMs = graphDurationInMin * 60 * 1000;
 
   // Given a time, convert it the the percentage of the graph that it should be displayed at.
@@ -188,6 +187,6 @@ export function IngressEgressCard(graphProps) {
 }
 
 
-export default function ingressEgress(elem, props={}) {
-  ReactDOM.render(<IngressEgressCard {...props} />, elem);
+export default function ingressEgress(elem) {
+  return (props={}) => ReactDOM.render(<IngressEgressCard {...props} />, elem);
 }

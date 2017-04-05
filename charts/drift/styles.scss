@@ -10,10 +10,12 @@
   font-size: 1.5em;
   transform: translateY(-10px);
   text-align: left;
+  fill: #4f5457;
+  font-weight: 600;
 }
 
 .graph-drift .axis-x .tick text {
-  transform: translateY(0.5em)
+  transform: translateY(1em)
 }
 
 .graph-drift .axis-x .tick line {

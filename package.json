@@ -1,6 +1,6 @@
 {
   "name": "@density/charts",
-  "version": "0.0.2",
+  "version": "0.1.4",
   "description": "A bunch of charts we use in all of our dashboards",
   "main": "charts/index.js",
   "scripts": {
@@ -19,8 +19,8 @@
   "author": "Density <team+javascript@density.io>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@density/chart-drift": "0.0.2",
-    "react": "^15.4.2"
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",

@@ -30,12 +30,27 @@
 .graph-countgraph .graph-path {
   fill: #cbcfd6;
   shape-rendering: crispEdges;
+  opacity: .7;
+}
+
+/* Reset lines */
+
+.graph-countgraph .reset-line {
+  stroke: #4198ff;
+}
+
+/* Zero line */
+
+.graph-countgraph .zero-line {
+  stroke: #92959F;
+  fill: #92959F;
+  opacity: .6;
 }
 
 /* Overlay marker line (the line with the circle that tracks the mouse cursor) */
 
 .graph-countgraph .overlay-line path {
-  stroke: #8e9298;
+  stroke: #9296A2;
   stroke-width: 1;
 }
 
@@ -44,6 +59,10 @@
 }
 
 /* Overlay marker dialog (the popup with time / count in it) */
+
+.graph-countgraph .overlay-dialog {
+  transition: transform .08s;
+}
 
 .graph-countgraph .overlay-dialog-bg {
   fill: #FFF;
