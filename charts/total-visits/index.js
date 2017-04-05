@@ -8,8 +8,8 @@ export default function totalVisitsChart(elem) {
   return (props={}) => {
     const dates = props.dates;
     const totalVisits = props.totalVisits;
-    let datesWithHeader = ['Date'].concat(dates);
-    let totalVisitsWithHeader = ['Total Visits'].concat(totalVisits);
+    let datesWithHeader = ['Date', ...dates];
+    let totalVisitsWithHeader = ['Total Visits', ...totalVisits];
 
     div.innerHTML = `<div id="totalvisitschart"></div>`;
 
