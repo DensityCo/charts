@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-current-count",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Current Count chart",
   "main": "dist/index.js",
   "scripts": {
