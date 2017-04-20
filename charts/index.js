@@ -1,8 +1,9 @@
 "use strict";
 const React = require('react');
+const createClass = require('create-react-class');
 
 function chartAsReactComponent(chart) {
-  return React.createClass({
+  return createClass({
     render: function () {
       const cmp = this;
       return React.createElement('div', {

@@ -27,8 +27,12 @@
   opacity: .7; }
 
 /* Reset lines */
-.graph-countgraph .reset-line {
+.graph-countgraph .reset .reset-line {
   stroke: #4198ff; }
+
+.graph-countgraph .reset .reset-line-label {
+  fill: #4198ff;
+  transform: translate(6px, 16px); }
 
 /* Zero line */
 .graph-countgraph .zero-line {
