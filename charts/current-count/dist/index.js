@@ -23,7 +23,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 exports.default = function (elem) {
   return function (_ref) {
-    var currentCount = _ref.currentCount,
+    var label = _ref.label,
+        currentCount = _ref.currentCount,
         capacity = _ref.capacity,
         lastEvent = _ref.lastEvent;
 
@@ -41,7 +42,7 @@ exports.default = function (elem) {
           React.createElement(
             'strong',
             null,
-            'Current Count'
+            label
           ),
           React.createElement('span', { style: { flex: '1 1 0%' } }),
           React.createElement(
@@ -61,7 +62,8 @@ exports.default = function (elem) {
           React.createElement(
             'span',
             null,
-            'Capacity: '
+            'Capacity: ',
+            capacity || 'N/A'
           ),
           React.createElement(
             'div',
