@@ -17,3 +17,6 @@ storiesOf('Current Count', module)
   .add('With a full capacity', () => (
     <CurrentCount currentCount={100} capacity={100} />
   ))
+  .add('With a label', () => (
+    <CurrentCount currentCount={100} label="Current Count" capacity={100} />
+  ))
