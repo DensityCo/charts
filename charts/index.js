@@ -1,23 +1,19 @@
 "use strict";
-const React = require('react');
-const createClass = require('create-react-class');
+import * as React from 'react';
 
 function chartAsReactComponent(chart) {
-  return createClass({
-    render: function () {
-      const cmp = this;
-      return React.createElement('div', {
-        ref: function(ref) {
-          if (ref !== null) {
-            if (!cmp.updateChart) {
-              cmp.updateChart = chart(ref);
-            }
-            cmp.updateChart(cmp.props);
+  return class extends React.Component {
+    render() {
+      return <div ref={ref => {
+        if (ref !== null) {
+          if (!this.updateChart) {
+            this.updateChart = chart(ref);
           }
+          this.updateChart(this.props);
         }
-      });
+      }} />;
     }
-  });
+  }
 }
 
-module.exports = {chartAsReactComponent: chartAsReactComponent};
+module.exports = {chartAsReactComponent};

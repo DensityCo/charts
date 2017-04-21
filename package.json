@@ -1,8 +1,8 @@
 {
   "name": "@density/charts",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A bunch of charts we use in all of our dashboards",
-  "main": "charts/index.js",
+  "main": "charts/dist/index.js",
   "scripts": {
     "start": "npm run storybook",
     "test": "echo \"Error: no test specified\" && exit 1",

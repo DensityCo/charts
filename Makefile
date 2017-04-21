@@ -12,7 +12,7 @@ BABEL = ./node_modules/.bin/babel
 NODE_SASS = ./node_modules/.bin/node-sass
 
 .PHONY: build
-build: $(foreach i,$(CHART_SOURCE_FILES),$(CHART_PATH_DIST)/$(notdir $i)) $(CHART_PATH_DIST)/styles.css
+build: $(foreach i,$(CHART_SOURCE_FILES),$(CHART_PATH_DIST)/$(notdir $i)) charts/dist/index.js $(CHART_PATH_DIST)/styles.css
 
 .PHONY: publish
 publish: clean build
@@ -21,6 +21,7 @@ publish: clean build
 .PHONY: clean
 clean:
 	rm -rf $(CHART_PATH_DIST)
+	rm -rf charts/dist
 
 $(CHART_PATH_DIST):
 	mkdir -p $(CHART_PATH_DIST)
@@ -40,3 +41,16 @@ $(CHART_PATH_DIST)/%.js: $(CHART_PATH_DIST)
 $(CHART_PATH_DIST)/styles.css: $(CHART_PATH_DIST)
 	cp $(CHART_PATH)/styles.scss $(CHART_PATH_DIST)/_styles.scss
 	$(NODE_SASS) $(CHART_PATH)/styles.scss > $@
+
+
+# There's a special rule for charts/index.js, sorry :/
+# ie, charts/index.js => charts/dist/index.js
+charts/dist/%.js: charts/dist
+	$(BABEL) charts/$(@F) \
+		--ignore=node_modules,charts/dist \
+		--presets=babel-preset-es2015,babel-preset-react \
+		--plugins=babel-plugin-transform-object-rest-spread \
+		> $@
+
+charts/dist:
+	mkdir -p charts/dist
