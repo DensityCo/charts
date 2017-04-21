@@ -21,6 +21,7 @@ publish: clean build
 .PHONY: clean
 clean:
 	rm -rf $(CHART_PATH_DIST)
+	rm -rf charts/dist
 
 $(CHART_PATH_DIST):
 	mkdir -p $(CHART_PATH_DIST)
