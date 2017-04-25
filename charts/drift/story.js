@@ -24,13 +24,13 @@ storiesOf('Drift Chart', module)
   .add('With numbers for days', () => (
     <DriftChart
       data={[
-        {date: 0, count: -8},
-        {date: 1, count: 1},
-        {date: 2, count: 2},
-        {date: 3, count: -3},
-        {date: 4, count: 2},
-        {date: 5, count: 5},
-        {date: 6, count: -1},
+        {date: 0, drift: 1, count: 100},
+        {date: 1, drift: 2, count: 123},
+        {date: 2, drift: -3, count: 123},
+        {date: 3, drift: 2, count: 123},
+        {date: 4, drift: 5, count: 123},
+        {date: 5, drift: 0, count: 123},
+        {date: 6, drift: -8, count: 123},
       ]} 
     />
   ))
@@ -52,7 +52,8 @@ storiesOf('Drift Chart', module)
               .fill(0)
               .map((_, ct) => ({
                 date: ct,
-                count: Math.floor(Math.random() * 20) - 10,
+                drift: Math.floor(Math.random() * 20) - 10,
+                count: 100,
               }))
           });
         }, 1000);

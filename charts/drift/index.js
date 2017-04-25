@@ -10,10 +10,7 @@ const labels = {
   5: 'FRI', 
   6: 'SAT',
 };
-const brandPrimary = '#4198ff';
 const grayDark = '#8E9299';
-const positiveColor = brandPrimary;
-const negativeColor = '#cbcfd6';
 
 const leftMargin = 16;
 const topMargin = 16;
@@ -37,11 +34,11 @@ export default function drift(elem) {
   // Create groups for each chart part
   const axisGroup = g.append("g");
 
-  const barGroup = g.append('g')
-    .attr('transform', `translate(0,20)`);
-
   const midLine = g.append('line')
     .attr('class', 'mid-line');
+
+  const barGroup = g.append('g')
+    .attr('transform', `translate(0,20)`);
 
   // When the chart updates...
   return (props={}) => {
@@ -136,17 +133,35 @@ export default function drift(elem) {
         .attr('width', graphWidth)
         .attr('height', y.bandwidth())
 
+      // Update each bar in the graph:
       mergeSelection.select(".bar-path")
         .attr('d', d => {
-          // Render a rectangular bar for each drift
-          return [
-            `M ${x(0)} 0`,
-            `H ${x(d.drift)}`,
-            `V ${-1 * y.bandwidth()}`,
-            `H ${x(0)}`,
-          ].join(' ');
-        }).attr('fill', d => {
-          return d.drift > 0 ? positiveColor : negativeColor;
+          if (d.drift === 0) {
+            const radius = y.bandwidth() / 2;
+            // Render a circle for each zero drift
+            return [
+              `M ${x(0)} -${radius}`,
+              `m -${radius}, 0`,
+              `a ${radius},${radius} 0 1,0 ${radius * 2},0`,
+              `a ${radius},${radius} 0 1,0 -${radius * 2},0`,
+            ].join(' ');
+          } else {
+            // Make all rectangular bars avoid the center line
+            let barOffset;
+            if (d.drift > 0) {
+              barOffset = 1;
+            } else {
+              barOffset = -1;
+            }
+
+            // Render a rectangular bar for each nonzero drift
+            return [
+              `M ${x(0) + barOffset} 0`,
+              `H ${x(d.drift)}`,
+              `V ${-1 * y.bandwidth()}`,
+              `H ${x(0)}`,
+            ].join(' ');
+          }
         }).attr('title', d => d.drift);
 
       // Draw the text vertically centered along each bar, and on the let if the bar goes to the
