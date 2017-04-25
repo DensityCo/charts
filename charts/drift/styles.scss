@@ -36,13 +36,20 @@
 .graph-drift .bar {
   width: 100%;
 
+  .hover-detector {
+    fill: transparent;
+  }
+
   // The actual bar part of the graph
-  path {
+  .bar-path {
     shape-rendering: crispEdges;
   }
 
   // The text label for the bar. It shows on hover.
-  text {
+  text { display: none; }
+  &.active text {
+    display: block;
+    font-weight: 500;
     alignment-baseline: middle;
 
     // Draw the label on the right or the left, depending on which way the bar goes.

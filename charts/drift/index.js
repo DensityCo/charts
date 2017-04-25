@@ -13,7 +13,7 @@ const labels = {
 const brandPrimary = '#4198ff';
 const grayDark = '#8E9299';
 const positiveColor = brandPrimary;
-const negativeColor = '#fbbf58';
+const negativeColor = '#cbcfd6';
 
 const leftMargin = 16;
 const topMargin = 16;
@@ -26,7 +26,6 @@ const textLabelOffsetFromBar = 20;
 const generateDriftLabel = d => `${d.count} total events / ${Math.floor(d.drift / d.count * 100)}% drift`
 
 export default function drift(elem) {
-
   const svg = d3.select(elem).append('svg')
     .attr('class', 'graph graph-drift')
     .attr('width', '100%')
@@ -107,8 +106,23 @@ export default function drift(elem) {
       // the hover state.
       const enterSelection = selection.enter().append("g")
         .attr("class", "bar")
+
       enterSelection.append("path")
+        .attr('class', 'bar-path')
       enterSelection.append("text")
+        .attr('class', 'bar-label')
+
+      // This rectangle is used for hover detection, and therefore is purposefully last in the group.
+      // When the user hovers over a bar, set the `active` class on the hovered over bar while the
+      // rest get that class cleared.
+      enterSelection.append("rect")
+        .attr('class', 'hover-detector')
+        .on('mouseover', function() {
+          d3.select(this.parentNode).attr('class', 'bar active') // update active bar
+        })
+        .on('mouseout', function() {
+          barGroup.selectAll(".bar").attr('class', 'bar') // reset class on all bars
+        })
 
       // Merge selection
       const mergeSelection = enterSelection.merge(selection);
@@ -116,7 +130,13 @@ export default function drift(elem) {
       mergeSelection // Position each bar at the correct y position
         .attr('transform', d => `translate(0, ${y(d.day)})`)
 
-      mergeSelection.select("path")
+      mergeSelection.select('.hover-detector')
+        .attr('x', 0)
+        .attr('y', -1 * y.bandwidth())
+        .attr('width', graphWidth)
+        .attr('height', y.bandwidth())
+
+      mergeSelection.select(".bar-path")
         .attr('d', d => {
           // Render a rectangular bar for each drift
           return [

@@ -16,7 +16,7 @@ storiesOf('Drift Chart', module)
         {date: moment().add(2, 'day'), drift: -3, count: 123},
         {date: moment().add(3, 'day'), drift: 2, count: 123},
         {date: moment().add(4, 'day'), drift: 5, count: 123},
-        {date: moment().add(5, 'day'), drift: -1, count: 123},
+        {date: moment().add(5, 'day'), drift: 0, count: 123},
         {date: moment().add(6, 'day'), drift: -8, count: 123},
       ]} 
     />
