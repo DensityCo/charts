@@ -20,7 +20,7 @@ const bottomMargin = 32;
 // negative, this number is either added or subtracted to the center line to determine the label
 // position.
 const textLabelOffsetFromBar = 20;
-const generateDriftLabel = d => `${d.count} total events / ${Math.floor(d.drift / d.count * 100)}% drift`
+const generateDriftLabel = d => `${d.eventCount} total events / ${Math.floor(d.drift / d.eventCount * 100)}% drift`
 
 export default function drift(elem) {
   const svg = d3.select(elem).append('svg')
