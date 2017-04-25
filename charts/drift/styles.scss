@@ -29,10 +29,28 @@
   display: none
 }
 
-.graph-drift .bar {
+.graph-drift .mid-line {
   shape-rendering: crispEdges;
 }
 
-.graph-drift .mid-line {
-  shape-rendering: crispEdges;
+.graph-drift .bar {
+  width: 100%;
+
+  // The actual bar part of the graph
+  path {
+    shape-rendering: crispEdges;
+  }
+
+  // The text label for the bar. It shows on hover.
+  text {
+    alignment-baseline: middle;
+
+    // Draw the label on the right or the left, depending on which way the bar goes.
+    &.label-right {
+      text-anchor: start;
+    }
+    &.label-left {
+      text-anchor: end;
+    }
+  }
 }

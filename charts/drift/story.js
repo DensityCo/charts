@@ -11,13 +11,13 @@ storiesOf('Drift Chart', module)
   .add('With moments for days', () => (
     <DriftChart
       data={[
-        {date: moment().add(0, 'day'), count: 1},
-        {date: moment().add(1, 'day'), count: 2},
-        {date: moment().add(2, 'day'), count: -3},
-        {date: moment().add(3, 'day'), count: 2},
-        {date: moment().add(4, 'day'), count: 5},
-        {date: moment().add(5, 'day'), count: -1},
-        {date: moment().add(6, 'day'), count: -8},
+        {date: moment().add(0, 'day'), drift: 1, count: 100},
+        {date: moment().add(1, 'day'), drift: 2, count: 123},
+        {date: moment().add(2, 'day'), drift: -3, count: 123},
+        {date: moment().add(3, 'day'), drift: 2, count: 123},
+        {date: moment().add(4, 'day'), drift: 5, count: 123},
+        {date: moment().add(5, 'day'), drift: -1, count: 123},
+        {date: moment().add(6, 'day'), drift: -8, count: 123},
       ]} 
     />
   ))

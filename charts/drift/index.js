@@ -19,6 +19,12 @@ const leftMargin = 16;
 const topMargin = 16;
 const bottomMargin = 32;
 
+// The distance between the bar labels and the bars. Depending on whether the bar is positive or
+// negative, this number is either added or subtracted to the center line to determine the label
+// position.
+const textLabelOffsetFromBar = 20;
+const generateDriftLabel = d => `${d.count} total events / ${Math.floor(d.drift / d.count * 100)}% drift`
+
 export default function drift(elem) {
 
   const svg = d3.select(elem).append('svg')
@@ -53,10 +59,10 @@ export default function drift(elem) {
 
     if (props.data && props.data.length) {
       // Given an array of drifts, map them to data with a day name and count
-      const data = props.data.map(drift => {
+      const data = props.data.map(item => {
         return {
-          day: labels[typeof drift.date === 'number' ? drift.date : drift.date.day()],
-          value: drift.count
+          ...item,
+          day: labels[typeof item.date === 'number' ? item.date : item.date.day()],
         };
       });
 
@@ -65,7 +71,7 @@ export default function drift(elem) {
 
       // Set the duration of the scales.
       // The x axis: values. Scales to have the largest value at the extremes, left and right.
-      const maxData = d3.max(data, d => d.value), minData = d3.min(data, d => d.value);
+      const maxData = d3.max(data, d => d.drift), minData = d3.min(data, d => d.drift);
       const maxExtreme = Math.max(Math.abs(maxData), Math.abs(minData), 2) * 1.4;
       x.domain([maxExtreme, -1 * maxExtreme]);
       // The y axis: labels for each day.
@@ -95,22 +101,46 @@ export default function drift(elem) {
         .attr('stroke', grayDark);
 
       // Create a data join
-      let selection = barGroup.selectAll(".bar").data(data);
-      selection.enter()
-        .append("path")
-          .attr("class", "bar")
-        .merge(selection)
-          .attr('d', d => {
-            // Render a rectangular bar for each drift
-            return [
-              `M ${x(0)} ${y(d.day)}`, // move to the point
-              `H ${x(d.value)}`,
-              `V ${y(d.day) - y.bandwidth()}`,
-              `H ${x(0)}`,
-            ].join(' ');
-          }).attr('fill', d => {
-            return d.value > 0 ? positiveColor : negativeColor;
-          }).attr('title', d => d.value);
+      const selection = barGroup.selectAll(".bar").data(data);
+
+      // Enter selection creates a group with a bar path in it, and a text element with a label for
+      // the hover state.
+      const enterSelection = selection.enter().append("g")
+        .attr("class", "bar")
+      enterSelection.append("path")
+      enterSelection.append("text")
+
+      // Merge selection
+      const mergeSelection = enterSelection.merge(selection);
+
+      mergeSelection // Position each bar at the correct y position
+        .attr('transform', d => `translate(0, ${y(d.day)})`)
+
+      mergeSelection.select("path")
+        .attr('d', d => {
+          // Render a rectangular bar for each drift
+          return [
+            `M ${x(0)} 0`,
+            `H ${x(d.drift)}`,
+            `V ${-1 * y.bandwidth()}`,
+            `H ${x(0)}`,
+          ].join(' ');
+        }).attr('fill', d => {
+          return d.drift > 0 ? positiveColor : negativeColor;
+        }).attr('title', d => d.drift);
+
+      // Draw the text vertically centered along each bar, and on the let if the bar goes to the
+      // right (and vice versa if the bar goes to the left)
+      mergeSelection.select("text")
+        .attr('transform', d => [
+          `translate(`,
+          d.drift < 0 ? x(0) + textLabelOffsetFromBar : x(0) - textLabelOffsetFromBar, // x pos
+          `, `,
+          -0.5 * y.bandwidth(), // y pos
+          `)`
+        ].join(''))
+        .attr('class', d => d.drift < 0 ? 'label-right' : 'label-left')
+        .text(generateDriftLabel)
 
       selection.exit().remove(); // remove items when they are no longer in the data.
     }
