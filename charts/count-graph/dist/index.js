@@ -18,8 +18,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var brandPrimary = '#4198ff';
-
 var leftMargin = 32;
 var bottomMargin = 32;
 var topMargin = 16;
@@ -171,6 +169,7 @@ function countGraph(elem) {
 
     var resetEnterSelection = resetSelection.enter().append('g').attr('class', 'reset');
     resetEnterSelection.append('line').attr('class', 'reset-line').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', graphHeight);
+    resetEnterSelection.append('rect').attr('class', 'reset-line-label-background').attr('x', 0).attr('y', 0).attr('width', 40).attr('height', 28);
     resetEnterSelection.append('text').attr('class', 'reset-line-label');
 
     var resetMergeSelection = resetEnterSelection.merge(resetSelection);
