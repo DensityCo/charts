@@ -31,8 +31,11 @@
   stroke: #4198ff; }
 
 .graph-countgraph .reset .reset-line-label {
-  fill: #4198ff;
-  transform: translate(6px, 16px); }
+  fill: #fff;
+  transform: translate(10px, 20px); }
+
+.graph-countgraph .reset .reset-line-label-background {
+  fill: #4198ff; }
 
 /* Zero line */
 .graph-countgraph .zero-line {
