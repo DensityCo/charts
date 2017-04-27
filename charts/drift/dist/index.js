@@ -146,7 +146,7 @@ function drift(elem) {
           }
 
           // Render a rectangular bar for each nonzero drift
-          return ['M ' + (x(0) + barOffset) + ' 0', 'H ' + x(d.drift), 'V ' + -1 * y.bandwidth(), 'H ' + x(0)].join(' ');
+          return ['M ' + (x(0) + barOffset) + ' 0', 'H ' + x(d.drift), 'V ' + -1 * y.bandwidth(), 'H ' + (x(0) + barOffset)].join(' ');
         }
       }).attr('title', function (d) {
         return d.drift;

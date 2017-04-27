@@ -39,7 +39,7 @@
   .graph-drift .bar.active text {
     display: block;
     font-weight: 500;
-    fill: #4198ff;
+    fill: #4f5457;
     alignment-baseline: middle; }
     .graph-drift .bar.active text.label-right {
       text-anchor: start; }
