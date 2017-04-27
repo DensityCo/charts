@@ -32,11 +32,11 @@ var DriftChart = (0, _4.chartAsReactComponent)(_3.default);
 
 (0, _storybook.storiesOf)('Drift Chart', module).add('With moments for days', function () {
   return React.createElement(DriftChart, {
-    data: [{ date: (0, _moment2.default)().add(0, 'day'), count: 1 }, { date: (0, _moment2.default)().add(1, 'day'), count: 2 }, { date: (0, _moment2.default)().add(2, 'day'), count: -3 }, { date: (0, _moment2.default)().add(3, 'day'), count: 2 }, { date: (0, _moment2.default)().add(4, 'day'), count: 5 }, { date: (0, _moment2.default)().add(5, 'day'), count: -1 }, { date: (0, _moment2.default)().add(6, 'day'), count: -8 }]
+    data: [{ date: (0, _moment2.default)().add(0, 'day'), drift: 1, eventCount: 100 }, { date: (0, _moment2.default)().add(1, 'day'), drift: 2, eventCount: 123 }, { date: (0, _moment2.default)().add(2, 'day'), drift: -3, eventCount: 123 }, { date: (0, _moment2.default)().add(3, 'day'), drift: 2, eventCount: 123 }, { date: (0, _moment2.default)().add(4, 'day'), drift: 5, eventCount: 123 }, { date: (0, _moment2.default)().add(5, 'day'), drift: 0, eventCount: 123 }, { date: (0, _moment2.default)().add(6, 'day'), drift: -8, eventCount: 123 }]
   });
 }).add('With numbers for days', function () {
   return React.createElement(DriftChart, {
-    data: [{ date: 0, count: -8 }, { date: 1, count: 1 }, { date: 2, count: 2 }, { date: 3, count: -3 }, { date: 4, count: 2 }, { date: 5, count: 5 }, { date: 6, count: -1 }]
+    data: [{ date: 0, drift: 1, eventCount: 100 }, { date: 1, drift: 2, eventCount: 123 }, { date: 2, drift: -3, eventCount: 123 }, { date: 3, drift: 2, eventCount: 123 }, { date: 4, drift: 5, eventCount: 123 }, { date: 5, drift: 0, eventCount: 123 }, { date: 6, drift: -8, eventCount: 123 }]
   });
 }).add('With adding points to the chart over time. This is to show that the chart can receive updates.', function () {
   var AddNewPointsToGraph = function (_React$Component) {
@@ -61,7 +61,8 @@ var DriftChart = (0, _4.chartAsReactComponent)(_3.default);
             data: new Array(7).fill(0).map(function (_, ct) {
               return {
                 date: ct,
-                count: Math.floor(Math.random() * 20) - 10
+                drift: Math.floor(Math.random() * 20) - 10,
+                eventCount: 100
               };
             })
           });

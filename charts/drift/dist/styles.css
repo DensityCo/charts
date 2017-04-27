@@ -23,8 +23,25 @@
 .graph-drift .axis-y .tick line {
   display: none; }
 
-.graph-drift .bar {
-  shape-rendering: crispEdges; }
-
 .graph-drift .mid-line {
   shape-rendering: crispEdges; }
+
+.graph-drift .bar {
+  width: 100%; }
+  .graph-drift .bar .hover-detector {
+    fill: transparent; }
+  .graph-drift .bar .bar-path {
+    fill: #cbcfd6; }
+  .graph-drift .bar.active .bar-path {
+    fill: #4198ff; }
+  .graph-drift .bar text {
+    display: none; }
+  .graph-drift .bar.active text {
+    display: block;
+    font-weight: 500;
+    fill: #4198ff;
+    alignment-baseline: middle; }
+    .graph-drift .bar.active text.label-right {
+      text-anchor: start; }
+    .graph-drift .bar.active text.label-left {
+      text-anchor: end; }

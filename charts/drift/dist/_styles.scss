@@ -1,3 +1,5 @@
+$brand-primary: #4198ff;
+
 .graph-drift {
   font-family: 'Avenir Next', Helvetica, sans-serif
 }
@@ -29,10 +31,40 @@
   display: none
 }
 
-.graph-drift .bar {
+.graph-drift .mid-line {
   shape-rendering: crispEdges;
 }
 
-.graph-drift .mid-line {
-  shape-rendering: crispEdges;
+.graph-drift .bar {
+  width: 100%;
+
+  .hover-detector {
+    fill: transparent;
+  }
+
+  // The actual bar part of the graph
+  .bar-path {
+    // shape-rendering: crispEdges;
+    fill: #cbcfd6;
+  }
+  &.active .bar-path {
+    fill: $brand-primary;
+  }
+
+  // The text label for the bar. It shows on hover.
+  text { display: none; }
+  &.active text {
+    display: block;
+    font-weight: 500;
+    fill: $brand-primary;
+    alignment-baseline: middle;
+
+    // Draw the label on the right or the left, depending on which way the bar goes.
+    &.label-right {
+      text-anchor: start;
+    }
+    &.label-left {
+      text-anchor: end;
+    }
+  }
 }
