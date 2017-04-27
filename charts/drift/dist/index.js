@@ -99,7 +99,7 @@ function drift(elem) {
       var selection = barGroup.selectAll(".bar").data(data);
       selection.enter().append("path").attr("class", "bar").merge(selection).attr('d', function (d) {
         // Render a rectangular bar for each drift
-        return ['M ' + x(-1) + ' ' + y(d.day), // move to the point
+        return ['M ' + x(0) + ' ' + y(d.day), // move to the point
         'H ' + x(d.value), 'V ' + (y(d.day) - y.bandwidth()), 'H ' + x(0)].join(' ');
       }).attr('fill', function (d) {
         return d.value > 0 ? positiveColor : negativeColor;
