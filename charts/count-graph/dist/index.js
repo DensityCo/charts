@@ -191,7 +191,7 @@ function countGraph(elem) {
 
     // Draw the zero line
     overlayRect.selectAll('.zero-line').remove();
-    overlayRect.append('rect').attr('x', 0).attr('y', graphHeight - 1).attr('width', graphWidth).attr('height', 2).attr('class', 'zero-line');
+    overlayRect.append('rect').attr('x', 0).attr('y', graphHeight - 1).attr('width', graphWidth).attr('height', 1).attr('class', 'zero-line');
 
     // Draw the overlay line
     overlayRect.append('rect').attr('x', 0).attr('y', 0).attr('width', graphWidth).attr('height', graphHeight).attr('fill', 'transparent').on('mousemove', function () {
