@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-drift",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "description": "Drift chart",
   "main": "dist/index.js",
   "scripts": {
