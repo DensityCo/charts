@@ -146,12 +146,20 @@ export default function drift(elem) {
               `a ${radius},${radius} 0 1,0 -${radius * 2},0`,
             ].join(' ');
           } else {
+            // Make all rectangular bars avoid the center line
+            let barOffset;
+            if (d.drift > 0) {
+              barOffset = 0.5;
+            } else {
+              barOffset = -0.5;
+            }
+
             // Render a rectangular bar for each nonzero drift
             return [
-              `M ${x(0)} 0`,
+              `M ${x(0) + barOffset} 0`,
               `H ${x(d.drift)}`,
               `V ${-1 * y.bandwidth()}`,
-              `H ${x(0)}`,
+              `H ${x(0) + barOffset}`,
             ].join(' ');
           }
         }).attr('title', d => d.drift);
