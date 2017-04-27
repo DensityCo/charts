@@ -2,8 +2,6 @@ import './styles.scss';
 import moment from 'moment';
 import * as d3 from 'd3';
 
-let brandPrimary = '#4198ff';
-
 const leftMargin = 32;
 const bottomMargin = 32;
 const topMargin = 16;
@@ -196,6 +194,12 @@ export default function countGraph(elem) {
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', graphHeight)
+    resetEnterSelection.append('rect')
+      .attr('class', 'reset-line-label-background')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', 40)
+      .attr('height', 28)
     resetEnterSelection.append('text')
       .attr('class', 'reset-line-label')
 
@@ -225,7 +229,7 @@ export default function countGraph(elem) {
       .attr('x', 0)
       .attr('y', graphHeight - 1)
       .attr('width', graphWidth)
-      .attr('height', 2)
+      .attr('height', 1)
       .attr('class', 'zero-line');
 
 

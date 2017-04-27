@@ -93,7 +93,7 @@ export default function drift(elem) {
         .attr('y1', 0)
         .attr('x2', x(0))
         .attr('y2', graphHeight)
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 1)
         .attr('stroke', grayDark);
 
       // Create a data join
