@@ -91,7 +91,7 @@ export default function drift(elem) {
         .attr('y1', 0)
         .attr('x2', x(0))
         .attr('y2', graphHeight)
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 1)
         .attr('stroke', grayDark);
 
       // Create a data join
@@ -103,7 +103,7 @@ export default function drift(elem) {
           .attr('d', d => {
             // Render a rectangular bar for each drift
             return [
-              `M ${x(0)} ${y(d.day)}`, // move to the point
+              `M ${x(-1)} ${y(d.day)}`, // move to the point
               `H ${x(d.value)}`,
               `V ${y(d.day) - y.bandwidth()}`,
               `H ${x(0)}`,
