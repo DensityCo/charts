@@ -21,9 +21,9 @@ $brand-primary: #4198ff;
 }
 
 .graph-drift .axis-x .tick line {
-  stroke-dasharray: 0.5 5;
-  stroke-linecap: round;
-  stroke-width: 1.5px;
+  stroke-dasharray: 2 4;
+  stroke-linecap: square;
+  stroke-width: 1px;
   stroke: #B4B8BF
 }
 

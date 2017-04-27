@@ -140,9 +140,9 @@ function drift(elem) {
           // Make all rectangular bars avoid the center line
           var barOffset = void 0;
           if (d.drift > 0) {
-            barOffset = 1;
+            barOffset = 0.5;
           } else {
-            barOffset = -1;
+            barOffset = -0.5;
           }
 
           // Render a rectangular bar for each nonzero drift
