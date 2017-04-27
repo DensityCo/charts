@@ -56,7 +56,7 @@ $brand-primary: #4198ff;
   &.active text {
     display: block;
     font-weight: 500;
-    fill: $brand-primary;
+    fill: $gray-darker;
     alignment-baseline: middle;
 
     // Draw the label on the right or the left, depending on which way the bar goes.

@@ -159,7 +159,7 @@ export default function drift(elem) {
               `M ${x(0) + barOffset} 0`,
               `H ${x(d.drift)}`,
               `V ${-1 * y.bandwidth()}`,
-              `H ${x(0)}`,
+              `H ${x(0) + barOffset}`,
             ].join(' ');
           }
         }).attr('title', d => d.drift);
