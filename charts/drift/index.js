@@ -80,11 +80,11 @@ export default function drift(elem) {
       // 2. Draw X axis / Y axis
       axisGroup.append("g")
         .attr("class", "axis axis-x")
-        .attr("transform", `translate(0,0)`)
+        .attr("transform", "translate(-0.5,0)")
         .call(d3.axisBottom(x).ticks(10).tickSizeOuter(0).tickSize(graphHeight))
       axisGroup.append("g")
         .attr("class", "axis axis-y")
-        .attr("transform", `translate(30,0)`)
+        .attr("transform", "translate(30,0)")
         .call(d3.axisLeft(y).tickSizeOuter(0));
 
       // Draw a line through the center
@@ -147,17 +147,17 @@ export default function drift(elem) {
             ].join(' ');
           } else {
             // Make all rectangular bars avoid the center line
-            let barOffset;
+            let barOffset = 0;
             if (d.drift > 0) {
               barOffset = 0.5;
-            } else {
+            } else if (d.drift < 0) {
               barOffset = -0.5;
             }
 
             // Render a rectangular bar for each nonzero drift
             return [
               `M ${x(0) + barOffset} 0`,
-              `H ${x(d.drift)}`,
+              `H ${x(d.drift) + barOffset}`,
               `V ${-1 * y.bandwidth()}`,
               `H ${x(0) + barOffset}`,
             ].join(' ');
