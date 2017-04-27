@@ -92,18 +92,17 @@ function countGraph(elem) {
     var graphWidth = width - leftMargin;
     var graphHeight = height - topMargin - bottomMargin;
 
-    // Get first values for using in computations
-    var firstEvent = data[0];
-    var firstCount = firstEvent ? firstEvent.count : 0;
-    var firstTimestamp = firstEvent ? (0, _moment2.default)(firstEvent.timestamp) : (0, _moment2.default)();
-
-    // Get last values for using in computations
-    var lastEvent = data[data.length - 1];
-    var lastCount = lastEvent ? lastEvent.count : 0;
+    // Get first and last timestamps
+    var firstTimestamp = firstEvent ? _moment2.default.max((0, _moment2.default)(firstEvent.timestamp), (0, _moment2.default)(props.start)) : (0, _moment2.default)();
     var lastTimestamp = lastEvent ? _moment2.default.min((0, _moment2.default)(lastEvent.timestamp), (0, _moment2.default)(props.end)) : (0, _moment2.default)();
-
     var start = props.start || firstTimestamp;
     var end = props.end || lastTimestamp;
+
+    // Get first and last events and count
+    var firstEvent = data.length && data[bisectLeft(data, firstTimestamp)];
+    var firstCount = firstEvent ? firstEvent.count : 0;
+    var lastEvent = data.length && data[bisectLeft(data, lastTimestamp)];
+    var lastCount = lastEvent ? lastEvent.count : 0;
 
     // Construct scales
     var xScale = d3.scaleLinear().rangeRound([graphWidth, 0]).domain([momentToNumber(end), momentToNumber(start)]);
@@ -115,8 +114,8 @@ function countGraph(elem) {
     }));
     var yScale = d3.scaleLinear().rangeRound([graphHeight, 0]).domain([smallestCount, largestCount]);
 
-    var lastX = xScale(lastTimestamp);
-    var lastY = yScale(lastCount);
+    var lastX = xScale(momentToNumber(end));
+    var lastY = yScale(lastEvent.count);
     var bottomY = graphHeight - 1;
 
     // Generate the svg path for the graph line.
@@ -188,10 +187,6 @@ function countGraph(elem) {
 
     resetSelection.exit().remove('.reset');
 
-    // Draw the zero line
-    overlayRect.selectAll('.zero-line').remove();
-    overlayRect.append('rect').attr('x', 0).attr('y', graphHeight - 1).attr('width', graphWidth).attr('height', 1).attr('class', 'zero-line');
-
     // Draw the overlay line
     overlayRect.append('rect').attr('x', 0).attr('y', 0).attr('width', graphWidth).attr('height', graphHeight).attr('fill', 'transparent').on('mousemove', function () {
       var mouseX = d3.mouse(overlayRect.node())[0];
@@ -211,7 +206,7 @@ function countGraph(elem) {
 
       // FIXME: another bug: data.length must be > 0
       // If the user is hovering over where the data is in the chart...
-      if (firstTimestamp <= timeAtPosition && timeAtPosition <= lastTimestamp) {
+      if (momentToNumber(firstTimestamp) <= timeAtPosition && timeAtPosition <= momentToNumber(lastTimestamp)) {
         // ... get the count where the user is hovering.
         countAtPosition = data[itemIndexAtOverlayPosition].count;
 

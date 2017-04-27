@@ -36,11 +36,6 @@
 .graph-countgraph .reset .reset-line-label-background {
   fill: #4198ff; }
 
-/* Zero line */
-.graph-countgraph .zero-line {
-  stroke: #92959F;
-  fill: #92959F; }
-
 /* Overlay marker line (the line with the circle that tracks the mouse cursor) */
 .graph-countgraph .overlay-line path {
   stroke: #9296A2;
