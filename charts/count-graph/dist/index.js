@@ -119,27 +119,9 @@ function countGraph(elem) {
     var lastY = yScale(lastCount);
     var bottomY = graphHeight - 1;
 
-    // Draw the axes in the svg
-    var xAxis = d3.axisBottom(xScale)
-    // format the time scale display for different domain sizes
-    // started by trying to remove the zero padding from the hours
-    // and it got out of hand, this is complicated logic
-    .tickFormat(function (d) {
-      return d3.timeFormat('%-I%p')(d).toLowerCase();
-    }).tickSizeOuter(0).ticks(10);
-
-    var yAxis = d3.axisLeft(yScale).tickSizeOuter(0).ticks(10).tickSize(graphWidth);
-
-    // Remove all axes that are already drawn
-    axisGroup.selectAll("g").remove();
-
-    // Draw axes in the axisGroup.
-    axisGroup.append("g").attr("class", "axis axis-y").attr("transform", 'translate(' + (graphWidth - 5) + ',0)').call(yAxis);
-    axisGroup.append("g").attr("class", "axis axis-x").attr("transform", 'translate(0,' + (graphHeight + 5) + ')').call(xAxis);
-
     // Generate the svg path for the graph line.
-    var pathPrefix = ['M1,' + yScale(0), // Move to the lower left
-    'L' + xScale(momentToNumber(firstTimestamp)) + ',' + yScale(0)].join('');
+    var pathPrefix = ['M1,' + yScale(smallestCount), // Move to the lower left
+    'L' + xScale(momentToNumber(firstTimestamp)) + ',' + yScale(smallestCount)].join('');
     var pathSuffix = ['L' + lastX + ',' + lastY, // Line to the last coordinate, if not already there.
     'L' + lastX + ',' + bottomY, // Line down to the y axis.
     'L1,' + bottomY];
@@ -162,6 +144,24 @@ function countGraph(elem) {
 
     graphSelection.exit();
 
+    // Draw the axes in the svg
+    var xAxis = d3.axisBottom(xScale)
+    // format the time scale display for different domain sizes
+    // started by trying to remove the zero padding from the hours
+    // and it got out of hand, this is complicated logic
+    .tickFormat(function (d) {
+      return d3.timeFormat('%-I%p')(d).toLowerCase();
+    }).tickSizeOuter(0).ticks(10);
+
+    var yAxis = d3.axisLeft(yScale).tickSizeOuter(0).ticks(10).tickSize(graphWidth);
+
+    // Remove all axes that are already drawn
+    axisGroup.selectAll("g").remove();
+
+    // Draw axes in the axisGroup.
+    axisGroup.append("g").attr("class", "axis axis-y").attr("transform", 'translate(' + (graphWidth - 5) + ',0)').call(yAxis);
+    axisGroup.append("g").attr("class", "axis axis-x").attr("transform", 'translate(0,' + (graphHeight + 5) + ')').call(xAxis);
+
     // Generate reset lines
     // Each consists of a `g.reset` wrapper, with a `path.reset-line` and `text.reset-line-label`
     // inside.
@@ -183,8 +183,7 @@ function countGraph(elem) {
 
     // Adjust the reset label
     resetMergeSelection.select('.reset-line-label').text(function (d) {
-      var index = bisect(data, momentToNumber(d.timestamp)) - 1; // Where on the line is that time?
-      return data[index] ? data[index].count : '';
+      return d.count;
     });
 
     resetSelection.exit().remove('.reset');
