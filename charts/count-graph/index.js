@@ -214,10 +214,7 @@ export default function countGraph(elem) {
 
     // Adjust the reset label
     resetMergeSelection.select('.reset-line-label')
-      .text(d => {
-        const index = bisect(data, momentToNumber(d.timestamp)) - 1; // Where on the line is that time?
-        return data[index] ? data[index].count : '';
-      });
+      .text(d => d.count);
 
     resetSelection.exit().remove('.reset');
 
