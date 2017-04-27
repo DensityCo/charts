@@ -148,8 +148,8 @@ export default function countGraph(elem) {
 
     // Generate the svg path for the graph line.
     const pathPrefix = [
-      `M1,${yScale(0)}`, // Move to the lower left
-      `L${xScale(momentToNumber(firstTimestamp))},${yScale(0)}`, // Move to the first datapoint.
+      `M1,${yScale(smallestCount)}`, // Move to the lower left
+      `L${xScale(momentToNumber(firstTimestamp))},${yScale(smallestCount)}`, // Move to the first datapoint.
     ].join('');
     const pathSuffix = [
       `L${lastX},${lastY}`, // Line to the last coordinate, if not already there.
