@@ -95,8 +95,8 @@ function drift(elem) {
       axisGroup.selectAll("g").remove();
 
       // 2. Draw X axis / Y axis
-      axisGroup.append("g").attr("class", "axis axis-x").attr("transform", 'translate(0,0)').call(d3.axisBottom(x).ticks(10).tickSizeOuter(0).tickSize(graphHeight));
-      axisGroup.append("g").attr("class", "axis axis-y").attr("transform", 'translate(30,0)').call(d3.axisLeft(y).tickSizeOuter(0));
+      axisGroup.append("g").attr("class", "axis axis-x").attr("transform", "translate(-0.5,0)").call(d3.axisBottom(x).ticks(10).tickSizeOuter(0).tickSize(graphHeight));
+      axisGroup.append("g").attr("class", "axis axis-y").attr("transform", "translate(30,0)").call(d3.axisLeft(y).tickSizeOuter(0));
 
       // Draw a line through the center
       midLine.attr('x1', x(0)).attr('y1', 0).attr('x2', x(0)).attr('y2', graphHeight).attr('stroke-width', 1).attr('stroke', grayDark);
@@ -138,15 +138,15 @@ function drift(elem) {
           return ['M ' + x(0) + ' -' + radius, 'm -' + radius + ', 0', 'a ' + radius + ',' + radius + ' 0 1,0 ' + radius * 2 + ',0', 'a ' + radius + ',' + radius + ' 0 1,0 -' + radius * 2 + ',0'].join(' ');
         } else {
           // Make all rectangular bars avoid the center line
-          var barOffset = void 0;
+          var barOffset = 0;
           if (d.drift > 0) {
             barOffset = 0.5;
-          } else {
+          } else if (d.drift < 0) {
             barOffset = -0.5;
           }
 
           // Render a rectangular bar for each nonzero drift
-          return ['M ' + (x(0) + barOffset) + ' 0', 'H ' + x(d.drift), 'V ' + -1 * y.bandwidth(), 'H ' + (x(0) + barOffset)].join(' ');
+          return ['M ' + (x(0) + barOffset) + ' 0', 'H ' + (x(d.drift) + barOffset), 'V ' + -1 * y.bandwidth(), 'H ' + (x(0) + barOffset)].join(' ');
         }
       }).attr('title', function (d) {
         return d.drift;
