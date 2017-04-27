@@ -229,7 +229,7 @@ export default function countGraph(elem) {
       .attr('x', 0)
       .attr('y', graphHeight - 1)
       .attr('width', graphWidth)
-      .attr('height', 2)
+      .attr('height', 1)
       .attr('class', 'zero-line');
 
 
