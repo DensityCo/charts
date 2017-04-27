@@ -99,9 +99,9 @@ function countGraph(elem) {
     var end = props.end || lastTimestamp;
 
     // Get first and last events and count
-    var firstEvent = data.length && data[bisectLeft(data, firstTimestamp)];
+    var firstEvent = data.length && data[d3.bisectLeft(data, firstTimestamp)];
     var firstCount = firstEvent ? firstEvent.count : 0;
-    var lastEvent = data.length && data[bisectLeft(data, lastTimestamp)];
+    var lastEvent = data.length && data[d3.bisectLeft(data, lastTimestamp)];
     var lastCount = lastEvent ? lastEvent.count : 0;
 
     // Construct scales
