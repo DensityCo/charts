@@ -16,10 +16,10 @@
 /* Y Axis */
 
 .graph-countgraph .axis-y .tick line {
-  stroke-dasharray: 0.5 5;
-  stroke-linecap: round;
-  stroke-width: 1.5px;
-  stroke: #D1D2D3;
+  stroke-dasharray: 2 6;
+  stroke-linecap: square;
+  stroke-width: 1px;
+  stroke: #B4B8BF;
 }
 .graph-countgraph .axis-y .domain {
   display: none;
@@ -30,7 +30,6 @@
 .graph-countgraph .graph-path {
   fill: #cbcfd6;
   shape-rendering: crispEdges;
-  opacity: .7;
 }
 
 /* Reset lines */
@@ -51,7 +50,6 @@
 .graph-countgraph .zero-line {
   stroke: #92959F;
   fill: #92959F;
-  opacity: .6;
 }
 
 /* Overlay marker line (the line with the circle that tracks the mouse cursor) */
