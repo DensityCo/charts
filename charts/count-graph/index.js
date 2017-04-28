@@ -82,21 +82,23 @@ export default function countGraph(elem) {
     const graphWidth = width - leftMargin;
     const graphHeight = height - topMargin - bottomMargin;
 
-    // Get first values for using in computations
-    const firstEvent = data[0];
-    const firstCount = firstEvent ? firstEvent.count : 0;
-    const firstTimestamp = firstEvent ? moment(firstEvent.timestamp) : moment();
-
-    // Get last values for using in computations
-    const lastEvent = data[data.length - 1];
-    const lastCount = lastEvent ? lastEvent.count : 0;
+    // Get first and last timestamps
+    const firstTimestamp = firstEvent ? moment.max(
+      moment(firstEvent.timestamp),
+      moment(props.start)
+    ) : moment();
     const lastTimestamp = lastEvent ? moment.min(
       moment(lastEvent.timestamp),
       moment(props.end)
     ) : moment();
-
     const start = props.start || firstTimestamp;
     const end = props.end || lastTimestamp;
+
+    // Get first and last events and count
+    const firstEvent = data.length && data[d3.bisectLeft(data, firstTimestamp)];
+    const firstCount = firstEvent ? firstEvent.count : 0;
+    const lastEvent = data.length && data[d3.bisectLeft(data, lastTimestamp)];
+    const lastCount = lastEvent ? lastEvent.count : 0;
 
     // Construct scales
     const xScale = d3.scaleLinear()
@@ -111,38 +113,9 @@ export default function countGraph(elem) {
       .rangeRound([graphHeight, 0])
       .domain([smallestCount, largestCount]);
 
-    const lastX = xScale(lastTimestamp);
-    const lastY = yScale(lastCount);
+    const lastX = xScale(momentToNumber(end));
+    const lastY = yScale(lastEvent.count);
     const bottomY = graphHeight - 1;
-
-
-
-    // Draw the axes in the svg
-    const xAxis = d3.axisBottom(xScale)
-      // format the time scale display for different domain sizes
-      // started by trying to remove the zero padding from the hours
-      // and it got out of hand, this is complicated logic
-      .tickFormat(d => d3.timeFormat('%-I%p')(d).toLowerCase())
-      .tickSizeOuter(0)
-      .ticks(10);
-
-    const yAxis = d3.axisLeft(yScale)
-      .tickSizeOuter(0)
-      .ticks(10)
-      .tickSize(graphWidth);
-
-    // Remove all axes that are already drawn
-    axisGroup.selectAll("g").remove();
-
-    // Draw axes in the axisGroup.
-    axisGroup.append("g")
-      .attr("class", "axis axis-y")
-      .attr("transform", `translate(${graphWidth - 5},0)`)
-      .call(yAxis);
-    axisGroup.append("g")
-      .attr("class", "axis axis-x")
-      .attr("transform", `translate(0,${graphHeight + 5})`)
-      .call(xAxis);
 
 
 
@@ -181,6 +154,35 @@ export default function countGraph(elem) {
 
 
 
+    // Draw the axes in the svg
+    const xAxis = d3.axisBottom(xScale)
+      // format the time scale display for different domain sizes
+      // started by trying to remove the zero padding from the hours
+      // and it got out of hand, this is complicated logic
+      .tickFormat(d => d3.timeFormat('%-I%p')(d).toLowerCase())
+      .tickSizeOuter(0)
+      .ticks(10);
+
+    const yAxis = d3.axisLeft(yScale)
+      .tickSizeOuter(0)
+      .ticks(10)
+      .tickSize(graphWidth);
+
+    // Remove all axes that are already drawn
+    axisGroup.selectAll("g").remove();
+
+    // Draw axes in the axisGroup.
+    axisGroup.append("g")
+      .attr("class", "axis axis-y")
+      .attr("transform", `translate(${graphWidth - 5},0)`)
+      .call(yAxis);
+    axisGroup.append("g")
+      .attr("class", "axis axis-x")
+      .attr("transform", `translate(0,${graphHeight + 5})`)
+      .call(xAxis);
+
+
+
     // Generate reset lines
     // Each consists of a `g.reset` wrapper, with a `path.reset-line` and `text.reset-line-label`
     // inside.
@@ -214,23 +216,9 @@ export default function countGraph(elem) {
 
     // Adjust the reset label
     resetMergeSelection.select('.reset-line-label')
-      .text(d => {
-        const index = bisect(data, momentToNumber(d.timestamp)) - 1; // Where on the line is that time?
-        return data[index] ? data[index].count : '';
-      });
+      .text(d => d.count);
 
     resetSelection.exit().remove('.reset');
-
-
-
-    // Draw the zero line
-    overlayRect.selectAll('.zero-line').remove();
-    overlayRect.append('rect')
-      .attr('x', 0)
-      .attr('y', graphHeight - 1)
-      .attr('width', graphWidth)
-      .attr('height', 1)
-      .attr('class', 'zero-line');
 
 
 
@@ -257,7 +245,7 @@ export default function countGraph(elem) {
 
       // FIXME: another bug: data.length must be > 0
       // If the user is hovering over where the data is in the chart...
-      if (firstTimestamp <= timeAtPosition && timeAtPosition <= lastTimestamp) {
+      if (momentToNumber(firstTimestamp) <= timeAtPosition && timeAtPosition <= momentToNumber(lastTimestamp)) {
         // ... get the count where the user is hovering.
         countAtPosition = data[itemIndexAtOverlayPosition].count;
 

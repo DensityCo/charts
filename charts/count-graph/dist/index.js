@@ -92,18 +92,17 @@ function countGraph(elem) {
     var graphWidth = width - leftMargin;
     var graphHeight = height - topMargin - bottomMargin;
 
-    // Get first values for using in computations
-    var firstEvent = data[0];
-    var firstCount = firstEvent ? firstEvent.count : 0;
-    var firstTimestamp = firstEvent ? (0, _moment2.default)(firstEvent.timestamp) : (0, _moment2.default)();
-
-    // Get last values for using in computations
-    var lastEvent = data[data.length - 1];
-    var lastCount = lastEvent ? lastEvent.count : 0;
+    // Get first and last timestamps
+    var firstTimestamp = firstEvent ? _moment2.default.max((0, _moment2.default)(firstEvent.timestamp), (0, _moment2.default)(props.start)) : (0, _moment2.default)();
     var lastTimestamp = lastEvent ? _moment2.default.min((0, _moment2.default)(lastEvent.timestamp), (0, _moment2.default)(props.end)) : (0, _moment2.default)();
-
     var start = props.start || firstTimestamp;
     var end = props.end || lastTimestamp;
+
+    // Get first and last events and count
+    var firstEvent = data.length && data[d3.bisectLeft(data, firstTimestamp)];
+    var firstCount = firstEvent ? firstEvent.count : 0;
+    var lastEvent = data.length && data[d3.bisectLeft(data, lastTimestamp)];
+    var lastCount = lastEvent ? lastEvent.count : 0;
 
     // Construct scales
     var xScale = d3.scaleLinear().rangeRound([graphWidth, 0]).domain([momentToNumber(end), momentToNumber(start)]);
@@ -115,31 +114,13 @@ function countGraph(elem) {
     }));
     var yScale = d3.scaleLinear().rangeRound([graphHeight, 0]).domain([smallestCount, largestCount]);
 
-    var lastX = xScale(lastTimestamp);
-    var lastY = yScale(lastCount);
+    var lastX = xScale(momentToNumber(end));
+    var lastY = yScale(lastEvent.count);
     var bottomY = graphHeight - 1;
 
-    // Draw the axes in the svg
-    var xAxis = d3.axisBottom(xScale)
-    // format the time scale display for different domain sizes
-    // started by trying to remove the zero padding from the hours
-    // and it got out of hand, this is complicated logic
-    .tickFormat(function (d) {
-      return d3.timeFormat('%-I%p')(d).toLowerCase();
-    }).tickSizeOuter(0).ticks(10);
-
-    var yAxis = d3.axisLeft(yScale).tickSizeOuter(0).ticks(10).tickSize(graphWidth);
-
-    // Remove all axes that are already drawn
-    axisGroup.selectAll("g").remove();
-
-    // Draw axes in the axisGroup.
-    axisGroup.append("g").attr("class", "axis axis-y").attr("transform", 'translate(' + (graphWidth - 5) + ',0)').call(yAxis);
-    axisGroup.append("g").attr("class", "axis axis-x").attr("transform", 'translate(0,' + (graphHeight + 5) + ')').call(xAxis);
-
     // Generate the svg path for the graph line.
-    var pathPrefix = ['M1,' + yScale(0), // Move to the lower left
-    'L' + xScale(momentToNumber(firstTimestamp)) + ',' + yScale(0)].join('');
+    var pathPrefix = ['M1,' + yScale(smallestCount), // Move to the lower left
+    'L' + xScale(momentToNumber(firstTimestamp)) + ',' + yScale(smallestCount)].join('');
     var pathSuffix = ['L' + lastX + ',' + lastY, // Line to the last coordinate, if not already there.
     'L' + lastX + ',' + bottomY, // Line down to the y axis.
     'L1,' + bottomY];
@@ -162,6 +143,24 @@ function countGraph(elem) {
 
     graphSelection.exit();
 
+    // Draw the axes in the svg
+    var xAxis = d3.axisBottom(xScale)
+    // format the time scale display for different domain sizes
+    // started by trying to remove the zero padding from the hours
+    // and it got out of hand, this is complicated logic
+    .tickFormat(function (d) {
+      return d3.timeFormat('%-I%p')(d).toLowerCase();
+    }).tickSizeOuter(0).ticks(10);
+
+    var yAxis = d3.axisLeft(yScale).tickSizeOuter(0).ticks(10).tickSize(graphWidth);
+
+    // Remove all axes that are already drawn
+    axisGroup.selectAll("g").remove();
+
+    // Draw axes in the axisGroup.
+    axisGroup.append("g").attr("class", "axis axis-y").attr("transform", 'translate(' + (graphWidth - 5) + ',0)').call(yAxis);
+    axisGroup.append("g").attr("class", "axis axis-x").attr("transform", 'translate(0,' + (graphHeight + 5) + ')').call(xAxis);
+
     // Generate reset lines
     // Each consists of a `g.reset` wrapper, with a `path.reset-line` and `text.reset-line-label`
     // inside.
@@ -183,15 +182,10 @@ function countGraph(elem) {
 
     // Adjust the reset label
     resetMergeSelection.select('.reset-line-label').text(function (d) {
-      var index = bisect(data, momentToNumber(d.timestamp)) - 1; // Where on the line is that time?
-      return data[index] ? data[index].count : '';
+      return d.count;
     });
 
     resetSelection.exit().remove('.reset');
-
-    // Draw the zero line
-    overlayRect.selectAll('.zero-line').remove();
-    overlayRect.append('rect').attr('x', 0).attr('y', graphHeight - 1).attr('width', graphWidth).attr('height', 1).attr('class', 'zero-line');
 
     // Draw the overlay line
     overlayRect.append('rect').attr('x', 0).attr('y', 0).attr('width', graphWidth).attr('height', graphHeight).attr('fill', 'transparent').on('mousemove', function () {
@@ -212,7 +206,7 @@ function countGraph(elem) {
 
       // FIXME: another bug: data.length must be > 0
       // If the user is hovering over where the data is in the chart...
-      if (firstTimestamp <= timeAtPosition && timeAtPosition <= lastTimestamp) {
+      if (momentToNumber(firstTimestamp) <= timeAtPosition && timeAtPosition <= momentToNumber(lastTimestamp)) {
         // ... get the count where the user is hovering.
         countAtPosition = data[itemIndexAtOverlayPosition].count;
 
