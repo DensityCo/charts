@@ -11,7 +11,7 @@ test:
       if [ "$CIRCLE_BRANCH" == "master" ]; then
         echo "Publishing all charts..."
         for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
-          if [ "$chart" == "template" ]; then # This isn't a chart, but a template for `./make-chart`
+          if [ "$chart" == "template" -o "$chart" == "dist" ]; then # This isn't a chart, but a template for `./make-chart`
             continue
           fi
 
