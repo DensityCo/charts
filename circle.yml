@@ -1,0 +1,36 @@
+dependencies:
+  pre:
+    - echo "//npmregistry.density.rodeo/:_authToken=${PRIVATE_NPM_TOKEN}" >> ~/.npmrc
+
+test:
+  override:
+    - /bin/true
+  post:
+    - |
+      # Publish all charts once on master
+      if [ "$CIRCLE_BRANCH" == "master" ]; then
+        echo "Publishing all charts..."
+        for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
+          if [ "$chart" == "template" ]; then # This isn't a chart, but a template for `./make-chart`
+            continue
+          fi
+
+          echo
+          echo
+          echo "================"
+          echo " $chart"
+          echo "================"
+          make publish CHART=$chart
+        done
+
+        # Finally, try to publish the main package
+        echo
+        echo
+        echo "================"
+        echo " @density/charts"
+        echo "================"
+        npm publish .
+      else
+        echo "Packages are only published to npm on branch 'master'."
+      fi
+      exit 0
