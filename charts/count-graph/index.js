@@ -87,7 +87,7 @@ export default function countGraph(elem) {
 
     // Get first and last timestamps
     const firstEvent = data.length && data[0];
-    const firstCount = firstEvent ? firstEvent.count : 0;
+    const initialCount = firstEvent ? firstEvent.count - firstEvent.countChange : 0;
     const dataStart = firstEvent ? normalize(firstEvent.timestamp) : normalize(moment());
     const domainStart = props.start || dataStart;
 
@@ -106,7 +106,7 @@ export default function countGraph(elem) {
     const largestCount = Math.max.apply(Math, data.map(i => i.count));
     const smallestCount = Math.min.apply(Math, data.map(i => i.count));
     const yScale = d3.scaleLinear()
-      .rangeRound([graphHeight, 0])
+      .rangeRound([graphHeight - 10, 0])
       .domain([smallestCount, largestCount]);
 
     const lastX = xScale(normalize(moment.min(domainEnd, moment())));
@@ -117,7 +117,7 @@ export default function countGraph(elem) {
 
     // Generate the svg path for the graph line.
     const pathPrefix = [
-      `M1,${yScale(smallestCount)}`, // Move to the lower left
+      `M1,${bottomY}L1,${yScale(smallestCount)}`, // Move to the lower left
       `L${xScale(normalize(dataStart))},${yScale(smallestCount)}`, // Move to the first datapoint.
     ].join('');
     const pathSuffix = [
@@ -243,7 +243,8 @@ export default function countGraph(elem) {
       // If the user is hovering over where the data is in the chart...
       if (domainStart <= timeAtPosition && timeAtPosition <= domainEnd) {
         // ... get the count where the user is hovering.
-        countAtPosition = data[itemIndexAtOverlayPosition].count;
+        const eventAtPosition = data[itemIndexAtOverlayPosition];
+        countAtPosition = eventAtPosition ? eventAtPosition.count : initialCount;
 
         // If a mouse position was passed that is null, (ie, the mouse isn't in the chart any longer)
         // then disregard it so the overlay line will be deleted.
@@ -327,7 +328,7 @@ export default function countGraph(elem) {
           .attr('transform', d => `translate(${d},0)`)
 
       mergingGroup.select('circle')
-        .attr('cy', d => yScale(countAtPosition))
+        .attr('cy', yScale(countAtPosition))
 
       mergingGroup.select('.overlay-dialog')
         .attr('transform', d => {
