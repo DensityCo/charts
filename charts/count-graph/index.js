@@ -87,7 +87,8 @@ export default function countGraph(elem) {
 
     // Get first and last timestamps
     const firstEvent = data.length && data[0];
-    const initialCount = firstEvent ? firstEvent.count - firstEvent.countChange : 0;
+    const initialCount = (props.start !== (firstEvent && firstEvent.timestamp)) ?
+      (firstEvent.count - firstEvent.countChange) : 0;
     const dataStart = firstEvent ? normalize(firstEvent.timestamp) : normalize(moment());
     const domainStart = props.start || dataStart;
 
@@ -103,8 +104,8 @@ export default function countGraph(elem) {
         normalize(domainEnd),
         normalize(domainStart),
       ]);
-    const largestCount = Math.max.apply(Math, data.map(i => i.count));
-    const smallestCount = Math.min.apply(Math, data.map(i => i.count));
+    const largestCount = Math.max.apply(Math, data.map(i => Math.max(i.count, initialCount)));
+    const smallestCount = Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount)));
     const yScale = d3.scaleLinear()
       .rangeRound([graphHeight - 10, 0])
       .domain([smallestCount, largestCount]);
@@ -241,7 +242,7 @@ export default function countGraph(elem) {
 
       // FIXME: another bug: data.length must be > 0
       // If the user is hovering over where the data is in the chart...
-      if (domainStart <= timeAtPosition && timeAtPosition <= domainEnd) {
+      if (domainStart <= timeAtPosition && Math.min(domainEnd, normalize(moment())) > timeAtPosition) {
         // ... get the count where the user is hovering.
         const eventAtPosition = data[itemIndexAtOverlayPosition];
         countAtPosition = eventAtPosition ? eventAtPosition.count : initialCount;
