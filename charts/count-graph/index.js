@@ -112,19 +112,18 @@ export default function countGraph(elem) {
 
     const lastX = xScale(normalize(moment.min(domainEnd, moment())));
     const lastY = yScale(lastEvent.count);
-    const bottomY = graphHeight - 1;
 
 
 
     // Generate the svg path for the graph line.
     const pathPrefix = [
-      `M1,${bottomY}L1,${yScale(smallestCount)}`, // Move to the lower left
+      `M1,${graphHeight}L1,${yScale(smallestCount)}`, // Move to the lower left
       `L${xScale(normalize(dataStart))},${yScale(smallestCount)}`, // Move to the first datapoint.
     ].join('');
     const pathSuffix = [
       `L${lastX},${lastY}`, // Line to the last coordinate, if not already there.
-      `L${lastX},${bottomY}`, // Line down to the y axis.
-      `L1,${bottomY}`, // Line across the bottom to the start.
+      `L${lastX},${graphHeight}`, // Line down to the y axis.
+      `L1,${graphHeight}`, // Line across the bottom to the start.
     ];
     const linePath = data.reduce((total, i) => {
       const magnitude = normalize(i.timestamp);

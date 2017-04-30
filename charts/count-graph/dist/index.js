@@ -118,14 +118,13 @@ function countGraph(elem) {
 
     var lastX = xScale(normalize(_moment2.default.min(domainEnd, (0, _moment2.default)())));
     var lastY = yScale(lastEvent.count);
-    var bottomY = graphHeight - 1;
 
     // Generate the svg path for the graph line.
-    var pathPrefix = ['M1,' + bottomY + 'L1,' + yScale(smallestCount), // Move to the lower left
+    var pathPrefix = ['M1,' + graphHeight + 'L1,' + yScale(smallestCount), // Move to the lower left
     'L' + xScale(normalize(dataStart)) + ',' + yScale(smallestCount)].join('');
     var pathSuffix = ['L' + lastX + ',' + lastY, // Line to the last coordinate, if not already there.
-    'L' + lastX + ',' + bottomY, // Line down to the y axis.
-    'L1,' + bottomY];
+    'L' + lastX + ',' + graphHeight, // Line down to the y axis.
+    'L1,' + graphHeight];
     var linePath = data.reduce(function (total, i) {
       var magnitude = normalize(i.timestamp);
       var xPosition = xScale(magnitude);
