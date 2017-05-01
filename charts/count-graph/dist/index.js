@@ -120,8 +120,8 @@ function countGraph(elem) {
     var lastY = yScale(lastEvent.count);
 
     // Generate the svg path for the graph line.
-    var pathPrefix = ['M1,' + graphHeight + 'L1,' + yScale(smallestCount), // Move to the lower left
-    'L' + xScale(normalize(dataStart)) + ',' + yScale(smallestCount)].join('');
+    var pathPrefix = ['M1,' + graphHeight + 'L1,' + yScale(initialCount), // Move to the lower left
+    'L' + xScale(normalize(dataStart)) + ',' + yScale(initialCount)].join('');
     var pathSuffix = ['L' + lastX + ',' + lastY, // Line to the last coordinate, if not already there.
     'L' + lastX + ',' + graphHeight, // Line down to the y axis.
     'L1,' + graphHeight];
