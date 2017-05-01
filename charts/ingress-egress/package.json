@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-ingress-egress",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Ingress Egress chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
@@ -11,6 +11,7 @@
   "author": "Density <team+javascript@density.io>",
   "license": "UNLICENSED",
   "dependencies": {
+    "d3": "^4.8.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
