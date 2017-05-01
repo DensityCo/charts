@@ -257,7 +257,7 @@ storiesOf('Count Graph', module)
         this.interval = setInterval(() => {
           this.setState({data: [
             ...this.state.data,
-            { count: Math.floor(Math.random() * 20), timestamp: moment().toISOString()}
+            { count: Math.floor(Math.random() * 20), timestamp: moment().toISOString() }
           ]});
         }, 1000);
       }
@@ -271,6 +271,7 @@ storiesOf('Count Graph', module)
     }
     return <AddNewPointsToGraph />;
   })
+
 
 
 
