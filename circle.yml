@@ -11,23 +11,27 @@ test:
       # if [ "$CIRCLE_BRANCH" == "master" ]; then
       if [ "$CIRCLE_BRANCH" == "auto-build-storybook" ]; then
 
+        # Pull down a copy of the master branch to compare against.
         git clone git@github.com:densityco/charts.git master_charts/
 
         echo "Publishing all charts..."
         for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
-          if [ "$chart" == "template" -o "$chart" == "dist" ]; then # This isn't a chart, but a template for `./make-chart`
+          # This isn't a chart, but a template for `./make-chart`
+          if [ "$chart" == "template" -o "$chart" == "dist" ]; then
             continue
           fi
 
+          echo
+          echo
+          echo "================"
+          echo " $chart"
+          echo "================"
+
+          # If the master version is different from this version, then publish a new version.
           if [ \
             "$(cat charts/$chart/package.json | jq .version)" != \
             "$(cat master_charts/charts/$chart/package.json | jq .version)" \
           ]; then
-            echo "$(cat charts/$chart/package.json | jq .version)" 
-            echo
-            echo "================"
-            echo " $chart"
-            echo "================"
             make publish CHART=$chart
           else
             echo "Chart $chart is up to date."
@@ -35,6 +39,7 @@ test:
         done
 
         # Finally, try to publish the main package
+        npm run build-storybook
         echo
         echo
         echo "================"
@@ -44,4 +49,20 @@ test:
       else
         echo "Packages are only published to npm on branch 'master'."
       fi
-      exit 0
+
+      # Finally, build the storybook.
+      npm run build-storybook
+
+      echo "* Pulling latest deploy..."
+      git clone git@github.com:densityco/charts.git deploy_charts/
+      cd deploy_charts/
+      git checkout gh-pages
+
+      echo "* Copying dist to github pages directory..."
+      rm -rf $CIRCLE_BRANCH/
+      cp -R ../storybook-static $CIRCLE_BRANCH/
+      git add $CIRCLE_BRANCH/
+
+      echo "* Pushing..."
+      git commit -m "Deploy branch $CIRCLE_BRANCH to Github Pages [ci skip]"
+      git push origin gh-pages
