@@ -3,6 +3,8 @@
   "version": "0.1.1",
   "description": "Ingress Egress chart",
   "main": "dist/index.js",
+  "style": "dist/styles.css",
+  "scss": "dist/_styles.scss",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
