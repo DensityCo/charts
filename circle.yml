@@ -8,19 +8,30 @@ test:
   post:
     - |
       # Publish all charts once on master
-      if [ "$CIRCLE_BRANCH" == "master" ]; then
+      # if [ "$CIRCLE_BRANCH" == "master" ]; then
+      if [ "$CIRCLE_BRANCH" == "auto-build-storybook" ]; then
+
+        git clone git@github.com:densityco/charts.git master_charts/
+
         echo "Publishing all charts..."
         for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
           if [ "$chart" == "template" -o "$chart" == "dist" ]; then # This isn't a chart, but a template for `./make-chart`
             continue
           fi
 
-          echo
-          echo
-          echo "================"
-          echo " $chart"
-          echo "================"
-          make publish CHART=$chart
+          if [ \
+            "$(cat charts/$chart/package.json | jq .version)" != \
+            "$(cat master_charts/charts/$chart/package.json | jq .version)" \
+          ]; then
+            echo
+            echo
+            echo "================"
+            echo " $chart"
+            echo "================"
+            make publish CHART=$chart
+          else
+            echo "Chart $chart is up to date."
+          fi
         done
 
         # Finally, try to publish the main package
