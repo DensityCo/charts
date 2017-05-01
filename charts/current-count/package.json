@@ -3,6 +3,8 @@
   "version": "0.2.0",
   "description": "Current Count chart",
   "main": "dist/index.js",
+  "style": "dist/styles.css",
+  "scss": "dist/_styles.scss",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
