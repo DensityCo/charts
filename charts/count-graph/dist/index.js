@@ -78,6 +78,7 @@ function countGraph(elem) {
     var height = props.height || 400;
     var data = props.data || [];
     var resets = props.resets || [];
+    var initialCount = props.initialCount || 0;
 
     // Adjust the svg size and viewbox to match the passed in values.
     svg.attr('height', height).attr('viewBox', '0 0 ' + width + ' ' + height);
@@ -97,7 +98,6 @@ function countGraph(elem) {
 
     // Get first and last timestamps
     var firstEvent = data.length && data[0];
-    var initialCount = props.start !== (firstEvent && firstEvent.timestamp) ? firstEvent.count - firstEvent.countChange : 0;
     var dataStart = firstEvent ? normalize(firstEvent.timestamp) : normalize((0, _moment2.default)());
     var domainStart = props.start || dataStart;
 
