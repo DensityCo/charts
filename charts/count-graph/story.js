@@ -11,8 +11,8 @@ import countGraph from './index';
 // [{count: 1, timestamp: "timestamp"}, ...]
 function uncompressData(data) {
   return data.split(';').map(i => {
-    const [count, countChange, timestamp] = i.split(',');
-    return {count: parseInt(count), countChange: parseInt(countChange), timestamp};
+    const [count, timestamp] = i.split(',');
+    return {count: parseInt(count), timestamp};
   });
 }
 
@@ -52,9 +52,8 @@ storiesOf('Count Graph', module)
       data={uncompressData(dayOfDataWithNegatives)}
     />
   ))
-  .add(`With data that doesn't include zero in the scale. This was the "drawing below the x axis" bug.`, () => {
-    {/* TODO: data needs count change */}
-    return <CountGraph
+  .add(`With data that doesn't include zero in the scale. This was the "drawing below the x axis" bug.`, () => (
+    <CountGraph
       start={"2017-04-13T08:00:00.000Z"}
       end={"2017-04-13T16:00:00.000Z"}
       data={[
@@ -240,7 +239,7 @@ storiesOf('Count Graph', module)
         },
       ]}
     />
-  })
+  ))
   .add(`Without any data`, () => (
     <CountGraph data={[]} />
   ))
