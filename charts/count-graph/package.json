@@ -1,8 +1,10 @@
 {
   "name": "@density/chart-count-graph",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "Count Graph chart",
   "main": "dist/index.js",
+  "style": "dist/styles.css",
+  "scss": "dist/_styles.scss",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
