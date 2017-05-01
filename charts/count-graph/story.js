@@ -54,8 +54,8 @@ storiesOf('Count Graph', module)
   ))
   .add(`With data that doesn't include zero in the scale. This was the "drawing below the x axis" bug.`, () => (
     <CountGraph
-      start={"2017-04-13T08:00:00.000Z"}
-      end={"2017-04-13T16:00:00.000Z"}
+      start={moment("2017-04-13T08:00:00.000Z")}
+      end={moment("2017-04-13T16:00:00.000Z")}
       data={[
         {
           "id": "evt_3qIwbJm8HKGfYlrFClzsup",

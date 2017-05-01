@@ -78,8 +78,8 @@ var CountGraph = (0, _index.chartAsReactComponent)(_index3.default);
   });
 }).add('With data that doesn\'t include zero in the scale. This was the "drawing below the x axis" bug.', function () {
   return React.createElement(CountGraph, {
-    start: "2017-04-13T08:00:00.000Z",
-    end: "2017-04-13T16:00:00.000Z",
+    start: (0, _moment2.default)("2017-04-13T08:00:00.000Z"),
+    end: (0, _moment2.default)("2017-04-13T16:00:00.000Z"),
     data: [{
       "id": "evt_3qIwbJm8HKGfYlrFClzsup",
       "timestamp": "2017-04-13T15:45:12.112Z",
