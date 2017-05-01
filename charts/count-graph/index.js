@@ -19,9 +19,11 @@ const overlayDialogDistanceToLine = 10;
 // the other side of the line.
 const overlayDialogBreakToLeftPadding = 20;
 
-const bisect = d3.bisector(d => momentToNumber(d.timestamp)).right;
+// Bisect abstraction for finding timestamps
+const bisect = d3.bisector(d => normalize(d.timestamp));
 
-function momentToNumber(date) {
+// Crush the moments to make them comply
+function normalize(date) {
   if (date instanceof moment) {
     return date.valueOf()
   } else {
@@ -29,6 +31,7 @@ function momentToNumber(date) {
   }
 }
 
+// The count graph component
 export default function countGraph(elem) {
   const svg = d3.select(elem).append('svg')
     .attr('class', 'graph-countgraph')
@@ -83,54 +86,47 @@ export default function countGraph(elem) {
     const graphHeight = height - topMargin - bottomMargin;
 
     // Get first and last timestamps
-    const firstTimestamp = firstEvent ? moment.max(
-      moment(firstEvent.timestamp),
-      moment(props.start)
-    ) : moment();
-    const lastTimestamp = lastEvent ? moment.min(
-      moment(lastEvent.timestamp),
-      moment(props.end)
-    ) : moment();
-    const start = props.start || firstTimestamp;
-    const end = props.end || lastTimestamp;
+    const firstEvent = data.length && data[0];
+    const initialCount = (props.start !== (firstEvent && firstEvent.timestamp)) ?
+      (firstEvent.count - firstEvent.countChange) : 0;
+    const dataStart = firstEvent ? normalize(firstEvent.timestamp) : normalize(moment());
+    const domainStart = props.start || dataStart;
 
-    // Get first and last events and count
-    const firstEvent = data.length && data[d3.bisectLeft(data, firstTimestamp)];
-    const firstCount = firstEvent ? firstEvent.count : 0;
-    const lastEvent = data.length && data[d3.bisectLeft(data, lastTimestamp)];
+    const lastEvent = data.length && data[data.length - 1];
     const lastCount = lastEvent ? lastEvent.count : 0;
+    const dataEnd = lastEvent ? normalize(lastEvent.timestamp) : normalize(moment());
+    const domainEnd = props.end || dataEnd;
 
     // Construct scales
     const xScale = d3.scaleLinear()
       .rangeRound([graphWidth, 0])
       .domain([
-        momentToNumber(end),
-        momentToNumber(start),
+        normalize(domainEnd),
+        normalize(domainStart),
       ]);
-    const largestCount = Math.max.apply(Math, data.map(i => i.count));
-    const smallestCount = Math.min.apply(Math, data.map(i => i.count));
+    const largestCount = Math.max.apply(Math, data.map(i => Math.max(i.count, initialCount)));
+    const smallestCount = Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount)));
     const yScale = d3.scaleLinear()
-      .rangeRound([graphHeight, 0])
+      .rangeRound([graphHeight - 10, 0])
       .domain([smallestCount, largestCount]);
 
-    const lastX = xScale(momentToNumber(end));
+    const lastX = xScale(normalize(moment.min(domainEnd, moment())));
     const lastY = yScale(lastEvent.count);
-    const bottomY = graphHeight - 1;
 
 
 
     // Generate the svg path for the graph line.
     const pathPrefix = [
-      `M1,${yScale(smallestCount)}`, // Move to the lower left
-      `L${xScale(momentToNumber(firstTimestamp))},${yScale(smallestCount)}`, // Move to the first datapoint.
+      `M1,${graphHeight}L1,${yScale(smallestCount)}`, // Move to the lower left
+      `L${xScale(normalize(dataStart))},${yScale(smallestCount)}`, // Move to the first datapoint.
     ].join('');
     const pathSuffix = [
       `L${lastX},${lastY}`, // Line to the last coordinate, if not already there.
-      `L${lastX},${bottomY}`, // Line down to the y axis.
-      `L1,${bottomY}`, // Line across the bottom to the start.
+      `L${lastX},${graphHeight}`, // Line down to the y axis.
+      `L1,${graphHeight}`, // Line across the bottom to the start.
     ];
     const linePath = data.reduce((total, i) => {
-      const magnitude = momentToNumber(i.timestamp);
+      const magnitude = normalize(i.timestamp);
       const xPosition = xScale(magnitude);
       const yPosition = yScale(i.count);
 
@@ -208,7 +204,7 @@ export default function countGraph(elem) {
     const resetMergeSelection = resetEnterSelection.merge(resetSelection)
     // Move the group / line / text to the reset's position
     resetMergeSelection
-      .attr('transform', d => `translate(${xScale(momentToNumber(d.timestamp))},0)`)
+      .attr('transform', d => `translate(${xScale(normalize(d.timestamp))},0)`)
 
     // Adjust if the graph height changed
     resetMergeSelection.select('.reset-line')
@@ -241,13 +237,14 @@ export default function countGraph(elem) {
       // Calculate, given a mouse X coordinate, the count and time at that x coordinate.
       let timeAtPosition, itemIndexAtOverlayPosition, countAtPosition, dataToJoin;
       timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
-      itemIndexAtOverlayPosition = bisect(data, timeAtPosition) - 1; // Where on the line is that time?
+      itemIndexAtOverlayPosition = bisect.right(data, timeAtPosition) - 1; // Where on the line is that time?
 
       // FIXME: another bug: data.length must be > 0
       // If the user is hovering over where the data is in the chart...
-      if (momentToNumber(firstTimestamp) <= timeAtPosition && timeAtPosition <= momentToNumber(lastTimestamp)) {
+      if (domainStart <= timeAtPosition && Math.min(domainEnd, normalize(moment())) > timeAtPosition) {
         // ... get the count where the user is hovering.
-        countAtPosition = data[itemIndexAtOverlayPosition].count;
+        const eventAtPosition = data[itemIndexAtOverlayPosition];
+        countAtPosition = eventAtPosition ? eventAtPosition.count : initialCount;
 
         // If a mouse position was passed that is null, (ie, the mouse isn't in the chart any longer)
         // then disregard it so the overlay line will be deleted.
@@ -331,7 +328,7 @@ export default function countGraph(elem) {
           .attr('transform', d => `translate(${d},0)`)
 
       mergingGroup.select('circle')
-        .attr('cy', d => yScale(countAtPosition))
+        .attr('cy', yScale(countAtPosition))
 
       mergingGroup.select('.overlay-dialog')
         .attr('transform', d => {

@@ -35,11 +35,13 @@ var overlayDialogDistanceToLine = 10;
 // the other side of the line.
 var overlayDialogBreakToLeftPadding = 20;
 
+// Bisect abstraction for finding timestamps
 var bisect = d3.bisector(function (d) {
-  return momentToNumber(d.timestamp);
-}).right;
+  return normalize(d.timestamp);
+});
 
-function momentToNumber(date) {
+// Crush the moments to make them comply
+function normalize(date) {
   if (date instanceof _moment2.default) {
     return date.valueOf();
   } else {
@@ -47,6 +49,7 @@ function momentToNumber(date) {
   }
 }
 
+// The count graph component
 function countGraph(elem) {
   var svg = d3.select(elem).append('svg').attr('class', 'graph-countgraph').attr('width', '100%');
 
@@ -93,39 +96,37 @@ function countGraph(elem) {
     var graphHeight = height - topMargin - bottomMargin;
 
     // Get first and last timestamps
-    var firstTimestamp = firstEvent ? _moment2.default.max((0, _moment2.default)(firstEvent.timestamp), (0, _moment2.default)(props.start)) : (0, _moment2.default)();
-    var lastTimestamp = lastEvent ? _moment2.default.min((0, _moment2.default)(lastEvent.timestamp), (0, _moment2.default)(props.end)) : (0, _moment2.default)();
-    var start = props.start || firstTimestamp;
-    var end = props.end || lastTimestamp;
+    var firstEvent = data.length && data[0];
+    var initialCount = props.start !== (firstEvent && firstEvent.timestamp) ? firstEvent.count - firstEvent.countChange : 0;
+    var dataStart = firstEvent ? normalize(firstEvent.timestamp) : normalize((0, _moment2.default)());
+    var domainStart = props.start || dataStart;
 
-    // Get first and last events and count
-    var firstEvent = data.length && data[d3.bisectLeft(data, firstTimestamp)];
-    var firstCount = firstEvent ? firstEvent.count : 0;
-    var lastEvent = data.length && data[d3.bisectLeft(data, lastTimestamp)];
+    var lastEvent = data.length && data[data.length - 1];
     var lastCount = lastEvent ? lastEvent.count : 0;
+    var dataEnd = lastEvent ? normalize(lastEvent.timestamp) : normalize((0, _moment2.default)());
+    var domainEnd = props.end || dataEnd;
 
     // Construct scales
-    var xScale = d3.scaleLinear().rangeRound([graphWidth, 0]).domain([momentToNumber(end), momentToNumber(start)]);
+    var xScale = d3.scaleLinear().rangeRound([graphWidth, 0]).domain([normalize(domainEnd), normalize(domainStart)]);
     var largestCount = Math.max.apply(Math, data.map(function (i) {
-      return i.count;
+      return Math.max(i.count, initialCount);
     }));
     var smallestCount = Math.min.apply(Math, data.map(function (i) {
-      return i.count;
+      return Math.min(i.count, initialCount);
     }));
-    var yScale = d3.scaleLinear().rangeRound([graphHeight, 0]).domain([smallestCount, largestCount]);
+    var yScale = d3.scaleLinear().rangeRound([graphHeight - 10, 0]).domain([smallestCount, largestCount]);
 
-    var lastX = xScale(momentToNumber(end));
+    var lastX = xScale(normalize(_moment2.default.min(domainEnd, (0, _moment2.default)())));
     var lastY = yScale(lastEvent.count);
-    var bottomY = graphHeight - 1;
 
     // Generate the svg path for the graph line.
-    var pathPrefix = ['M1,' + yScale(smallestCount), // Move to the lower left
-    'L' + xScale(momentToNumber(firstTimestamp)) + ',' + yScale(smallestCount)].join('');
+    var pathPrefix = ['M1,' + graphHeight + 'L1,' + yScale(smallestCount), // Move to the lower left
+    'L' + xScale(normalize(dataStart)) + ',' + yScale(smallestCount)].join('');
     var pathSuffix = ['L' + lastX + ',' + lastY, // Line to the last coordinate, if not already there.
-    'L' + lastX + ',' + bottomY, // Line down to the y axis.
-    'L1,' + bottomY];
+    'L' + lastX + ',' + graphHeight, // Line down to the y axis.
+    'L1,' + graphHeight];
     var linePath = data.reduce(function (total, i) {
-      var magnitude = momentToNumber(i.timestamp);
+      var magnitude = normalize(i.timestamp);
       var xPosition = xScale(magnitude);
       var yPosition = yScale(i.count);
 
@@ -174,7 +175,7 @@ function countGraph(elem) {
     var resetMergeSelection = resetEnterSelection.merge(resetSelection);
     // Move the group / line / text to the reset's position
     resetMergeSelection.attr('transform', function (d) {
-      return 'translate(' + xScale(momentToNumber(d.timestamp)) + ',0)';
+      return 'translate(' + xScale(normalize(d.timestamp)) + ',0)';
     });
 
     // Adjust if the graph height changed
@@ -202,13 +203,14 @@ function countGraph(elem) {
           countAtPosition = void 0,
           dataToJoin = void 0;
       timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
-      itemIndexAtOverlayPosition = bisect(data, timeAtPosition) - 1; // Where on the line is that time?
+      itemIndexAtOverlayPosition = bisect.right(data, timeAtPosition) - 1; // Where on the line is that time?
 
       // FIXME: another bug: data.length must be > 0
       // If the user is hovering over where the data is in the chart...
-      if (momentToNumber(firstTimestamp) <= timeAtPosition && timeAtPosition <= momentToNumber(lastTimestamp)) {
+      if (domainStart <= timeAtPosition && Math.min(domainEnd, normalize((0, _moment2.default)())) > timeAtPosition) {
         // ... get the count where the user is hovering.
-        countAtPosition = data[itemIndexAtOverlayPosition].count;
+        var eventAtPosition = data[itemIndexAtOverlayPosition];
+        countAtPosition = eventAtPosition ? eventAtPosition.count : initialCount;
 
         // If a mouse position was passed that is null, (ie, the mouse isn't in the chart any longer)
         // then disregard it so the overlay line will be deleted.
@@ -258,9 +260,7 @@ function countGraph(elem) {
         return 'translate(' + d + ',0)';
       });
 
-      mergingGroup.select('circle').attr('cy', function (d) {
-        return yScale(countAtPosition);
-      });
+      mergingGroup.select('circle').attr('cy', yScale(countAtPosition));
 
       mergingGroup.select('.overlay-dialog').attr('transform', function (d) {
         // Determine which side of the line to drap the popup dialog on.
