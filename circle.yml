@@ -23,7 +23,7 @@ test:
             "$(cat charts/$chart/package.json | jq .version)" != \
             "$(cat master_charts/charts/$chart/package.json | jq .version)" \
           ]; then
-            echo
+            echo "$(cat charts/$chart/package.json | jq .version)" 
             echo
             echo "================"
             echo " $chart"
