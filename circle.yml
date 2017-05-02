@@ -81,3 +81,20 @@ test:
       echo "* Pushing..."
       git commit --allow-empty -m "Deploy branch $CIRCLE_BRANCH to Github Pages [ci skip]"
       git push origin gh-pages --force
+
+      # Post a link to the branch as a comment in the PR
+      echo "* Pull requests this commit is part of: $CI_PULL_REQUESTS"
+      IFS="," for num in $CI_PULL_REQUESTS; do
+        if [ -z \
+          "$(curl -H "Authorization: Bearer $GITHUB_MACHINE_USER_TOKEN" \
+          https://api.github.com/repos/densityco/charts/issues/$num/comments \
+          | jq .[].user.login
+          | grep density-machine-user)" ]; then
+
+          curl -X POST \
+          -d "{\"body\": \"Here is a link to the built storybook: https://densityco.github.io/charts/$CIRCLE_BRANCH\"}" \
+          -H "Authorization: Bearer $GITHUB_MACHINE_USER_TOKEN" \
+          https://api.github.com/repos/densityco/charts/issues/$num/comments
+
+        fi
+      done
