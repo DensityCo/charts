@@ -84,11 +84,12 @@ test:
 
       # Post a link to the branch as a comment in the PR
       echo "* Pull requests this commit is part of: $CI_PULL_REQUESTS"
-      IFS="," for num in $CI_PULL_REQUESTS; do
+      export IFS=","
+      for num in $CI_PULL_REQUESTS; do
         if [ -z \
           "$(curl -H "Authorization: Bearer $GITHUB_MACHINE_USER_TOKEN" \
           https://api.github.com/repos/densityco/charts/issues/$num/comments \
-          | jq .[].user.login
+          | jq .[].user.login \
           | grep density-machine-user)" ]; then
 
           curl -X POST \
