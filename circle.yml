@@ -85,7 +85,8 @@ test:
       # Post a link to the branch as a comment in the PR
       echo "* Pull requests this commit is part of: $CI_PULL_REQUESTS"
       export IFS=","
-      for num in $CI_PULL_REQUESTS; do
+      for pr in $CI_PULL_REQUESTS; do
+        num="$(echo $pr | awk -F'/' '{ print $NF }')"
         if [ -z \
           "$(curl -H "Authorization: Bearer $GITHUB_MACHINE_USER_TOKEN" \
           https://api.github.com/repos/densityco/charts/issues/$num/comments \
