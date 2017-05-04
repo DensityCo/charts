@@ -21,7 +21,7 @@ In addition, if you'd like to render a chart in a context where the DOM is abstr
 such as a React or Angular app, then check out [our companion helper library](https://github.com/DensityCo/charts#hold-on-then-how-do-i-render-my-chart-in-my-react-app).
 
 ## Properties
-- `data`: An array of `{count: <count at a given time>, timestamp: <iso 8601 timestamp>, flag?: <boolean>}` objects. Any objects with the `"flag"` property set to `true` will draw in a flag at that timestamp with its count.
+- `data`: An array of `{count: <count at a given time>, timestamp: <iso 8601 timestamp>, flag?: <boolean>}` objects. Any objects with the `"flag"` property set to `true` will draw in a flag at that timestamp with its count. Data must be in chronological order.
   Example: `[{"count": 4, "timestamp": "2017-03-28T12:00:00.000Z"}, {"count": 3, "timestamp": "2017-03-28T12:01:00.000Z", "flag": true}]`
 
 - `start` *(optional)* A [moment](momentjs.com) that will be used as the starting point of the graph. If omitted, the graph will fit its data.
