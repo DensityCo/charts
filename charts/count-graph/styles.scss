@@ -32,16 +32,16 @@
   shape-rendering: crispEdges;
 }
 
-/* Reset lines */
+/* Flag lines */
 
-.graph-countgraph .reset .reset-line {
+.graph-countgraph .flag .flag-line {
   stroke: #4198ff;
 }
-.graph-countgraph .reset .reset-line-label {
+.graph-countgraph .flag .flag-line-label {
   fill: #fff;
   transform: translate(10px, 20px);
 }
-.graph-countgraph .reset .reset-line-label-background {
+.graph-countgraph .flag .flag-line-label-background {
   fill: #4198ff;
 }
 

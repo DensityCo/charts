@@ -48,10 +48,10 @@ export default function countGraph(elem) {
   const axisGroup = svgGroup.append('g')
     .attr('class', 'axis-group');
 
-  // Resets are all stuck in this group, must be above the axes, otehrwise the horizontal axis rules
-  // cross over the reset line and make it look like a dotted line.
-  const resetGroup = svgGroup.append('g')
-    .attr('class', 'reset-group');
+  // Flags are all stuck in this group, must be above the axes, otehrwise the horizontal axis rules
+  // cross over the flag line and make it look like a dotted line.
+  const flagGroup = svgGroup.append('g')
+    .attr('class', 'flag-group');
 
   // Put all the overlay stuff in here (the line and dialog)
   const overlayGroup = svgGroup.append('g')
@@ -66,7 +66,7 @@ export default function countGraph(elem) {
     const height = props.height || 400;
     const data = props.data || [];
     const initialCount = props.initialCount || 0;
-    const resets = [];
+    const flags = [];
 
     // Adjust the svg size and viewbox to match the passed in values.
     svg
@@ -128,10 +128,8 @@ export default function countGraph(elem) {
     // Build the path by looping through the data
     const linePath = data.reduce((total, i) => {
 
-      // Extract resets so we can draw them on top
-      if (i.type === 'reset') {
-        resets.push(i);
-      }
+      // Extract flags so we can draw them on top
+      if (i.flag) { flags.push(i); }
 
       // Step to the new point
       const xPosition = xScale(normalize(i.timestamp));
@@ -182,42 +180,42 @@ export default function countGraph(elem) {
 
 
 
-    // Generate reset lines
-    // Each consists of a `g.reset` wrapper, with a `path.reset-line` and `text.reset-line-label`
+    // Generate flag lines
+    // Each consists of a `g.flag` wrapper, with a `path.flag-line` and `text.flag-line-label`
     // inside.
-    const resetSelection = resetGroup.selectAll('.reset').data(resets);
+    const flagSelection = flagGroup.selectAll('.flag').data(flags);
 
-    const resetEnterSelection = resetSelection.enter().append('g')
-      .attr('class', 'reset')
-    resetEnterSelection.append('line')
-      .attr('class', 'reset-line')
+    const flagEnterSelection = flagSelection.enter().append('g')
+      .attr('class', 'flag')
+    flagEnterSelection.append('line')
+      .attr('class', 'flag-line')
       .attr('x1', 0)
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', graphHeight)
-    resetEnterSelection.append('rect')
-      .attr('class', 'reset-line-label-background')
+    flagEnterSelection.append('rect')
+      .attr('class', 'flag-line-label-background')
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', 40)
       .attr('height', 28)
-    resetEnterSelection.append('text')
-      .attr('class', 'reset-line-label')
+    flagEnterSelection.append('text')
+      .attr('class', 'flag-line-label')
 
-    const resetMergeSelection = resetEnterSelection.merge(resetSelection)
-    // Move the group / line / text to the reset's position
-    resetMergeSelection
+    const flagMergeSelection = flagEnterSelection.merge(flagSelection)
+    // Move the group / line / text to the flag's position
+    flagMergeSelection
       .attr('transform', d => `translate(${xScale(normalize(d.timestamp))},0)`)
 
     // Adjust if the graph height changed
-    resetMergeSelection.select('.reset-line')
+    flagMergeSelection.select('.flag-line')
       .attr('y2', graphHeight)
 
-    // Adjust the reset label
-    resetMergeSelection.select('.reset-line-label')
+    // Adjust the flag label
+    flagMergeSelection.select('.flag-line-label')
       .text(d => d.count);
 
-    resetSelection.exit().remove('.reset');
+    flagSelection.exit().remove('.flag');
 
 
 
