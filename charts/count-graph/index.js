@@ -280,6 +280,16 @@ export default function countGraph(elem) {
       const overlayDialogGroup = enteringGroup.append('g')
         .attr('class', 'overlay-dialog')
 
+      // Draw the overlay dialog box shadow
+      overlayDialogGroup.append('rect')
+        .attr('class', 'overlay-dialog-shadow')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', overlayDialogWidth + 1)
+        .attr('height', overlayDialogHeight + 1)
+        .attr('rx', overlayDialogBorderRadius)
+        .attr('ry', overlayDialogBorderRadius)
+
       // Draw the overlay dialog box background
       overlayDialogGroup.append('rect')
         .attr('class', 'overlay-dialog-bg')
