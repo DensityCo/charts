@@ -65,8 +65,8 @@ export default function countGraph(elem) {
     const width = props.width || 1000;
     const height = props.height || 400;
     const data = props.data || [];
-    const resets = props.resets || [];
     const initialCount = props.initialCount || 0;
+    const resets = [];
 
     // Adjust the svg size and viewbox to match the passed in values.
     svg
@@ -124,14 +124,18 @@ export default function countGraph(elem) {
       `L${lastX},${graphHeight}`, // Line down to the y axis.
       `L1,${graphHeight}`, // Line across the bottom to the start.
     ];
-    const linePath = data.reduce((total, i) => {
-      const magnitude = normalize(i.timestamp);
-      const xPosition = xScale(magnitude);
-      const yPosition = yScale(i.count);
 
-      // For "jagged" but more correct look
-      // return `${total}L${xPosition},${yPosition}`;
-      // For squared off look
+    // Build the path by looping through the data
+    const linePath = data.reduce((total, i) => {
+
+      // Extract resets so we can draw them on top
+      if (i.type === 'reset') {
+        resets.push(i);
+      }
+
+      // Step to the new point
+      const xPosition = xScale(normalize(i.timestamp));
+      const yPosition = yScale(i.count);
       return `${total}H${xPosition}V${yPosition}`;
     }, '');
 
