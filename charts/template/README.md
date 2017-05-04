@@ -10,7 +10,7 @@ element. See the below example.
 
 ```javascript
 import %CHARTCAMEL% from '@density/%CHARTDASH%';
-// or: const %CHARTCAMEL% = require('@density/%CHARTDASH%').default;
+// or: const %CHARTCAMEL% = require('@density/chart-%CHARTDASH%').default;
 
 const element = document.getElementById('chart-container');
 const props = {name: 'Bob'};

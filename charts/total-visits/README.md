@@ -9,8 +9,8 @@ and an object full of properties. When called, this chart will render the chart 
 element. See the below example.
 
 ```javascript
-import totalVisits from '@density/total-visits';
-// or: const totalVisits = require('@density/total-visits').default;
+import totalVisits from '@density/chart-total-visits';
+// or: const totalVisits = require('@density/chart-total-visits').default;
 
 const element = document.getElementById('chart-container');
 const props = {dates: [], totalVisits: []};

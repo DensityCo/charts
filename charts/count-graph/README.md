@@ -9,12 +9,12 @@ and an object full of properties. When called, this chart will render the chart 
 element. See the below example.
 
 ```javascript
-import totalVisits from '@density/total-visits';
-// or: const totalVisits = require('@density/total-visits').default;
+import countGraph from '@density/chart-count-graph';
+// or: const countGraph = require('@density/chart-count-graph').default;
 
 const element = document.getElementById('chart-container');
-const props = {dates: [], totalVisits: []};
-totalVisits(element, props);
+const props = {data: []};
+countGraph(element, props);
 ```
 
 In addition, if you'd like to render a chart in a context where the DOM is abstracted away from you,
