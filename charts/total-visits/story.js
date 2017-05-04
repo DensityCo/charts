@@ -8,28 +8,25 @@ import totalVisits from './index';
 const TotalVisits = chartAsReactComponent(totalVisits);
 
 // Generate some random data...
-var createData = (duration) => {
-  var dates = [];
-  var visits = [];
+function createData(duration) {
+  const dates = [];
+  const visits = [];
   
-  [...Array(duration).keys()].map((day) => {
+  [...Array(duration).keys()].map(day => {
     dates.push(moment().subtract(day, 'd').format("YYYY-MM-DD"));
     visits.push(Math.round(Math.random() * (100 - 0)));
   });
 
-  return {
-    'dates': dates,
-    'visits': visits
-  }
+  return { dates, visits }
 }
 
-var data1 = createData(7);
-var data2 = createData(20);
+const data1 = createData(7);
+const data2 = createData(20);
 
 storiesOf('Total Visits', module)
   .add('Last 7 days of visits', () => (
-    <TotalVisits dates={data1['dates']} totalVisits={data1['visits']} />
+    <TotalVisits dates={data1.dates} totalVisits={data1.visits} />
   ))
   .add('Last 20 days of visits', () => (
-    <TotalVisits dates={data2['dates']} totalVisits={data2['visits']} />
+    <TotalVisits dates={data2.dates} totalVisits={data2.visits} />
   ))

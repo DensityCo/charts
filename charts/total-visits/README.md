@@ -20,6 +20,12 @@ totalVisits(element, props);
 In addition, if you'd like to render a chart in a context where the DOM is abstracted away from you,
 such as a React or Angular app, then check out [our companion helper library](https://github.com/DensityCo/charts#hold-on-then-how-do-i-render-my-chart-in-my-react-app).
 
+## Properties
+
+- `dates`: An array of dates, formatted as `YYYY-MM-DD`. Example: `["2017-05-04", "2017-05-05", ...]`
+- `totalVisits`: An array of integers indicating the total number of visits for the corresponding
+  day in the `dates` array.
+
 # How this chart is structured
 ```
 .
@@ -28,14 +34,3 @@ such as a React or Angular app, then check out [our companion helper library](ht
 ├── story.js        # Contains a react-storyboard story. Use it to present different states of your chart in the parent project.
 └── styles.scss     # Contains all chart styles.
 ```
-
-# Publishing new versions to NPM
-
-*NOTE: All Density charts follow [semver](http://semver.org/). Make sure you follow it too!*
-
-Since npm has [some lifecycle hook issues](https://github.com/npm/npm/issues/3059), publishing this
-chart happens in the parent project. Within [the parent project](https://github.com/DensityCo/charts),
-run `make publish CHART=total-visits` to build the chart for production and publish it to npm.
-
-In addition, if you'd just like to make a build, you can run `make build CHART=total-visits`. Lastly,
-you can also run `make clean CHART=total-visits` to remove all build artifacts.
