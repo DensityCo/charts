@@ -22,7 +22,7 @@ function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valu
   return events.sort((a, b) => {
     return a.timestamp - b.timestamp;
   }).reduce((markersToDraw, event, i) => { // Loop through each marker, and accumulate into `markersToDraw`.
-    let position = timeScale(event.timestamp) - eventMarkerWidthInPx;
+    let position = timeScale(moment(event.timestamp).valueOf()) - eventMarkerWidthInPx;
     let elevation = event.countChange;
 
     // Get the last marker that has the same elevation direction.
@@ -46,7 +46,6 @@ function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valu
   }, []);
 }
 export default function ingressEgress(elem) {
-  // return (props={}) => ReactDOM.render(<IngressEgressCard {...props} />, elem);
   const card = d3.select(elem).append('div')
     .attr('class', 'card card-dark ingress-egress-card')
 
