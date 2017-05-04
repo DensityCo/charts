@@ -19,9 +19,20 @@ function uncompressData(data) {
 const CountGraph = chartAsReactComponent(countGraph);
 
 storiesOf('Count Graph', module)
-  .add(`With a day's worth of data, with an explicit start / end.`, () => {
+  .add(`With a day's worth of data, with an explicit start / end and one reset.`, () => {
     const fullDayWithReset = uncompressData(fullDayOfData).map((x, i) => {
       if (i === 380) { x.type = 'reset'; }
+      return x;
+    });
+    return <CountGraph
+      data={fullDayWithReset}
+      start={moment("2017-03-28T12:00:00.000Z")}
+      end={moment("2017-03-29T12:00:00.000Z")}
+    />
+  })
+  .add(`With lots of resets.`, () => {
+    const fullDayWithReset = uncompressData(fullDayOfData).map((x, i) => {
+      if ([140, 250, 280, 320, 350, 370, 380].indexOf(i) > -1) { x.type = 'reset'; }
       return x;
     });
     return <CountGraph
