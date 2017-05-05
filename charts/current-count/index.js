@@ -22,7 +22,7 @@ export default elem => ({label, currentCount, capacity, lastEvent}) => {
         <div className="chart-current-count-progress-bar">
           <div
             className="chart-current-count-progress-meter"
-            style={{width: `${currentCount / capacity * 100}%`}}
+            style={{width: `${Math.min(currentCount / capacity * 100, 100)}%`}}
           ></div>
         </div>
       </div>
