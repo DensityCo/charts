@@ -27,7 +27,7 @@ function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valu
     let elevation = event.countChange;
     
     if (event.countChange === 1) {
-      if (position < lastIngressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
+      if (position && position < lastIngressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
         position = lastIngressPosition;
         elevation = lastIngressElevation + 1;
       }
@@ -35,7 +35,7 @@ function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valu
       lastIngressElevation = elevation;
       return { position, elevation };
     } else if (event.countChange === -1) {
-      if (position < lastEgressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
+      if (position && position < lastEgressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
         position = lastEgressPosition;
         elevation = lastEgressElevation - 1;
       }
