@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-count-graph",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Count Graph chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
