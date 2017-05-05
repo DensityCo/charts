@@ -16,40 +16,35 @@ const cardHeightInPx = 162;
 // the marker should be drawn at, and the later being the height (in markers) the marker should be
 // offset from the center line.
 function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valueOf()) {
-  let markers = [];
   let lastIngressPosition = null;
   let lastIngressElevation = null;
   let lastEgressPosition = null;
   let lastEgressElevation = null;
 
-  // Loop through events and add markers
-  events.forEach(event => { // Loop through each marker, and accumulate into `markersToDraw`.
+  // Loop through events and return markers
+  return events.map(event => { // Loop through each marker, and accumulate into `markersToDraw`.
     let position = timeScale(moment(event.timestamp).valueOf()) - eventMarkerWidthInPx;
     let elevation = event.countChange;
-    if (position && elevation) {
-      if (event.countChange === 1) {
-        if (position && position < lastIngressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
-          position = lastIngressPosition;
-          elevation = lastIngressElevation + 1;
-        }
-        lastIngressPosition = position;
-        lastIngressElevation = elevation;
-        markers.push({ position, elevation });
-      } else if (event.countChange === -1) {
-        if (position && position < lastEgressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
-          position = lastEgressPosition;
-          elevation = lastEgressElevation - 1;
-        }
-        lastEgressPosition = position;
-        lastEgressElevation = elevation;
-        markers.push({ position, elevation });
+    if (event.countChange === 1) {
+      if (position && position < lastIngressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
+        position = lastIngressPosition;
+        elevation = lastIngressElevation + 1;
       }
+      lastIngressPosition = position;
+      lastIngressElevation = elevation;
+      return { position, elevation };
+    } else if (event.countChange === -1) {
+      if (position && position < lastEgressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
+        position = lastEgressPosition;
+        elevation = lastEgressElevation - 1;
+      }
+      lastEgressPosition = position;
+      lastEgressElevation = elevation;
+      return { position, elevation };
     }
   });
-
-  // Return our list of markers
-  return markers;
 }
+
 export default function ingressEgress(elem) {
   const card = d3.select(elem).append('div')
     .attr('class', 'card card-dark ingress-egress-card')
@@ -126,7 +121,7 @@ export default function ingressEgress(elem) {
     // Render data in the chart.
     const dataSelection = dataGroup.selectAll('rect').data(
       calculateMarkerPositions(props.events, timeScale, now.valueOf())
-        .filter(i => i.position <= graphWidth) // Only draw points that fit into the graph.
+        .filter(i => i.position && i.position <= graphWidth) // Only draw points that fit into the graph.
     );
 
     const dataEnterSelection = dataSelection.enter().append('rect')
