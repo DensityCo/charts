@@ -156,13 +156,16 @@ export default function countGraph(elem) {
       // format the time scale display for different domain sizes
       // started by trying to remove the zero padding from the hours
       // and it got out of hand, this is complicated logic
-      .tickFormat(d => d3.timeFormat('%-I%p')(d).toLowerCase())
+      .ticks(10)      
       .tickSizeOuter(0)
-      .ticks(10);
+      .tickFormat((d, i) => {
+        const timeFormat = d3.timeFormat('%-I')(d);
+        return timeFormat.replace('12', '12p');
+      });
 
     const yAxis = d3.axisLeft(yScale)
-      .tickSizeOuter(0)
       .ticks(10)
+      .tickSizeOuter(0)
       .tickSize(graphWidth);
 
     // Remove all axes that are already drawn
@@ -171,11 +174,11 @@ export default function countGraph(elem) {
     // Draw axes in the axisGroup.
     axisGroup.append("g")
       .attr("class", "axis axis-y")
-      .attr("transform", `translate(${graphWidth - 5},0)`)
+      .attr("transform", `translate(${graphWidth},0)`)
       .call(yAxis);
     axisGroup.append("g")
       .attr("class", "axis axis-x")
-      .attr("transform", `translate(0,${graphHeight + 5})`)
+      .attr("transform", `translate(0,${graphHeight})`)
       .call(xAxis);
 
 

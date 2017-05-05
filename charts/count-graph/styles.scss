@@ -1,13 +1,16 @@
 .graph-countgraph .axis-group text {
   font-size: 1.5em;
-  fill: #bfc2c7;
-  font-weight: 600;
+  fill: #222A2E;
+  font-weight: 400;
 }
 
 /* X Axis */
 
 .graph-countgraph .axis-x .tick line {
   display: none;
+}
+.graph-countgraph .axis-y .tick text {
+  transform: translate(0, 20px);
 }
 .graph-countgraph .axis-x .domain {
   display: none;
@@ -20,6 +23,9 @@
   stroke-linecap: square;
   stroke-width: 1px;
   stroke: #B4B8BF;
+}
+.graph-countgraph .axis-y .tick text {
+  transform: translate(-20px, 0);
 }
 .graph-countgraph .axis-y .domain {
   display: none;
@@ -48,7 +54,7 @@
 /* Overlay marker line (the line with the circle that tracks the mouse cursor) */
 
 .graph-countgraph .overlay-line path {
-  stroke: #9296A2;
+  stroke: #B4B8BF;
   stroke-width: 1;
 }
 
@@ -64,6 +70,7 @@
 
 .graph-countgraph .overlay-dialog-shadow {
   fill: #B4B8BF;
+  opacity: 0.35;
 }
 
 .graph-countgraph .overlay-dialog-bg {
