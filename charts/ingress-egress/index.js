@@ -19,9 +19,7 @@ function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valu
   let pixelsFromLeft = 0;
 
   // Start by sorting 
-  return events.sort((a, b) => {
-    return a.timestamp - b.timestamp;
-  }).reduce((markersToDraw, event, i) => { // Loop through each marker, and accumulate into `markersToDraw`.
+  return events.reduce((markersToDraw, event, i) => { // Loop through each marker, and accumulate into `markersToDraw`.
     let position = timeScale(moment(event.timestamp).valueOf()) - eventMarkerWidthInPx;
     let elevation = event.countChange;
 
