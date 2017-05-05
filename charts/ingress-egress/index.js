@@ -16,32 +16,34 @@ const cardHeightInPx = 162;
 // the marker should be drawn at, and the later being the height (in markers) the marker should be
 // offset from the center line.
 function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valueOf()) {
-  let pixelsFromLeft = 0;
+  let lastIngressPosition = null;
+  let lastIngressElevation = null;
+  let lastEgressPosition = null;
+  let lastEgressElevation = null;
 
-  // Start by sorting 
-  return events.reduce((markersToDraw, event, i) => { // Loop through each marker, and accumulate into `markersToDraw`.
+  // Loop through events and add markers
+  return events.map(event => { // Loop through each marker, and accumulate into `markersToDraw`.
     let position = timeScale(moment(event.timestamp).valueOf()) - eventMarkerWidthInPx;
     let elevation = event.countChange;
-
-    // Get the last marker that has the same elevation direction.
-    const lastMarkerOfElevation = [...markersToDraw].reverse().find(m => 
-      (m.elevation < 0 && event.countChange < 0) || (m.elevation > 0 && event.countChange > 0)
-    );
-
-
-    // If the current marker intersects in the x direction with the last marker of the same
-    // elelvation direction, then "stack" this marker above the last marker of the same elevation
-    // direction.
-    if (
-      lastMarkerOfElevation &&
-      position < lastMarkerOfElevation.position + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx
-    ) {
-      position = lastMarkerOfElevation.position;
-      elevation = lastMarkerOfElevation.elevation + event.countChange;
+    
+    if (event.countChange === 1) {
+      if (position < lastIngressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
+        position = lastIngressPosition;
+        elevation = lastIngressElevation + 1;
+      }
+      lastIngressPosition = position;
+      lastIngressElevation = elevation;
+      return { position, elevation };
+    } else if (event.countChange === -1) {
+      if (position < lastEgressPosition + eventMarkerWidthInPx + paddingBetweenStackedEventsInPx) {
+        position = lastEgressPosition;
+        elevation = lastEgressElevation - 1;
+      }
+      lastEgressPosition = position;
+      lastEgressElevation = elevation;
+      return { position, elevation };
     }
-
-    return [...markersToDraw, {position, elevation}];
-  }, []);
+  });
 }
 export default function ingressEgress(elem) {
   const card = d3.select(elem).append('div')
