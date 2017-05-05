@@ -3,7 +3,7 @@ import moment from 'moment';
 import * as d3 from 'd3';
 
 const leftMargin = 32;
-const bottomMargin = 32;
+const bottomMargin = 36;
 const topMargin = 16;
 
 const overlayDialogHeight = 72;
