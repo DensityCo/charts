@@ -10,10 +10,10 @@ $brand-primary: #4198ff;
 
 .graph-drift .axis text {
   font-size: 1.5em;
+  fill: #222A2E;
+  font-weight: 400;
   transform: translateY(-10px);
   text-align: left;
-  fill: #4f5457;
-  font-weight: 600;
 }
 
 .graph-drift .axis-x .tick text {

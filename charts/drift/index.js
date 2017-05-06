@@ -15,12 +15,13 @@ const grayDark = '#8E9299';
 const leftMargin = 16;
 const topMargin = 16;
 const bottomMargin = 32;
+const yAxisPadding = 32;
 
 // The distance between the bar labels and the bars. Depending on whether the bar is positive or
 // negative, this number is either added or subtracted to the center line to determine the label
 // position.
 const textLabelOffsetFromBar = 20;
-const generateDriftLabel = d => `${d.eventCount} total events / ${Math.floor(d.drift / d.eventCount * 100)}% drift`
+const generateDriftLabel = d => `${d.eventCount} total events / ${d.eventCount ? Math.floor(d.drift / d.eventCount * 100) : 0}% drift`
 
 export default function drift(elem) {
   const svg = d3.select(elem).append('svg')
@@ -32,13 +33,15 @@ export default function drift(elem) {
     .attr('transform', `translate(${leftMargin},${topMargin})`)
 
   // Create groups for each chart part
-  const axisGroup = g.append("g");
+  const axisGroup = g.append("g")
+    .attr("transform", `translate(${yAxisPadding},0)`);
 
   const midLine = g.append('line')
-    .attr('class', 'mid-line');
+    .attr('class', 'mid-line')
+    .attr('transform', `translate(${yAxisPadding},0)`);
 
   const barGroup = g.append('g')
-    .attr('transform', `translate(0,20)`);
+    .attr('transform', `translate(${yAxisPadding},20)`);
 
   // When the chart updates...
   return (props={}) => {
@@ -62,7 +65,7 @@ export default function drift(elem) {
         };
       });
 
-      const x = d3.scaleLinear().rangeRound([graphWidth, 0]);
+      const x = d3.scaleLinear().rangeRound([graphWidth - yAxisPadding, 0]);
       const y = d3.scaleBand().rangeRound([0, graphHeight]).padding(0.3);
 
       // Set the duration of the scales.
@@ -84,7 +87,6 @@ export default function drift(elem) {
         .call(d3.axisBottom(x).ticks(10).tickSizeOuter(0).tickSize(graphHeight))
       axisGroup.append("g")
         .attr("class", "axis axis-y")
-        .attr("transform", "translate(30,0)")
         .call(d3.axisLeft(y).tickSizeOuter(0));
 
       // Draw a line through the center
