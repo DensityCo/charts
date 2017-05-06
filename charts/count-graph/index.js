@@ -159,8 +159,11 @@ export default function countGraph(elem) {
       .ticks(10)      
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
-        const timeFormat = d3.timeFormat('%-I')(d);
-        return timeFormat.replace('12', '12p');
+        const timeFormat = d3.timeFormat('%-I%p')(d);
+        return timeFormat.slice(
+          0, 
+          timeFormat.startsWith('12') ? -1 : -2
+        ).toLowerCase();
       });
 
     const yAxis = d3.axisLeft(yScale)
