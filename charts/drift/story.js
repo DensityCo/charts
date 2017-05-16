@@ -2,7 +2,7 @@ import * as React from 'react';
 import moment from 'moment';
 import {storiesOf, action} from '@kadira/storybook';
 
-import drift from './';
+import drift from './index';
 import {chartAsReactComponent} from '../';
 
 const DriftChart = chartAsReactComponent(drift);

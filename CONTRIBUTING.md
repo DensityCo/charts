@@ -23,6 +23,11 @@ To build the storyboard and start a development server:
 => npm run storyboard
 ```
 
+## Previewing
+This project uses react storybook to show examples. When any branch is pushed to the repo, circleci
+will build a copy of the storybook and publish it to `https://densityco.github.io/charts/branchname`. Feel
+free to use this auto-built storybook to help with code reviews.
+
 ## Publishing
 
 Even though all of our charts live in one repository, they all have separate packages on our private
