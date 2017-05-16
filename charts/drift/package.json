@@ -13,8 +13,5 @@
   "dependencies": {
     "d3": "^4.7.4",
     "moment": "^2.18.1"
-  },
-  "publishConfig": {
-    "registry": "http://npmregistry.density.rodeo"
   }
 }

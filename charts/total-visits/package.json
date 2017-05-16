@@ -15,8 +15,5 @@
   },
   "devDependencies": {
     "moment": "^2.15.2"
-  },
-  "publishConfig": {
-    "registry": "http://npmregistry.density.rodeo"
   }
 }

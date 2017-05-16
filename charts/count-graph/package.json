@@ -9,11 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Density <team+javascript@density.io>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "d3": "^4.7.4"
-  },
-  "publishConfig": {
-    "registry": "http://npmregistry.density.rodeo"
   }
 }

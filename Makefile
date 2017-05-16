@@ -16,7 +16,7 @@ build: $(foreach i,$(CHART_SOURCE_FILES),$(CHART_PATH_DIST)/$(notdir $i)) charts
 
 .PHONY: publish
 publish: clean build
-	cd $(CHART_PATH) && npm publish
+	cd $(CHART_PATH) && npm publish --access public
 
 .PHONY: clean
 clean:
