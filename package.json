@@ -36,8 +36,5 @@
     "sass-loader": "^6.0.3",
     "style-loader": "^0.17.0",
     "webpack": "^2.3.2"
-  },
-  "publishConfig": {
-    "registry": "http://npmregistry.density.rodeo"
   }
 }
