@@ -1,7 +1,7 @@
 # Count Graph Chart
 A graph of counts over time for a given space. [npm](https://npmjs.com/@density/chart-count-graph)
 
-![Chart Example](chart.gif)
+![Chart Example](https://i.imgur.com/IucfBdE.gif)
 
 # Using this chart
 This chart has a single default export. This exported function takes two arguments: a dom element,
