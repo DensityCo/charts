@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Density <team+javascript@density.io>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "c3": "^0.4.11"
   },
