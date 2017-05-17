@@ -1,5 +1,5 @@
 # Ingress Egress Chart
-A plot of ingresses and egresses over time.
+A plot of ingresses and egresses over time. [npm](https://npmjs.com/@density/chart-ingress-egress)
 
 ![Here's what it looks like.](http://i.imgur.com/BnPGCKP.png)
 

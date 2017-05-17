@@ -1,5 +1,5 @@
 # Total Visits
-Shows the total number of visits per day over a given period of time
+Shows the total number of visits per day over a given period of time. [npm](https://npmjs.com/@density/chart-total-visits)
 
 ![Here's what it looks like.](http://i.imgur.com/Pxw2ie3.png)
 

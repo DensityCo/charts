@@ -1,5 +1,5 @@
 # Current Count
-A chart for showing the current count of a space, and how full that space is expected to be.
+A chart for showing the current count of a space, and how full that space is expected to be. [npm](https://npmjs.com/@density/chart-current-count)
 
 ![Example](pic.png)
 

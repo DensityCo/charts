@@ -1,5 +1,5 @@
 # Count Graph Chart
-A graph of counts over time for a given space.
+A graph of counts over time for a given space. [npm](https://npmjs.com/@density/chart-count-graph)
 
 ![Chart Example](chart.gif)
 

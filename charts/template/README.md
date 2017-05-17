@@ -1,5 +1,5 @@
 # %CHARTTITLE%
-%CHARTDESC%
+%CHARTDESC% [npm](https://npmjs.com/@density/chart-%CHARTDASH%)
 
 *TODO: ADD PICTURE OF CHART*
 
@@ -9,7 +9,7 @@ and an object full of properties. When called, this chart will render the chart 
 element. See the below example.
 
 ```javascript
-import %CHARTCAMEL% from '@density/%CHARTDASH%';
+import %CHARTCAMEL% from '@density/chart-%CHARTDASH%';
 // or: const %CHARTCAMEL% = require('@density/chart-%CHARTDASH%').default;
 
 const element = document.getElementById('chart-container');

@@ -1,5 +1,5 @@
 # Drift Chart
-A chart to render a graph of daily drifts for a space.
+A chart to render a graph of daily drifts for a space.  [npm](https://npmjs.com/@density/chart-drift)
 
 ![Here's what it looks like.](http://i.imgur.com/9eUATma.png)
 
