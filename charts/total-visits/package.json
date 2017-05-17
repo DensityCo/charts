@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-total-visits",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Total Visits chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
