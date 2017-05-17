@@ -9,9 +9,6 @@ test:
     - |
       # Publish all charts once on master
       if [ "$CIRCLE_BRANCH" == "master" ]; then
-        # Pull down a copy of the master branch to compare against.
-        git clone git@github.com:densityco/charts.git master_charts/
-
         echo "Publishing all charts..."
         for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
           # This isn't a chart, but a template for `./make-chart`
@@ -25,10 +22,10 @@ test:
           echo " $chart"
           echo "================"
 
-          # If the master version is different from this version, then publish a new version.
+          # If the published version is different from this version, then publish a new version.
           if [ \
             "$(cat charts/$chart/package.json | jq .version)" != \
-            "$(cat master_charts/charts/$chart/package.json | jq .version)" \
+            "$(npm show $chart --json | jq .versions[-1])" \
           ]; then
             make publish CHART=$chart
           else
