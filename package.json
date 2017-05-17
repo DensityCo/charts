@@ -17,7 +17,7 @@
     "density"
   ],
   "author": "Density <team+javascript@density.io>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "create-react-class": "^15.5.2",
     "react": "^15.4.2",
