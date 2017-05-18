@@ -2,6 +2,10 @@
 This repository contains all of our charts for displaying data. Many are written in D3, some in
 react, and a few even with raw DOM apis!
 
+[![Dependency Status](https://david-dm.org/densityco/charts.svg)](https://david-dm.org/densityco/charts)
+[![Package Version](https://img.shields.io/npm/v/@density/charts.svg)](https://npmjs.com/@density/charts)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+
 ## This uses React Storybook.
 This project relies heavily on react storybook, which is a open source system for displaying react
 components while in development. It supports hot reload and allows one to see all possible states of
