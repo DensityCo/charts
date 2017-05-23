@@ -134,7 +134,11 @@ export default function countGraph(elem) {
       // Step to the new point
       const xPosition = xScale(normalize(i.timestamp));
       const yPosition = yScale(i.count);
-      return `${total}H${xPosition}V${yPosition}`;
+      if (xPosition >= 0) {
+        return `${total}H${xPosition}V${yPosition}`;
+      } else {
+        return total;
+      }
     }, '');
 
     const graphSelection = graphGroup
