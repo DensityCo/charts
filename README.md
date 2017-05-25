@@ -1,4 +1,6 @@
-<img src="logo.png" alt="Density Charts" style="height: 120px; margin-bottom: 20px;" />
+<div style="height: 40px;">
+  ![Density Charts](logo.png)
+</div>
 
 This repository contains all of our charts for displaying data. Many are written in D3, some in
 react, and a few even with raw DOM apis!
