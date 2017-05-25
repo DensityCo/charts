@@ -1,4 +1,5 @@
-# Density Charts
+![Density Charts](logo.png)
+
 This repository contains all of our charts for displaying data. Many are written in D3, some in
 react, and a few even with raw DOM apis!
 
