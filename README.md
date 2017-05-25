@@ -1,13 +1,14 @@
 <img src="logo.png" alt="Density Charts" style="height: 120px; margin-bottom: 20px;" />
 <br/>
 
-This repository contains all of our charts for displaying data. Many are written in D3, some in
-react, and a few even with raw DOM apis!
-
 [![CircleCI](https://circleci.com/gh/DensityCo/charts.svg?style=svg)](https://circleci.com/gh/DensityCo/charts)
 [![Dependency Status](https://david-dm.org/densityco/charts.svg)](https://david-dm.org/densityco/charts)
 [![Package Version](https://img.shields.io/npm/v/@density/charts.svg)](https://npmjs.com/@density/charts)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
+
+This repository contains all of our charts for displaying data. Many are written in D3, some in
+react, and a few even with raw DOM apis!
+
 
 ## This uses React Storybook.
 This project relies heavily on react storybook, which is a open source system for displaying react
