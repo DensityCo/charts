@@ -1,5 +1,5 @@
 <div style="height: 40px;">
-  ![Density Charts](logo.png)
+  <img src="logo.png" />
 </div>
 
 [![CircleCI](https://circleci.com/gh/DensityCo/charts.svg?style=svg)](https://circleci.com/gh/DensityCo/charts)
