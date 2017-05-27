@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 
 export default elem => ({label, currentCount, capacity, lastEvent}) => {
-  const lastEventDelta = lastEvent ? `Last event: ${moment(lastEvent).fromNow()}` : '';
+  const lastEventDelta = lastEvent ? `Last Event: ${moment(lastEvent).fromNow()}` : '';
 
   ReactDOM.render(<div className="card chart-current-count">
     <div className="card-body chart-current-count-body">
