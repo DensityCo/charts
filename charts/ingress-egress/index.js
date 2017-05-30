@@ -42,7 +42,7 @@ function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valu
       lastEgressElevation = elevation;
       return { position, elevation };
     }
-  });
+  }).filter(x => x);
 }
 
 export default function ingressEgress(elem) {
