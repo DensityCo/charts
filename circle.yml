@@ -34,12 +34,12 @@ test:
         done
 
         # Finally, try to publish the main package
-        npm run build-storybook
         echo
         echo
         echo "================"
         echo " @density/charts"
         echo "================"
+        make charts/dist/index.js                CHART=drift
         npm publish --access public
       else
         echo "Packages are only published to npm on branch 'master'."
