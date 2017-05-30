@@ -1,6 +1,4 @@
 node_modules/
 charts/*/node_modules/
-charts/*/dist/
-charts/dist/
 .DS_Store
 npm-debug.log
