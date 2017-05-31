@@ -1,5 +1,6 @@
-![Density Charts](logo.png)
-<br/>
+<img src="https://cdn.rawgit.com/DensityCo/charts/master/logo.svg" height="40" />
+
+<br />
 
 [![CircleCI](https://circleci.com/gh/DensityCo/charts.svg?style=svg)](https://circleci.com/gh/DensityCo/charts)
 [![Dependency Status](https://david-dm.org/densityco/charts.svg)](https://david-dm.org/densityco/charts)
