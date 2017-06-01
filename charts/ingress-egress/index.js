@@ -45,6 +45,13 @@ function calculateMarkerPositions(events, timeScale, nowInMs=moment().utc().valu
   }).filter(x => x);
 }
 
+// Generate the proper time label for each fraction of the total time
+function getTimeLabel(graphDurationInMin, fraction) {
+  return graphDurationInMin * fraction >= 1 ?
+    `${graphDurationInMin * fraction}m` :
+    `${Math.floor(graphDurationInMin * fraction * 60)}s`
+};
+
 export default function ingressEgress(elem) {
   const card = d3.select(elem).append('div')
     .attr('class', 'card card-dark ingress-egress-card')
@@ -98,10 +105,10 @@ export default function ingressEgress(elem) {
 
     // Draw labels on the bottom of the graph
     const labelSelection = labels.selectAll('li').data([
-      `${graphDurationInMin}m ago`,
-      `${graphDurationInMin * 0.75}m ago`,
-      `${graphDurationInMin * 0.50}m ago`,
-      `${graphDurationInMin * 0.25}m ago`,
+      `${getTimeLabel(graphDurationInMin, 1)} ago`,
+      getTimeLabel(graphDurationInMin, 0.75),
+      getTimeLabel(graphDurationInMin, 0.5),
+      getTimeLabel(graphDurationInMin, 0.25),
       `Now`,
     ]);
     const labelEnterSelection = labelSelection.enter().append('li');
