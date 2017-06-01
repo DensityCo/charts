@@ -1,0 +1,68 @@
+.card-dark {
+  background-color: #222A2E;
+  color: #F5F6F7;
+}
+
+.ingress-egress-card {
+  height: 162px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.ingress-egress-card-legend {
+  position: absolute;
+  top: 1.4em;
+  right: 1em;
+  font-size: 0.85em;
+  font-weight: 600;
+
+  .rect {
+    display: inline-block;
+    margin-left: 1em;
+    margin-right: 0.8em;
+
+    &.rect-in {
+      background-color: #4198FF;
+    }
+    &.rect-out {
+      background-color: #8e9299;
+    }
+  }
+}
+
+.ingress-egress-card-labels {
+  display: flex;
+  list-style-type: none;
+  padding-left: 0px;
+  margin-left: 1em;
+  margin-right: 1em;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+
+  li {
+    flex: 1;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85em;
+    color: #FFF;
+  }
+}
+
+.ingress-egress-data {
+  .mid-line {
+    stroke-width: 1;
+    stroke: #4A5159;
+  }
+
+  .count-marker {
+    &.count-marker-in {
+      fill: #4198FF;
+    }
+    &.count-marker-out {
+      fill: #8e9299;
+    }
+  }
+}
