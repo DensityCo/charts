@@ -160,7 +160,7 @@ export default function countGraph(elem) {
       // format the time scale display for different domain sizes
       // started by trying to remove the zero padding from the hours
       // and it got out of hand, this is complicated logic
-      .ticks(10)      
+      .ticks(7)      
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
         const timeFormat = d3.timeFormat('%-I%p')(d);
@@ -171,7 +171,7 @@ export default function countGraph(elem) {
       });
 
     const yAxis = d3.axisLeft(yScale)
-      .ticks(10)
+      .ticks(3)
       .tickSizeOuter(0)
       .tickSize(graphWidth);
 
