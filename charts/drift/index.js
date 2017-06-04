@@ -42,10 +42,11 @@ export default function drift(elem) {
   const axisGroup = g.append("g");
 
   const midLine = g.append('line')
-    .attr('class', 'mid-line');
+    .attr('class', 'mid-line')
+    .attr('transform', 'translate(0,-20)');
 
   const barGroup = g.append('g')
-    .attr('transform', `translate(0,20)`);
+    .attr('transform', 'translate(0,20)');
 
   // When the chart updates...
   return (props={}) => {
@@ -181,7 +182,7 @@ export default function drift(elem) {
       // 2. Draw X axis / Y axis
       axisGroup.append("g")
         .attr("class", "axis axis-x")
-        .attr("transform", "translate(-0.5,-16)")
+        .attr("transform", "translate(-0.5,-20)")
         .call(d3.axisBottom(x).ticks(10).tickSizeOuter(0).tickSize(graphHeight))
       axisGroup.append("g")
         .attr("class", "axis axis-y")
