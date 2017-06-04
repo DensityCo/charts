@@ -110,15 +110,10 @@ export default function countGraph(elem) {
 
 
     // Generate the svg path for the graph line.
-    const pathPrefix = [
-      `M1,${graphHeight}L1,${yScale(initialCount)}`, // Move to the lower left
-      `L${xScale(normalize(dataStart))},${yScale(initialCount)}`, // Move to the first datapoint.
-    ].join('');
-    const pathSuffix = [
-      `L${lastX},${lastY}`, // Line to the last coordinate, if not already there.
-      `L${lastX},${graphHeight}`, // Line down to the y axis.
-      `L1,${graphHeight}`, // Line across the bottom to the start.
-    ];
+    const pathPrefix = `M1,${graphHeight}` +
+      `L1,${yScale(initialCount)}` +
+      `H${xScale(normalize(dataStart))}`;
+    const pathSuffix = `H${lastX}V${graphHeight}H1`;
 
     // Build the path by looping through the data
     const linePath = data.reduce((total, i) => {
