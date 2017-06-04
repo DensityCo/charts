@@ -12,16 +12,22 @@ const labels = {
 };
 const grayDark = '#8E9299';
 
+const mobileMaxWidth = 768;
 const leftMargin = 16;
 const topMargin = 16;
-const bottomMargin = 32;
-const yAxisPadding = 32;
+const bottomMargin = 16;
+const rightMargin = 16;
 
 // The distance between the bar labels and the bars. Depending on whether the bar is positive or
 // negative, this number is either added or subtracted to the center line to determine the label
 // position.
 const textLabelOffsetFromBar = 20;
-const generateDriftLabel = d => `${d.eventCount} total events / ${d.eventCount ? Math.floor(d.drift / d.eventCount * 100) : 0}% drift`
+const generateDriftLabel = (width, d) => {
+  return d.eventCount + 
+    (width > mobileMaxWidth ? 'Events (' : ' (') +
+    (d.eventCount ? Math.floor(d.drift / d.eventCount * 100) : 0) +
+    '%)';
+};
 
 export default function drift(elem) {
   const svg = d3.select(elem).append('svg')
@@ -33,26 +39,25 @@ export default function drift(elem) {
     .attr('transform', `translate(${leftMargin},${topMargin})`)
 
   // Create groups for each chart part
-  const axisGroup = g.append("g")
-    .attr("transform", `translate(${yAxisPadding},0)`);
+  const axisGroup = g.append("g");
 
   const midLine = g.append('line')
-    .attr('class', 'mid-line')
-    .attr('transform', `translate(${yAxisPadding},0)`);
+    .attr('class', 'mid-line');
 
   const barGroup = g.append('g')
-    .attr('transform', `translate(${yAxisPadding},20)`);
+    .attr('transform', `translate(0,20)`);
 
   // When the chart updates...
   return (props={}) => {
     const width = props.width || 1000;
     const height = props.height || 350;
 
-    const graphWidth = width - (2 * leftMargin);
+    const graphWidth = width - leftMargin - rightMargin;
     const graphHeight = height - topMargin - bottomMargin;
 
     // Adjust svg attributes depending on props
     svg
+      .attr('width', width)
       .attr('height', height)
       .attr('viewBox', `0 0 ${width} ${height}`)
 
@@ -65,7 +70,7 @@ export default function drift(elem) {
         };
       });
 
-      const x = d3.scaleLinear().rangeRound([graphWidth - yAxisPadding, 0]);
+      const x = d3.scaleLinear().rangeRound([graphWidth, 0]);
       const y = d3.scaleBand().rangeRound([0, graphHeight]).padding(0.3);
 
       // Set the duration of the scales.
@@ -75,19 +80,6 @@ export default function drift(elem) {
       x.domain([maxExtreme, -1 * maxExtreme]);
       // The y axis: labels for each day.
       y.domain(data.map(d => d.day));
-
-      // Draw axes:
-      // 1. Remove existing axes.
-      axisGroup.selectAll("g").remove();
-
-      // 2. Draw X axis / Y axis
-      axisGroup.append("g")
-        .attr("class", "axis axis-x")
-        .attr("transform", "translate(-0.5,0)")
-        .call(d3.axisBottom(x).ticks(10).tickSizeOuter(0).tickSize(graphHeight))
-      axisGroup.append("g")
-        .attr("class", "axis axis-y")
-        .call(d3.axisLeft(y).tickSizeOuter(0));
 
       // Draw a line through the center
       midLine
@@ -177,9 +169,24 @@ export default function drift(elem) {
           `)`
         ].join(''))
         .attr('class', d => d.drift < 0 ? 'label-right' : 'label-left')
-        .text(generateDriftLabel)
+        .text(generateDriftLabel.bind(null, width))
 
       selection.exit().remove(); // remove items when they are no longer in the data.
+
+      
+      // Draw axes:
+      // 1. Remove existing axes.
+      axisGroup.selectAll("g").remove();
+
+      // 2. Draw X axis / Y axis
+      axisGroup.append("g")
+        .attr("class", "axis axis-x")
+        .attr("transform", "translate(-0.5,-16)")
+        .call(d3.axisBottom(x).ticks(10).tickSizeOuter(0).tickSize(graphHeight))
+      axisGroup.append("g")
+        .attr("class", "axis axis-y")
+        .attr("transform", `translate(${width > mobileMaxWidth ? 40 : 30}, 0)`)
+        .call(d3.axisLeft(y).tickSizeOuter(0));
     }
   }
 }

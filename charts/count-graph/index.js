@@ -224,162 +224,164 @@ export default function countGraph(elem) {
     flagSelection.exit().remove('.flag');
 
 
+    // Draw the overlay line if there is any data
+    if (data.length) {
 
-    // Draw the overlay line
-    overlayRect.append('rect')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', graphWidth)
-      .attr('height', graphHeight)
-      .attr('fill', 'transparent')
-      .on('mousemove', () => {
-        const mouseX = d3.mouse(overlayRect.node())[0];
-        updateOverlayLine(mouseX);
-      })
-      .on('mouseout', () => {
-        updateOverlayLine(null);
-      });
-
-    function updateOverlayLine(mouseX) {
-      // Calculate, given a mouse X coordinate, the count and time at that x coordinate.
-      let timeAtPosition, itemIndexAtOverlayPosition, countAtPosition, dataToJoin;
-      timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
-      itemIndexAtOverlayPosition = bisect.right(data, timeAtPosition) - 1; // Where on the line is that time?
-
-      // FIXME: another bug: data.length must be > 0
-      // If the user is hovering over where the data is in the chart...
-      if (domainStart <= timeAtPosition && Math.min(domainEnd, normalize(moment())) > timeAtPosition) {
-        // ... get the count where the user is hovering.
-        const eventAtPosition = data[itemIndexAtOverlayPosition];
-        countAtPosition = eventAtPosition ? eventAtPosition.count : initialCount;
-
-        // If a mouse position was passed that is null, (ie, the mouse isn't in the chart any longer)
-        // then disregard it so the overlay line will be deleted.
-        dataToJoin = mouseX === null ? [] : [mouseX];
-      } else {
-        // The user isn't hovering over any data, so remove the overlay line.
-        dataToJoin = [];
-      }
-
-      const overlaySelection = overlayGroup.selectAll('.overlay-line').data(dataToJoin);
-
-      //
-      // Enter
-      //
-
-      const enteringGroup = overlaySelection.enter()
-        .append('g')
-          .attr('class', 'overlay-line')
-
-      // Overlay line
-      enteringGroup.append('path')
-        .attr('d', `M0,0V${graphHeight}`)
-
-      enteringGroup.append('circle')
-        .attr('cx', 0)
-        .attr('cy', 0) // NOTE: overridden in merge below
-        .attr('r', 4)
-
-      // Overlay dialog box
-      const overlayDialogGroup = enteringGroup.append('g')
-        .attr('class', 'overlay-dialog')
-
-      // Draw the overlay dialog box shadow
-      overlayDialogGroup.append('rect')
-        .attr('class', 'overlay-dialog-shadow')
+      overlayRect.append('rect')
         .attr('x', 0)
         .attr('y', 0)
-        .attr('width', overlayDialogWidth + 1)
-        .attr('height', overlayDialogHeight + 1)
-        .attr('rx', overlayDialogBorderRadius)
-        .attr('ry', overlayDialogBorderRadius)
-
-      // Draw the overlay dialog box background
-      overlayDialogGroup.append('rect')
-        .attr('class', 'overlay-dialog-bg')
-        .attr('x', 0)
-        .attr('y', overlayDialogHeight / 4)
-        .attr('width', overlayDialogWidth)
-        .attr('height', 0.75 * overlayDialogHeight)
-        .attr('rx', overlayDialogBorderRadius)
-        .attr('ry', overlayDialogBorderRadius)
-
-      overlayDialogGroup.append('rect')
-        .attr('class', props.adjusted ? `overlay-dialog-bg-adjusted` : `overlay-dialog-bg-primary`)
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', overlayDialogWidth)
-        .attr('height', overlayDialogHeight / 2)
-        .attr('rx', overlayDialogBorderRadius)
-        .attr('ry', overlayDialogBorderRadius)
-
-      overlayDialogGroup.append('rect')
-        .attr('class', props.adjusted ? `overlay-dialog-bg-adjusted` : `overlay-dialog-bg-primary`)
-        .attr('x', 0)
-        .attr('y', overlayDialogHeight / 4)
-        .attr('width', overlayDialogWidth)
-        .attr('height', overlayDialogHeight / 4)
-
-      // Add text to overlay dialog box
-
-      // The time for a given datapoint
-      overlayDialogGroup.append("text")
-        .attr("class", "overlay-dialog-time")
-        .attr("x", overlayDialogWidth / 2)
-        .attr("y", overlayDialogTextMargin + overlayDialogTextSize - 4)
-        .attr("text-anchor", "middle")
-
-      // The count at a given datapoint
-      overlayDialogGroup.append("text")
-        .attr("class", "overlay-dialog-count")
-        .attr("x", overlayDialogWidth / 2)
-        .attr("y", overlayDialogHeight - overlayDialogTextMargin)
-        .attr("text-anchor", "middle")
-
-      //
-      // Merge
-      //
-
-      const mergingGroup = enteringGroup
-        .merge(overlaySelection)
-          .attr('transform', d => `translate(${d},0)`)
-
-      mergingGroup.select('circle')
-        .attr('cy', yScale(countAtPosition))
-
-      mergingGroup.select('.overlay-dialog')
-        .attr('transform', d => {
-          // Determine which side of the line to drap the popup dialog on.
-          let popupYCoord = yScale(countAtPosition) + overlayDialogDistanceToLine, popupXCoord;
-          if (d + overlayDialogWidth + overlayDialogBreakToLeftPadding > graphWidth) {
-            // Put popup on left if when on the right it would be off the svg.
-            popupXCoord = -overlayDialogWidth - overlayDialogDistanceToLine;
-          } else {
-            // Put popup on right by default.
-            popupXCoord = overlayDialogDistanceToLine;
-          }
-
-          // If the popup is being drawn outside of the svg when the user is looking at low counts,
-          // then raise up the popup to put it above the cursor.
-          if (popupYCoord + overlayDialogHeight + overlayDialogBreakToLeftPadding > graphHeight) {
-            popupYCoord -= overlayDialogHeight + overlayDialogDistanceToLine;
-          }
-
-          return `translate(${popupXCoord},${popupYCoord})`;
+        .attr('width', graphWidth)
+        .attr('height', graphHeight)
+        .attr('fill', 'transparent')
+        .on('mousemove', () => {
+          const mouseX = d3.mouse(overlayRect.node())[0];
+          updateOverlayLine(mouseX);
         })
+        .on('mouseout', () => {
+          updateOverlayLine(null);
+        });
 
-      mergingGroup.select('.overlay-dialog-time')
-        .text(moment(timeAtPosition).format('h:mm A'))
+      function updateOverlayLine(mouseX) {
+        // Calculate, given a mouse X coordinate, the count and time at that x coordinate.
+        let timeAtPosition, itemIndexAtOverlayPosition, countAtPosition, dataToJoin;
+        timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
+        itemIndexAtOverlayPosition = bisect.right(data, timeAtPosition) - 1; // Where on the line is that time?
 
-      mergingGroup.select('.overlay-dialog-count')
-        .text(props.adjusted ? `Adj: ${countAtPosition}` : countAtPosition)
+        // FIXME: another bug: data.length must be > 0
+        // If the user is hovering over where the data is in the chart...
+        if (domainStart <= timeAtPosition && Math.min(domainEnd, normalize(moment())) > timeAtPosition) {
+          // ... get the count where the user is hovering.
+          const eventAtPosition = data[itemIndexAtOverlayPosition];
+          countAtPosition = eventAtPosition ? eventAtPosition.count : initialCount;
 
-      //
-      // Exit
-      //
+          // If a mouse position was passed that is null, (ie, the mouse isn't in the chart any longer)
+          // then disregard it so the overlay line will be deleted.
+          dataToJoin = mouseX === null ? [] : [mouseX];
+        } else {
+          // The user isn't hovering over any data, so remove the overlay line.
+          dataToJoin = [];
+        }
 
-      overlaySelection.exit()
-        .remove('.overlay-line');
+        const overlaySelection = overlayGroup.selectAll('.overlay-line').data(dataToJoin);
+
+        //
+        // Enter
+        //
+
+        const enteringGroup = overlaySelection.enter()
+          .append('g')
+            .attr('class', 'overlay-line')
+
+        // Overlay line
+        enteringGroup.append('path')
+          .attr('d', `M0,0V${graphHeight}`)
+
+        enteringGroup.append('circle')
+          .attr('cx', 0)
+          .attr('cy', 0) // NOTE: overridden in merge below
+          .attr('r', 4)
+
+        // Overlay dialog box
+        const overlayDialogGroup = enteringGroup.append('g')
+          .attr('class', 'overlay-dialog')
+
+        // Draw the overlay dialog box shadow
+        overlayDialogGroup.append('rect')
+          .attr('class', 'overlay-dialog-shadow')
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('width', overlayDialogWidth + 1)
+          .attr('height', overlayDialogHeight + 1)
+          .attr('rx', overlayDialogBorderRadius)
+          .attr('ry', overlayDialogBorderRadius)
+
+        // Draw the overlay dialog box background
+        overlayDialogGroup.append('rect')
+          .attr('class', 'overlay-dialog-bg')
+          .attr('x', 0)
+          .attr('y', overlayDialogHeight / 4)
+          .attr('width', overlayDialogWidth)
+          .attr('height', 0.75 * overlayDialogHeight)
+          .attr('rx', overlayDialogBorderRadius)
+          .attr('ry', overlayDialogBorderRadius)
+
+        overlayDialogGroup.append('rect')
+          .attr('class', props.adjusted ? `overlay-dialog-bg-adjusted` : `overlay-dialog-bg-primary`)
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('width', overlayDialogWidth)
+          .attr('height', overlayDialogHeight / 2)
+          .attr('rx', overlayDialogBorderRadius)
+          .attr('ry', overlayDialogBorderRadius)
+
+        overlayDialogGroup.append('rect')
+          .attr('class', props.adjusted ? `overlay-dialog-bg-adjusted` : `overlay-dialog-bg-primary`)
+          .attr('x', 0)
+          .attr('y', overlayDialogHeight / 4)
+          .attr('width', overlayDialogWidth)
+          .attr('height', overlayDialogHeight / 4)
+
+        // Add text to overlay dialog box
+
+        // The time for a given datapoint
+        overlayDialogGroup.append("text")
+          .attr("class", "overlay-dialog-time")
+          .attr("x", overlayDialogWidth / 2)
+          .attr("y", overlayDialogTextMargin + overlayDialogTextSize - 4)
+          .attr("text-anchor", "middle")
+
+        // The count at a given datapoint
+        overlayDialogGroup.append("text")
+          .attr("class", "overlay-dialog-count")
+          .attr("x", overlayDialogWidth / 2)
+          .attr("y", overlayDialogHeight - overlayDialogTextMargin)
+          .attr("text-anchor", "middle")
+
+        //
+        // Merge
+        //
+
+        const mergingGroup = enteringGroup
+          .merge(overlaySelection)
+            .attr('transform', d => `translate(${d},0)`)
+
+        mergingGroup.select('circle')
+          .attr('cy', yScale(countAtPosition))
+
+        mergingGroup.select('.overlay-dialog')
+          .attr('transform', d => {
+            // Determine which side of the line to drap the popup dialog on.
+            let popupYCoord = yScale(countAtPosition) + overlayDialogDistanceToLine, popupXCoord;
+            if (d + overlayDialogWidth + overlayDialogBreakToLeftPadding > graphWidth) {
+              // Put popup on left if when on the right it would be off the svg.
+              popupXCoord = -overlayDialogWidth - overlayDialogDistanceToLine;
+            } else {
+              // Put popup on right by default.
+              popupXCoord = overlayDialogDistanceToLine;
+            }
+
+            // If the popup is being drawn outside of the svg when the user is looking at low counts,
+            // then raise up the popup to put it above the cursor.
+            if (popupYCoord + overlayDialogHeight + overlayDialogBreakToLeftPadding > graphHeight) {
+              popupYCoord -= overlayDialogHeight + overlayDialogDistanceToLine;
+            }
+
+            return `translate(${popupXCoord},${popupYCoord})`;
+          })
+
+        mergingGroup.select('.overlay-dialog-time')
+          .text(moment(timeAtPosition).format('h:mm A'))
+
+        mergingGroup.select('.overlay-dialog-count')
+          .text(props.adjusted ? `Adj: ${countAtPosition}` : countAtPosition)
+
+        //
+        // Exit
+        //
+
+        overlaySelection.exit()
+          .remove('.overlay-line');
+      }
     }
   }
 }
