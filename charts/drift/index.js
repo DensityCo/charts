@@ -24,9 +24,9 @@ const rightMargin = 16;
 const textLabelOffsetFromBar = 20;
 const generateDriftLabel = (width, d) => {
   return d.eventCount + 
-    (width > mobileMaxWidth ? 'Events (' : ' (') +
+    (width > mobileMaxWidth ? ' events / ' : ' / ') +
     (d.eventCount ? Math.floor(d.drift / d.eventCount * 100) : 0) +
-    '%)';
+    (width > mobileMaxWidth ? '% drift' : '%');
 };
 
 export default function drift(elem) {
