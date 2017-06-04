@@ -171,8 +171,9 @@ export default function countGraph(elem) {
       });
 
     const yAxis = d3.axisLeft(yScale)
-      .ticks(3)
+      .ticks(largestCount - smallestCount < 5 ? 1 : 3)
       .tickSizeOuter(0)
+      .tickFormat(d3.format('.0f'))
       .tickSize(graphWidth);
 
     // Remove all axes that are already drawn

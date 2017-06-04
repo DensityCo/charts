@@ -268,10 +268,12 @@ storiesOf('Count Graph', module)
         this.state = {data: []}
       }
       componentDidMount() {
+        let currentCount = 0;
         this.interval = setInterval(() => {
+          currentCount += Math.random() > 0.5 ? 1 : -1;
           this.setState({data: [
             ...this.state.data,
-            { count: Math.floor(Math.random() * 20), timestamp: moment().toISOString() }
+            { count: currentCount, timestamp: moment().toISOString() }
           ]});
         }, 1000);
       }

@@ -1,5 +1,4 @@
 .chart-current-count {
-  height: 162px;
 
   .chart-current-count-body {
     display: flex;
@@ -17,17 +16,18 @@
 
     .chart-current-count-text {
       flex: 1;
-      height: 70px;
       text-align: center;
-      vertical-align: middle;
+      height: auto;
+      padding-top: 6px;
+      margin-bottom: -12px;
       font-size: 48px;
-      font-weight: 600;
-      color: rgb(65, 152, 255);
+      font-weight: 500;
+      color: #222A2E;
     }
 
     .chart-current-count-footer {
-      height: 52px;
-
+      height: auto;
+      
       // Progress bar showing capacity of the space.
       .chart-current-count-progress-bar {
         width: 100%;
