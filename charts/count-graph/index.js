@@ -77,11 +77,6 @@ export default function countGraph(elem) {
       throw new Error(`A 'data' prop is required.`);
     }
 
-    // When no data is specified, don't render anything.
-    if (data.length === 0) {
-      return
-    }
-
     // Get the drawn graph size, minus the borders.
     const graphWidth = width - leftMargin - rightMargin;
     const graphHeight = height - topMargin - bottomMargin;
