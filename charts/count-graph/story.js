@@ -61,8 +61,9 @@ storiesOf('Count Graph', module)
       end={moment("2017-03-29T18:00:00.000Z")}
     />
   ))
-  .add(`With negative counts`, () => (
+  .add(`With negative counts and small width`, () => (
     <CountGraph
+      width={400}
       data={uncompressData(dayOfDataWithNegatives)}
     />
   ))

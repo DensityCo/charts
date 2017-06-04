@@ -2,7 +2,8 @@ import './styles.scss';
 import moment from 'moment';
 import * as d3 from 'd3';
 
-const leftMargin = 32;
+const leftMargin = 60;
+const rightMargin = 16;
 const bottomMargin = 36;
 const topMargin = 16;
 
@@ -33,9 +34,7 @@ function normalize(date) {
 
 // The count graph component
 export default function countGraph(elem) {
-  const svg = d3.select(elem).append('svg')
-    .attr('class', 'graph-countgraph')
-    .attr('width', '100%')
+  const svg = d3.select(elem).append('svg').attr('class', 'graph-countgraph')
 
   const svgGroup = svg.append('g')
     .attr('transform', `translate(${leftMargin},${topMargin})`);
@@ -62,7 +61,7 @@ export default function countGraph(elem) {
     .attr('class', 'overlay-rect');
 
   return function update(props={}) {
-    const width = props.width || 1000;
+    const width = props.width || 940;
     const height = props.height || 400;
     const data = props.data || [];
     const initialCount = props.initialCount || 0;
@@ -71,6 +70,7 @@ export default function countGraph(elem) {
     // Adjust the svg size and viewbox to match the passed in values.
     svg
       .attr('height', height)
+      .attr('width', width)
       .attr('viewBox', `0 0 ${width} ${height}`)
 
     if (!Array.isArray(data)) {
@@ -83,7 +83,7 @@ export default function countGraph(elem) {
     }
 
     // Get the drawn graph size, minus the borders.
-    const graphWidth = width - leftMargin;
+    const graphWidth = width - leftMargin - rightMargin;
     const graphHeight = height - topMargin - bottomMargin;
 
     // Get first and last timestamps
@@ -156,11 +156,11 @@ export default function countGraph(elem) {
 
 
     // Draw the axes in the svg
+    const totalDuration = normalize(domainEnd) - normalize(domainStart);
     const xAxis = d3.axisBottom(xScale)
       // format the time scale display for different domain sizes
-      // started by trying to remove the zero padding from the hours
-      // and it got out of hand, this is complicated logic
-      .ticks(7)      
+      // only show hours
+      .ticks(Math.min(Math.floor(totalDuration / 3600000), 7))      
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
         const timeFormat = d3.timeFormat('%-I%p')(d);
