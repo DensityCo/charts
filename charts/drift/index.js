@@ -183,7 +183,7 @@ export default function drift(elem) {
       axisGroup.append("g")
         .attr("class", "axis axis-x")
         .attr("transform", "translate(-0.5,-20)")
-        .call(d3.axisBottom(x).ticks(10).tickSizeOuter(0).tickSize(graphHeight))
+        .call(d3.axisBottom(x).ticks(7).tickSizeOuter(0).tickSize(graphHeight))
       axisGroup.append("g")
         .attr("class", "axis axis-y")
         .attr("transform", `translate(${width > mobileMaxWidth ? 40 : 30}, 0)`)
