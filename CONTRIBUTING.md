@@ -19,8 +19,11 @@ You have a new chart in charts/foo-bar:
 * charts/foo-bar/styles.scss contains your chart styles.
 * charts/foo-bar/story.js contains your react-storyboard story. Use it to present different states of your chart.
 
-To build the storyboard and start a development server:
-=> npm run storyboard
+To install all of the dependencies for each chart:
+=> npm run installall
+
+To build the storybook and start a development server:
+=> npm run storybook
 ```
 
 ## Previewing
