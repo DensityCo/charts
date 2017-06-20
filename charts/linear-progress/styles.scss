@@ -1,4 +1,12 @@
-.chart-template {
-  font-weight: bold;
-  font-size: 24px;
+.linear-progress-chart {
+  width: 100px;
+  height: 2px;
+}
+
+.progress-container {
+  fill: #cccccc;
+}
+
+.progress-bar {
+  fill: #000000;
 }

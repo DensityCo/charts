@@ -1,7 +1,7 @@
 # Linear Progress
 A simple linear progress bar with determinate state [npm](https://npmjs.com/@density/chart-linear-progress)
 
-*TODO: ADD PICTURE OF CHART*
+![Here's what it looks like.](http://i.imgur.com/mTnV5aG.png)
 
 # Using this chart
 This chart has a single default export. This exported function takes two arguments: a dom element,
@@ -13,7 +13,7 @@ import linearProgress from '@density/chart-linear-progress';
 // or: const linearProgress = require('@density/chart-linear-progress').default;
 
 const element = document.getElementById('chart-container');
-const props = {name: 'Bob'};
+const props = {percentFull: 50};
 
 // Make your chart
 const updateData = linearProgress(element);
@@ -24,7 +24,8 @@ updateData(props);
 
 ## Properties
 
-*TODO: ADD CHART PROPERTIES*
+- `percentFull` (int, 0-100): How full to show the progress chart.
+- `transitionDuration` (int, default=300): Transition duration for when updating the `percentFull`.
 
 In addition, if you'd like to render a chart in a context where the DOM is abstracted away from you,
 such as a React or Angular app, then check out [our companion helper library](https://github.com/DensityCo/charts#hold-on-then-how-do-i-render-my-chart-in-my-react-app).

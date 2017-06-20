@@ -1,15 +1,31 @@
+import * as d3 from 'd3';
+
 import './styles.scss';
 
 export default function linearProgress(elem, props={}) {
-  // Here's where any constructing logic can happen, if required for your chart.
-  // Typically here you create all the parts of your chart.
-  const div = document.createElement('div');
-  elem.appendChild(div);
+  elem = d3.select(elem)
+    .attr('class', 'linear-progress-chart');
 
-  return (props={}) => {
-    // And in here, you provide any update logic. Since variables in the construting function are
-    // closed over you can use them down here, too.
+  const svg = elem.append('svg')
+    .attr('width', '100%')
+    .attr('height', '100%');
 
-    div.innerHTML = `Hello ${props.name || 'World'}! I'm a super-basic chart!`;
+  const progressContainer = svg.append('rect')
+    .attr('class', 'progress-container')
+    .attr('height', '100%')
+    .attr('width', '100%');
+
+  const progressBar = svg.append('rect')
+    .attr('class', 'progress-bar')
+    .attr('height', '100%')
+    .attr('width', '0%');
+
+  return props => {
+    const percentFull = props.percentFull || 0;
+    const transitionDuration = props.transitionDuration || 300;
+
+    progressBar.transition()
+      .duration(transitionDuration)
+      .attr('width', `${percentFull}%`);
   }
 }
