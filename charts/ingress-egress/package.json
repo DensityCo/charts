@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "d3": "^4.8.0",
+    "moment": "^2.18.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   }
