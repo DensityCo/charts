@@ -50,7 +50,9 @@ jobs:
               echo " @density/charts"
               echo "================"
               make charts/dist/index.js                CHART=drift
+              set +e
               npm publish --access public
+              set -e
             else
               echo "Packages are only published to npm on branch 'master'."
             fi
