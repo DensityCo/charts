@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: "Add private token to npmrc"
-          command: echo "//npmregistry.density.rodeo/:_authToken=${PRIVATE_NPM_TOKEN}" >> ~/.npmrc
+          command: echo "//npmregistry.density.rodeo/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
       - run:
           name: "Install dependencies"
           command: yarn
