@@ -35,7 +35,9 @@ jobs:
                   "$(cat charts/$chart/package.json | jq .version)" != \
                   "$(npm show "@density/chart-$chart" --json | jq '.["dist-tags"].latest')" \
                 ]; then
+                  set +e
                   make publish CHART=$chart
+                  set -e
                 else
                   echo "Chart $chart is up to date."
                 fi
