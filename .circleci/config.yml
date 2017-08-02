@@ -86,6 +86,8 @@ jobs:
             git add $CIRCLE_BRANCH/
 
             echo "* Pushing..."
+            git config user.email "engineering@density.io"
+            git config user.name "CI"
             git commit --allow-empty -m "Deploy branch $CIRCLE_BRANCH to Github Pages [ci skip]"
             git push origin gh-pages --force
 
