@@ -1,0 +1,105 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:6.11
+    steps:
+      - checkout
+      - run:
+          name: "Add private token to npmrc"
+          command: echo "//npmregistry.density.rodeo/:_authToken=${PRIVATE_NPM_TOKEN}" >> ~/.npmrc
+      - run:
+          name: "Install dependencies"
+          command: yarn
+      - run:
+          name: "Build charts"
+          command: |
+            # Publish all charts once on master
+            if [ "$CIRCLE_BRANCH" == "master" ]; then
+              echo "Publishing all charts..."
+              for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
+                # This isn't a chart, but a template for `./make-chart`
+                if [ "$chart" == "template" -o "$chart" == "dist" ]; then
+                  continue
+                fi
+
+                echo
+                echo
+                echo "================"
+                echo " $chart"
+                echo "================"
+
+                # If the published version is different from this version, then publish a new version.
+                if [ \
+                  "$(cat charts/$chart/package.json | jq .version)" != \
+                  "$(npm show "@density/chart-$chart" --json | jq '.["dist-tags"].latest')" \
+                ]; then
+                  make publish CHART=$chart
+                else
+                  echo "Chart $chart is up to date."
+                fi
+              done
+
+              # Finally, try to publish the main package
+              echo
+              echo
+              echo "================"
+              echo " @density/charts"
+              echo "================"
+              make charts/dist/index.js                CHART=drift
+              npm publish --access public
+            else
+              echo "Packages are only published to npm on branch 'master'."
+            fi
+            exit 0
+      - run:
+          name: "Build storybook"
+          command: |
+            # Finally, build storybook.
+            for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
+              # This isn't a chart, but a template for `./make-chart`
+              if [ "$chart" == "template" -o "$chart" == "dist" ]; then
+                continue
+              fi
+
+              cd charts/$chart
+              npm i
+              cd ../..
+            done
+
+            echo "Building storybook..."
+            yarn build-storybook
+
+            echo "* Pulling latest deploy..."
+            git clone git@github.com:densityco/charts.git deploy_charts/
+            cd deploy_charts/
+            git checkout gh-pages
+
+            echo "* Copying dist to github pages directory..."
+            rm -rf $CIRCLE_BRANCH/
+            mv ../storybook-static $CIRCLE_BRANCH/
+            git add $CIRCLE_BRANCH/
+
+            echo "* Pushing..."
+            git commit --allow-empty -m "Deploy branch $CIRCLE_BRANCH to Github Pages [ci skip]"
+            git push origin gh-pages --force
+
+            # Post a link to the branch as a comment in the PR
+            echo "* Pull requests this commit is part of: $CI_PULL_REQUESTS"
+            export IFS=","
+            for pr in $CI_PULL_REQUESTS; do
+              num="$(echo $pr | awk -F'/' '{ print $NF }')"
+              if [ -z \
+                "$(curl -H "Authorization: Bearer $GITHUB_MACHINE_USER_TOKEN" \
+                https://api.github.com/repos/densityco/charts/issues/$num/comments \
+                | jq .[].user.login \
+                | grep density-machine-user)" ]; then
+
+                curl -X POST \
+                -d "{\"body\": \"Here is a link to the built storybook: https://densityco.github.io/charts/$CIRCLE_BRANCH\"}" \
+                -H "Authorization: Bearer $GITHUB_MACHINE_USER_TOKEN" \
+                https://api.github.com/repos/densityco/charts/issues/$num/comments
+
+              fi
+            done
