@@ -1,0 +1,20 @@
+{
+  "name": "@density/chart-ingress-egress",
+  "version": "1.0.6",
+  "description": "Ingress Egress chart",
+  "main": "dist/index.js",
+  "style": "dist/styles.css",
+  "scss": "dist/_styles.scss",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Density <team+javascript@density.io>",
+  "license": "MIT",
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "d3": "^4.8.0",
+    "moment": "^2.18.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  }
+}
