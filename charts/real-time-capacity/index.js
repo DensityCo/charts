@@ -4,6 +4,9 @@ import classnames from 'classnames';
 
 import './styles.scss';
 
+const SECONDS_PER_MINUTE = 60,
+      MILLISECONDS_PER_SECOND = 1000;
+
 // ------------------------------------------------------------------------------
 // Constants required for rendering the graph
 // ------------------------------------------------------------------------------
@@ -23,22 +26,43 @@ function getTimeLabel(graphDurationInMin, fraction) {
     `${Math.floor(graphDurationInMin * fraction * 60)}s`
 };
 
-export function getIndicatorLocations(data) {
-  console.log(data)
-  return [
-    {
-      timestamp: (new Date()).getTime(),
-      count: 4
-    },
-    {
-      timestamp: (new Date()).getTime() - 6000,
-      count: -2
-    },
-    {
-      timestamp: (new Date()).getTime() - 10000,
-      count: 2
+export function getIndicatorLocations(data, minimumStackDistance=1500) {
+  let lastTimestamp = {};
+  lastTimestamp[1] = 0;
+  lastTimestamp[-1] = 0;
+
+  return data.reduce((acc, i) => {
+    if (lastTimestamp[i.countChange] === 0 || i.timestamp - lastTimestamp[i.countChange] > minimumStackDistance) {
+      // No previous event marker was found to stack the current count into. Create a new event marker.
+      lastTimestamp[i.countChange] = i.timestamp;
+      return [...acc, {timestamp: i.timestamp, count: i.countChange}]
+    } else {
+      // In this case, a previous marker was found within the minimum stack distance.  Add this
+      // event's count change to the count of the previous event, effectively squashing them.
+
+      // Loop through all markers in reverse order, looking for the most recent marker that is on
+      // the same side of the axis as this marker.
+      let lastIndexOfIndicatorDirection = -1;
+      for (let ct = acc.length - 1; ct >= 0; ct--) {
+        if (
+          (i.countChange > 0 && acc[ct].count > 0) ||
+          (i.countChange < 0 && acc[ct].count < 0)
+        ) {
+          lastIndexOfIndicatorDirection = ct;
+          break;
+        }
+      }
+
+      // Update the marker that was found with an updated count from the current marker.
+      acc.splice(lastIndexOfIndicatorDirection, 1, {
+        ...acc[lastIndexOfIndicatorDirection],
+        count: acc[lastIndexOfIndicatorDirection].count + i.countChange,
+      });
+
+      lastTimestamp[i.countChange] = i.timestamp;
+      return acc;
     }
-  ];
+  }, []);
 }
 
 // Generate the proper time label for each fraction of the total time
@@ -60,7 +84,6 @@ export default function ingressEgress(elem) {
     .attr('class', 'real-time-capacity-count-marker out')
     .attr('style', `width: ${eventMarkerRadius * 2}px; height: ${eventMarkerRadius * 2}px`)
   legend.append('span').text('Out')
-
 
 
   // Svg to put all the data in
@@ -91,27 +114,42 @@ export default function ingressEgress(elem) {
     .attr('class', 'real-time-capacity-labels-item')
     .text(`Now`);
 
-  return props => {
+  return ({events}) => {
+    const now = moment.utc();
+
     // Get the graph's width from the bounding box of the svg.
     const graphWidth = svg.node().getBBox().width;
 
-    // Construct a scale for drawing the time series
-    const now = moment.utc();
+    // Construct a scale for drawing the time series, which converts from
+    // [0, 1 minute ago] to [width, 0]. Ie, if the timedelta is 
     const timeScale = d3.scaleLinear()
       .rangeRound([graphWidth, 0])
-      .domain([
-        now.valueOf(), // Get the time in unix time (milliseconds)
-        now.subtract(graphDurationInMin, 'minutes').valueOf(),
-      ]);
+      .domain([0, graphDurationInMin * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND]);
 
+    // Calculate the locations of each marker to plot. Then:
+    // 1. Calculate a timedelta between the current time and the time in the marker. This is used
+    // instead of the timestamp as the time value because it changes as time marches forward, while
+    // a tiemstamp wouldremain constant. Calulated by subtracting (current time) - (timestamp).
+    // 2. Filter out all marks that render off the graph. This is jsut to be more efficient (why do
+    // we need to render things that are off-screen?)
+    const indicatorLocations = getIndicatorLocations(events).map(i => Object.assign({}, i, {
+      timedelta: now.valueOf() - i.timestamp.valueOf(),
+    })).filter(i => {
+      return timeScale(i.timedelta) > 0;
+    })
 
     // Render data in the chart.
-    const dataSelection = dataGroup.selectAll('circle').data(getIndicatorLocations(props.events));
+    const dataSelection = dataGroup.selectAll('.real-time-capacity-point')
+      .data(indicatorLocations, d => d.timedelta);
 
+
+    // When new circles are created, plot them at their proper x and y coordinates.
     const dataEnterSelection = dataSelection.enter().append('g')
+      .attr('class', 'real-time-capacity-point')
     dataEnterSelection.append('circle');
 
-    const dataEnterSelectionIndicator = dataEnterSelection.append('g').attr('class', 'real-time-capacity-info');
+    const dataEnterSelectionIndicator = dataEnterSelection.append('g')
+      .attr('class', 'real-time-capacity-info');
     dataEnterSelectionIndicator.append('rect')
       .attr('class', 'real-time-capacity-info-content')
       .attr('width', eventMarkerInfoPopupHeight)
@@ -124,13 +162,14 @@ export default function ingressEgress(elem) {
       .attr('class', 'real-time-capacity-info-pointer');
 
 
+    // When circles are created or updated, plot ther position
     const dataMergeSelection = dataSelection.merge(dataEnterSelection);
 
     // Update the position of each circle.
     dataMergeSelection.select('circle')
       .attr('r', eventMarkerRadius)
       // Subtract the radius to center the dot on the right edge of the chart.
-      .attr('cx', d => timeScale(d.timestamp) - eventMarkerRadius)
+      .attr('cx', d => timeScale(d.timedelta) - eventMarkerRadius)
       .attr('cy', d => {
         if (d.count > 0) {
           // Render the dot above the midline.
@@ -148,7 +187,7 @@ export default function ingressEgress(elem) {
         // Draw the info popup at the x coordinate that relates to the timestamp. Ensure the centers
         // of the event marker and the info popup are aligned by subtracting half the width of each
         // item from the x position.
-        const xPos = timeScale(d.timestamp)
+        const xPos = timeScale(d.timedelta)
           - (eventMarkerInfoPopupWidth / 2)
           - eventMarkerRadius;
 
@@ -176,7 +215,7 @@ export default function ingressEgress(elem) {
 
         return `translate(${xPos},${yPos})`;
       })
-      .attr('class', d => classnames('real-time-capacity-info', {hidden: d.count === 1}))
+      .attr('class', d => classnames('real-time-capacity-info', {hidden: Math.abs(d.count) === 1}))
 
     dataMergeSelection.select('text')
       .text(d => Math.abs(d.count))
@@ -217,7 +256,7 @@ export default function ingressEgress(elem) {
             `L ${caretXPosition + eventMarkerInfoPopupCaretWidth} 0`,
           ].join(' ')
         }
-      })
+      });
         
         
     dataSelection.exit().remove()
