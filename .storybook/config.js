@@ -1,4 +1,4 @@
-import { configure } from '@kadira/storybook';
+import { configure, setAddon } from '@storybook/react';
 
 function loadStories() {
   // This is some stupid webpack magic. Basically, require in all files in '../stories.'
