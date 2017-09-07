@@ -1,7 +1,7 @@
-# Ingress Egress Chart
+# Real Time Count Chart
 A plot of ingresses and egresses over time. [npm](https://npmjs.com/@density/chart-ingress-egress)
 
-![Here's what it looks like.](http://i.imgur.com/BnPGCKP.png)
+![Here's what it looks like.](http://i.imgur.com/14N6bhT.png)
 
 # Using this chart
 This chart has a single default export. This exported function takes two arguments: a dom element,
@@ -9,19 +9,19 @@ and an object full of properties. When called, this chart will render the chart 
 element. See the below example.
 
 ```javascript
-import ingressEgress from '@density/chart-ingress-egress';
-// or: const ingressEgress = require('@density/chart-ingress-egress').default;
+import realTimeCount from '@density/chart-real-time-count';
+// or: const realTimeCount = require('@density/chart-real-time-count').default;
 
 const element = document.getElementById('chart-container');
 const props = {events: []};
-ingressEgress(element, props);
+realTimeCount(element, props);
 ```
 
 In addition, if you'd like to render a chart in a context where the DOM is abstracted away from you,
 such as a React or Angular app, then check out [our companion helper library](https://github.com/DensityCo/charts#hold-on-then-how-do-i-render-my-chart-in-my-react-app).
 
 ## Properties
-- `events`: An array of `{countChange: <direction of count change>, timestamp: <iso 8601 timestamp or epoch>}` objects.
+- `events`: An array of `{countChange: <direction of count change>, timestamp: <iso 8601 timestamp, epoch, or moment>}` objects.
 
   Example:
 ```javascript
@@ -37,9 +37,6 @@ such as a React or Angular app, then check out [our companion helper library](ht
   ...
 ]
 ```
-
-- `graphDurationInMin` *(optional)*: An integer representing the duration in minutes the chart
-  should display. Events that are older than this value will not be shown.
 
 # How this chart is structured
 ```

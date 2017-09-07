@@ -32,10 +32,20 @@ export function getIndicatorLocations(data, minimumStackDistance=1500) {
   lastTimestamp[-1] = 0;
 
   return data.reduce((acc, i) => {
-    if (lastTimestamp[i.countChange] === 0 || i.timestamp - lastTimestamp[i.countChange] > minimumStackDistance) {
+    // Ensure the timestamp is an epoch.
+    let timestamp = i.timestamp;
+    if (typeof timestamp !== 'number') {
+      if (timestamp instanceof moment) {
+          timestamp = timestamp.valueOf();
+        } else {
+          timestamp = moment.utc(timestamp).valueOf();
+        }
+    }
+
+    if (lastTimestamp[i.countChange] === 0 || timestamp - lastTimestamp[i.countChange] > minimumStackDistance) {
       // No previous event marker was found to stack the current count into. Create a new event marker.
-      lastTimestamp[i.countChange] = i.timestamp;
-      return [...acc, {timestamp: i.timestamp, count: i.countChange}]
+      lastTimestamp[i.countChange] = timestamp;
+      return [...acc, {timestamp, count: i.countChange}]
     } else {
       // In this case, a previous marker was found within the minimum stack distance.  Add this
       // event's count change to the count of the previous event, effectively squashing them.
@@ -59,7 +69,7 @@ export function getIndicatorLocations(data, minimumStackDistance=1500) {
         count: acc[lastIndexOfIndicatorDirection].count + i.countChange,
       });
 
-      lastTimestamp[i.countChange] = i.timestamp;
+      lastTimestamp[i.countChange] = timestamp;
       return acc;
     }
   }, []);

@@ -30,11 +30,11 @@ storiesOf('Real Time Capacity', module)
   .add('With a few set datapoints', () => (
     <IngressEgress
       events={[
-        {countChange: 1, timestamp: new Date().getTime()},
-        {countChange: 1, timestamp: new Date().getTime() - 6000},
-        {countChange: 1, timestamp: new Date().getTime() - 12000 },
-        {countChange: 1, timestamp: new Date().getTime() - 40000 },
-        {countChange: -1, timestamp: new Date().getTime() - 42000 },
+        {countChange: 1, timestamp: moment.utc()},
+        {countChange: 1, timestamp: moment.utc().subtract(6000, 'milliseconds')},
+        {countChange: 1, timestamp: moment.utc().subtract(12000, 'milliseconds') },
+        {countChange: 1, timestamp: moment.utc().subtract(40000, 'milliseconds') },
+        {countChange: -1, timestamp: moment.utc().subtract(42000, 'milliseconds') },
       ]}
     />
   ))

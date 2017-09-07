@@ -1,7 +1,7 @@
 {
-  "name": "@density/chart-ingress-egress",
+  "name": "@density/chart-real-time-count",
   "version": "1.0.6",
-  "description": "Ingress Egress chart",
+  "description": "Real time count chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
   "scss": "dist/_styles.scss",
