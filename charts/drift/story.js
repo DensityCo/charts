@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import {storiesOf, action} from '@kadira/storybook';
+import {storiesOf} from '@storybook/react';
 
 import drift from './index';
 import {chartAsReactComponent} from '../';
