@@ -26,7 +26,7 @@ function generateRandomCountChangeEvents() {
   return data;
 }
 
-storiesOf('Real Time Capacity', module)
+storiesOf('Real Time Count', module)
   .add('With a few set datapoints', () => (
     <IngressEgress
       events={[

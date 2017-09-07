@@ -189,7 +189,7 @@ export default function ingressEgress(elem) {
           return (cardHeightInPx / 2) + (eventMarkerRadius + eventMarkerSpacingFromMidLine);
         }
       })
-      .attr('class', d => `count-marker ${d.count > 0 ? 'count-marker-in' : 'count-marker-out'}`);
+      .attr('class', d => classnames('real-time-capacity-count-marker', d.count > 0 ? 'in' : 'out'));
 
     // Add info popups when the count is over 1 for a given column.
     dataMergeSelection.select('.real-time-capacity-info')
