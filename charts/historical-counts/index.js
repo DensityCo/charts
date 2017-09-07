@@ -183,7 +183,7 @@ export default function historicalCounts(elem) {
 
     // Render the y axis.
     axisGroup.call(
-      require('./src/axis-y').default,
+      require('./axis-y').default,
       yScale,
       smallestCount, largestCount, capacity
     );
