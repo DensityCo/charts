@@ -1,6 +1,17 @@
 const path = require('path');
 
-const jsonImporter = require('@density/node-sass-json-importer');
+// module.exports = {
+//   module: {
+//     rules: [
+//       {
+//         test: /\.scss$/,
+//         loaders: ["style-loader", "css-loader", "sass-loader"],
+//         include: path.resolve(__dirname, '../')
+//       }
+//     ]
+//   }
+// }
+
 
 // Webpack config
 module.exports = {
@@ -18,10 +29,6 @@ module.exports = {
           },
           {
             loader: 'sass-loader',
-            // Apply the JSON importer via sass-loader's options.
-            options: {
-              importer: jsonImporter,
-            },
           },
         ],
         include: path.resolve(__dirname, '../'),

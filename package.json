@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 6006 -c .storybook",
     "build-storybook": "build-storybook",
-    "installall": "for i in $(find charts/* -type d ! -path '*node_modules*' ! -name 'template' ); do cd $i && yarn && cd -; done"
+    "install-all": "for i in $(find charts/* -type d ! -path '*node_modules*' ! -name 'template' ); do cd $i && yarn && cd -; done",
+    "clean-all": "rm -rf ./node_modules && rm -rf charts/*/node_modules/"
   },
   "keywords": [
     "charts",
@@ -25,7 +26,7 @@
     "react-dom": "^15.4.2"
   },
   "devDependencies": {
-    "@storybook/react": "^3.2.8",
+    "@storybook/react": "3.1.3",
     "babel-cli": "^6.24.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
