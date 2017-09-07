@@ -6,9 +6,9 @@
   "scripts": {
     "start": "npm run storybook",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 -c .storybook",
     "build-storybook": "build-storybook",
-    "installall": "for i in $(find charts/* -type d ! -path '*node_modules*' ! -name 'template' ); do cd $i && npm install && cd -; done"
+    "installall": "for i in $(find charts/* -type d ! -path '*node_modules*' ! -name 'template' ); do cd $i && yarn && cd -; done"
   },
   "keywords": [
     "charts",
@@ -19,12 +19,13 @@
   "author": "Density <team+javascript@density.io>",
   "license": "MIT",
   "dependencies": {
+    "@density/node-sass-json-importer": "^4.1.0",
     "create-react-class": "^15.5.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
   "devDependencies": {
-    "@kadira/storybook": "^2.21.0",
+    "@storybook/react": "^3.2.8",
     "babel-cli": "^6.24.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
