@@ -13,7 +13,7 @@ export default function yAxis(
   // When a new axis is to be created, create a container with each label as required.
   const yAxisEnterSelection = yAxisSelection.enter();
   const yAxisEnterSelectionGroup = yAxisEnterSelection.append('g')
-    .attr("class", "axis axis-y")
+    .attr("class", "historical-counts-axis-y")
 
   // Lebel the smallest value.
   yAxisEnterSelectionGroup.append('text')

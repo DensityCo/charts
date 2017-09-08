@@ -1,94 +1,73 @@
-$brand-primary: #4198FF;
+$historical-counts-brand-primary: #4198FF;
+$historical-counts-font-size: 14px;
 
 /* X Axis */
-
-.graph-historical-counts .axis-x .tick line {
-  display: none;
-}
-.graph-historical-counts .axis-x .tick text {
+.historical-counts-axis-x .tick line { display: none; }
+.historical-counts-axis-x .tick text { 
   transform: translate(0, 10px);
-}
-.graph-historical-counts .axis-x .domain {
-  display: none;
+  font-size: $historical-counts-font-size;
 }
 
-/* Y Axis */
-.graph-historical-counts .axis-y {
-  font-size: 14px;
+// Y Axis.
+.historical-counts-axis-y {
   transform: translate(-32px, (14px / 2));
+  font-size: $historical-counts-font-size;
 }
 
 // This path is the line that is rendered on the chart indicating the data to the user.
-.graph-historical-counts .graph-path {
-  fill: rgba($brand-primary, 0.1);
+.historical-counts-path {
+  fill: rgba($historical-counts-brand-primary, 0.1);
   shape-rendering: crispEdges;
 }
+
 // Also, render a seperate line for the colored outline along the top of the path.
-.graph-historical-counts .graph-path-outline {
+.historical-counts-path-outline {
   shape-rendering: crispEdges;
-  stroke: $brand-primary;
+  stroke: $historical-counts-brand-primary;
   stroke-width: 2px;
   fill: transparent;
 }
 
-/* Flag lines */
-
-.graph-historical-counts .flag .flag-line {
-  stroke: #4198ff;
-}
-.graph-historical-counts .flag .flag-line-label {
-  fill: #fff;
-  transform: translate(10px, 20px);
-}
-.graph-historical-counts .flag .flag-line-label-background {
-  fill: #4198ff;
-}
 
 // Capacity line
-.graph-historical-counts-capacity {
-  fill: rgba($brand-primary, 0.1);
+.historical-counts-capacity-region {
+  fill: rgba($historical-counts-brand-primary, 0.1);
 }
 
 /* Overlay marker line (the line with the circle that tracks the mouse cursor) */
-
-.graph-historical-counts .overlay-line path {
-  stroke: #B4B8BF;
+.historical-counts-overlay-line-path {
+  stroke: $historical-counts-brand-primary;
   stroke-width: 1;
 }
 
-.graph-historical-counts .overlay-line circle {
+.historical-counts-overlay-circle {
+  fill: $historical-counts-brand-primary;
+}
+
+/* Flag lines */
+.historical-counts .flag .flag-line {
+  stroke: #4198ff;
+}
+.historical-counts .flag .flag-line-label {
+  fill: #fff;
+  transform: translate(10px, 20px);
+}
+.historical-counts .flag .flag-line-label-background {
   fill: #4198ff;
 }
 
-/* Overlay marker dialog (the popup with time / count in it) */
-
-.graph-historical-counts .overlay-dialog {
-  transition: transform .08s;
-}
-
-.graph-historical-counts .overlay-dialog-shadow {
-  fill: #B4B8BF;
-  opacity: 0.35;
-}
-
-.graph-historical-counts .overlay-dialog-bg {
-  fill: #FFF;
-  stroke-width: 0.5;
+// The overlay dialogs above and below the chart.
+.historical-counts-overlay-top, .historical-counts-overlay-bottom {
+  fill: #fff;
+  stroke: #ddd;
   user-select: none;
+  -webkit-filter: drop-shadow( -5px -5px 5px #000 );
+  filter: drop-shadow( -5px -5px 5px #000 ); 
 }
-.graph-historical-counts .overlay-dialog-bg-primary {
-  fill: #4198ff;
+
+.historical-counts-overlay-bottom-text, .historical-counts-overlay-top-text {
+  fill: #31383c;
+  stroke: transparent;
+  font-weight: 600;
   user-select: none;
-}
-
-.graph-historical-counts .overlay-dialog-time {
-  fill: #FFF;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.graph-historical-counts .overlay-dialog-count {
-  font-size: 16px;
-  fill: #4198ff;
-  font-weight: 600;
 }

@@ -2,16 +2,28 @@ import './styles.scss';
 import moment from 'moment';
 import * as d3 from 'd3';
 
-const leftMargin = 60;
-const rightMargin = 16;
-const bottomMargin = 36;
-const topMargin = 16;
+import updateOverlayLine from './overlay-line';
 
-const overlayDialogHeight = 72;
-const overlayDialogWidth = 108;
+const DAYS_PER_WEEK = 7,
+      MINUTES_PER_HOUR = 60,
+      SECONDS_PER_MINUTE = 60,
+      MILLISECONDS_PER_SECOND = 1000;
+
+const overlayDialogTopHeight = 43;
+const overlayDialogTopWidth = 72;
+const overlayDialogBottomHeight = 43;
+const overlayDialogBottomWidth = 186;
 const overlayDialogTextSize = 16; // Size of the text
 const overlayDialogTextMargin = 12; // Y spacing between text and its container
 const overlayDialogBorderRadius = 4;
+
+const overlayDialogTopBottomMargin = 10;
+const overlayDialogBottomTopMargin = 48;
+
+const leftMargin = 60;
+const rightMargin = 5;
+const bottomMargin = overlayDialogBottomTopMargin + overlayDialogTopBottomMargin + 42;
+const topMargin = 16 + overlayDialogTopHeight + overlayDialogTopBottomMargin;
 
 // Distance between the overlay dialog and the line on the graph
 const overlayDialogDistanceToLine = 10;
@@ -20,21 +32,9 @@ const overlayDialogDistanceToLine = 10;
 // the other side of the line.
 const overlayDialogBreakToLeftPadding = 20;
 
-// Bisect abstraction for finding timestamps
-const bisect = d3.bisector(d => normalize(d.timestamp));
-
-// Crush the moments to make them comply
-function normalize(date) {
-  if (date instanceof moment) {
-    return date.valueOf()
-  } else {
-    return moment(date).valueOf();
-  }
-}
-
 // The count graph component
 export default function historicalCounts(elem) {
-  const svg = d3.select(elem).append('svg').attr('class', 'graph-historical-counts')
+  const svg = d3.select(elem).append('svg').attr('class', 'historical-counts');
 
   const svgGroup = svg.append('g')
     .attr('transform', `translate(${leftMargin},${topMargin})`);
@@ -64,13 +64,22 @@ export default function historicalCounts(elem) {
   const overlayRect = svgGroup.append('g')
     .attr('class', 'overlay-rect');
 
-  return function update(props={}) {
-    const width = props.width || 940;
-    const height = props.height || 400;
-    const data = props.data || [];
-    const initialCount = props.initialCount || 0;
+  return ({start, end, width, height, data, capacity, initialCount}) => {
+    width = width || 800;
+    height = height || 400;
+    capacity = capacity || null;
+    initialCount = initialCount || 0;
+
+    // Convert the timestamp in each item into epoch milliseconds.
+    data = (data || []).map(i => {
+      if (i.timestamp instanceof moment) {
+        return Object.assign({}, i, {timestamp: i.timestamp.valueOf()});
+      } else {
+        return Object.assign({}, i, {timestamp: moment.utc(i.timestamp).valueOf()});
+      }
+    });
+
     const flags = [];
-    const capacity = props.capacity || null;
 
     // Adjust the svg size and viewbox to match the passed in values.
     svg
@@ -88,41 +97,38 @@ export default function historicalCounts(elem) {
 
     // Get first and last timestamps
     const firstEvent = data.length && data[0];
-    const dataStart = firstEvent ? normalize(firstEvent.timestamp) : normalize(moment());
-    const domainStart = props.start || dataStart;
+    const dataStart = firstEvent ? firstEvent.timestamp : moment.utc();
+    const domainStart = start || dataStart;
 
     const lastEvent = data.length && data[data.length - 1];
     const lastCount = lastEvent ? lastEvent.count : 0;
-    const dataEnd = lastEvent ? normalize(lastEvent.timestamp) : normalize(moment());
-    const domainEnd = props.end || dataEnd;
+    const dataEnd = lastEvent ? lastEvent.timestamp : moment.utc();
+    const domainEnd = end || dataEnd;
 
     // Construct scales
     const xScale = d3.scaleLinear()
       .rangeRound([graphWidth, 0])
-      .domain([
-        normalize(domainEnd),
-        normalize(domainStart),
-      ]);
+      .domain([domainEnd, domainStart]);
     const largestCount = Math.max.apply(Math, data.map(i => Math.max(i.count, initialCount)));
     const smallestCount = Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount)));
     const yScale = d3.scaleLinear()
       .rangeRound([graphHeight - 10, 0])
       .domain([smallestCount, largestCount]);
 
-    const lastX = xScale(normalize(moment.min(domainEnd, moment())));
-    const lastY = yScale(lastEvent.count);
+    const lastX = xScale(moment.min(domainEnd, moment.utc()));
+      const lastY = yScale(lastEvent.count);
 
 
     // Render capacity overlay behind the graph path, if a capacity was passed.
     if (capacity) {
       const capacityHeightInPx = yScale(capacity);
       const capacitySelection = capacityGroup
-        .selectAll('.graph-historical-counts-capacity')
+        .selectAll('.historical-counts-capacity-region')
         .data([capacityHeightInPx]);
 
       capacitySelection.enter()
         .append('rect')
-        .attr('class', 'graph-historical-counts-capacity')
+        .attr('class', 'historical-counts-capacity-region')
       .merge(capacitySelection)
         .attr('x', 0)
         .attr('y', d => d)
@@ -136,7 +142,7 @@ export default function historicalCounts(elem) {
     // Generate the svg path for the graph line.
     const pathPrefix = `M1,${graphHeight}` +
       `L1,${yScale(initialCount)}` +
-      `H${xScale(normalize(dataStart))}`;
+      `H${xScale(dataStart)}`;
     const pathSuffix = `H${lastX}V${graphHeight}H1`;
 
     // Build the path by looping through the data
@@ -145,7 +151,7 @@ export default function historicalCounts(elem) {
       if (i.flag) { flags.push(i); }
 
       // Step to the new point
-      const xPosition = xScale(normalize(i.timestamp));
+      const xPosition = xScale(i.timestamp);
       const yPosition = yScale(i.count);
       if (xPosition >= 0) {
         return `${total}H${xPosition}V${yPosition}`;
@@ -155,21 +161,21 @@ export default function historicalCounts(elem) {
     }, '');
 
     const graphSelection = graphGroup
-      .selectAll('.graph-path')
+      .selectAll('.historical-counts-path')
       .data([data]);
 
     const graphEnterSelection = graphSelection.enter();
     graphEnterSelection
       .append('path')
-      .attr('class', 'graph-path')
+      .attr('class', 'historical-counts-path');
     graphEnterSelection
       .append('path')
-      .attr('class', 'graph-path-outline')
+      .attr('class', 'historical-counts-path-outline');
 
     const graphMergeSelection = graphEnterSelection.merge(graphSelection);
-      graphMergeSelection.select('.graph-path')
+      graphMergeSelection.select('.historical-counts-path')
         .attr('d', d => pathPrefix + linePath + pathSuffix);
-      graphMergeSelection.select('.graph-path-outline')
+      graphMergeSelection.select('.historical-counts-path-outline')
         .attr('d', d => pathPrefix + linePath);
 
     graphSelection.exit();
@@ -189,11 +195,9 @@ export default function historicalCounts(elem) {
     );
 
 
-    const totalDuration = normalize(domainEnd) - normalize(domainStart);
+    const totalDuration = domainEnd - domainStart;
     const xAxis = d3.axisBottom(xScale)
-      // format the time scale display for different domain sizes
-      // only show hours
-      .ticks(Math.min(Math.floor(totalDuration / 3600000), 7))      
+      .ticks(Math.floor(totalDuration / (MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND)))
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
         const timeFormat = d3.timeFormat('%-I%p')(d);
@@ -203,7 +207,7 @@ export default function historicalCounts(elem) {
         ).toLowerCase();
       });
     axisGroup.append("g")
-      .attr("class", "axis axis-x")
+      .attr("class", 'historical-counts-axis-x')
       .attr("transform", `translate(0,${graphHeight})`)
       .call(xAxis);
 
@@ -234,7 +238,7 @@ export default function historicalCounts(elem) {
     const flagMergeSelection = flagEnterSelection.merge(flagSelection)
     // Move the group / line / text to the flag's position
     flagMergeSelection
-      .attr('transform', d => `translate(${xScale(normalize(d.timestamp))},0)`)
+      .attr('transform', d => `translate(${xScale(d.timestamp)},0)`)
 
     // Adjust if the graph height changed
     flagMergeSelection.select('.flag-line')
@@ -249,162 +253,29 @@ export default function historicalCounts(elem) {
 
     // Draw the overlay line if there is any data
     if (data.length) {
-
       overlayRect.append('rect')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', graphWidth)
-        .attr('height', graphHeight)
+        .attr('x', -1 * leftMargin)
+        .attr('y', -1 * topMargin)
+        .attr('width', leftMargin + graphWidth + rightMargin)
+        .attr('height', topMargin + graphHeight + bottomMargin)
         .attr('fill', 'transparent')
         .on('mousemove', () => {
           const mouseX = d3.mouse(overlayRect.node())[0];
-          updateOverlayLine(mouseX);
+          overlayGroup.call(updateOverlayLine,
+            xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
+            overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
+            overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
+            data, mouseX
+          );
         })
         .on('mouseout', () => {
-          updateOverlayLine(null);
+          overlayGroup.call(updateOverlayLine,
+            xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
+            overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
+            overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
+            data, null
+          );
         });
-
-      function updateOverlayLine(mouseX) {
-        // Calculate, given a mouse X coordinate, the count and time at that x coordinate.
-        let timeAtPosition, itemIndexAtOverlayPosition, countAtPosition, dataToJoin;
-        timeAtPosition = xScale.invert(mouseX); // The time the user is hovering over, as a number.
-        itemIndexAtOverlayPosition = bisect.right(data, timeAtPosition) - 1; // Where on the line is that time?
-
-        // FIXME: another bug: data.length must be > 0
-        // If the user is hovering over where the data is in the chart...
-        if (domainStart <= timeAtPosition && Math.min(domainEnd, normalize(moment())) > timeAtPosition) {
-          // ... get the count where the user is hovering.
-          const eventAtPosition = data[itemIndexAtOverlayPosition];
-          countAtPosition = eventAtPosition ? eventAtPosition.count : initialCount;
-
-          // If a mouse position was passed that is null, (ie, the mouse isn't in the chart any longer)
-          // then disregard it so the overlay line will be deleted.
-          dataToJoin = mouseX === null ? [] : [mouseX];
-        } else {
-          // The user isn't hovering over any data, so remove the overlay line.
-          dataToJoin = [];
-        }
-
-        const overlaySelection = overlayGroup.selectAll('.overlay-line').data(dataToJoin);
-
-        //
-        // Enter
-        //
-
-        const enteringGroup = overlaySelection.enter()
-          .append('g')
-            .attr('class', 'overlay-line')
-
-        // Overlay line
-        enteringGroup.append('path')
-          .attr('d', `M0,0V${graphHeight}`)
-
-        enteringGroup.append('circle')
-          .attr('cx', 0)
-          .attr('cy', 0) // NOTE: overridden in merge below
-          .attr('r', 4)
-
-        // Overlay dialog box
-        const overlayDialogGroup = enteringGroup.append('g')
-          .attr('class', 'overlay-dialog')
-
-        // Draw the overlay dialog box shadow
-        overlayDialogGroup.append('rect')
-          .attr('class', 'overlay-dialog-shadow')
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('width', overlayDialogWidth + 1)
-          .attr('height', overlayDialogHeight + 1)
-          .attr('rx', overlayDialogBorderRadius)
-          .attr('ry', overlayDialogBorderRadius)
-
-        // Draw the overlay dialog box background
-        overlayDialogGroup.append('rect')
-          .attr('class', 'overlay-dialog-bg')
-          .attr('x', 0)
-          .attr('y', overlayDialogHeight / 4)
-          .attr('width', overlayDialogWidth)
-          .attr('height', 0.75 * overlayDialogHeight)
-          .attr('rx', overlayDialogBorderRadius)
-          .attr('ry', overlayDialogBorderRadius)
-
-        overlayDialogGroup.append('rect')
-          .attr('class', props.adjusted ? `overlay-dialog-bg-adjusted` : `overlay-dialog-bg-primary`)
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('width', overlayDialogWidth)
-          .attr('height', overlayDialogHeight / 2)
-          .attr('rx', overlayDialogBorderRadius)
-          .attr('ry', overlayDialogBorderRadius)
-
-        overlayDialogGroup.append('rect')
-          .attr('class', props.adjusted ? `overlay-dialog-bg-adjusted` : `overlay-dialog-bg-primary`)
-          .attr('x', 0)
-          .attr('y', overlayDialogHeight / 4)
-          .attr('width', overlayDialogWidth)
-          .attr('height', overlayDialogHeight / 4)
-
-        // Add text to overlay dialog box
-
-        // The time for a given datapoint
-        overlayDialogGroup.append("text")
-          .attr("class", "overlay-dialog-time")
-          .attr("x", overlayDialogWidth / 2)
-          .attr("y", overlayDialogTextMargin + overlayDialogTextSize - 4)
-          .attr("text-anchor", "middle")
-
-        // The count at a given datapoint
-        overlayDialogGroup.append("text")
-          .attr("class", "overlay-dialog-count")
-          .attr("x", overlayDialogWidth / 2)
-          .attr("y", overlayDialogHeight - overlayDialogTextMargin)
-          .attr("text-anchor", "middle")
-
-        //
-        // Merge
-        //
-
-        const mergingGroup = enteringGroup
-          .merge(overlaySelection)
-            .attr('transform', d => `translate(${d},0)`)
-
-        mergingGroup.select('circle')
-          .attr('cy', yScale(countAtPosition))
-
-        mergingGroup.select('.overlay-dialog')
-          .attr('transform', d => {
-            // Determine which side of the line to drap the popup dialog on.
-            let popupYCoord = yScale(countAtPosition) + overlayDialogDistanceToLine, popupXCoord;
-            if (d + overlayDialogWidth + overlayDialogBreakToLeftPadding > graphWidth) {
-              // Put popup on left if when on the right it would be off the svg.
-              popupXCoord = -overlayDialogWidth - overlayDialogDistanceToLine;
-            } else {
-              // Put popup on right by default.
-              popupXCoord = overlayDialogDistanceToLine;
-            }
-
-            // If the popup is being drawn outside of the svg when the user is looking at low counts,
-            // then raise up the popup to put it above the cursor.
-            if (popupYCoord + overlayDialogHeight + overlayDialogBreakToLeftPadding > graphHeight) {
-              popupYCoord -= overlayDialogHeight + overlayDialogDistanceToLine;
-            }
-
-            return `translate(${popupXCoord},${popupYCoord})`;
-          })
-
-        mergingGroup.select('.overlay-dialog-time')
-          .text(moment(timeAtPosition).format('h:mm A'))
-
-        mergingGroup.select('.overlay-dialog-count')
-          .text(props.adjusted ? `Adj: ${countAtPosition}` : countAtPosition)
-
-        //
-        // Exit
-        //
-
-        overlaySelection.exit()
-          .remove('.overlay-line');
-      }
     }
   }
 }
