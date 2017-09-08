@@ -281,13 +281,13 @@ export default function historicalCounts(elem) {
         .on('touchmove', showOverlay)
         .on('mousemove', showOverlay)
         .on('mouseout', () => {
-          // overlayGroup.call(updateOverlayLine,
-          //   xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
-          //   overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
-          //   overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
-          //   overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-          //   data, null
-          // );
+          overlayGroup.call(updateOverlayLine,
+            xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
+            overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
+            overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
+            overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
+            data, null
+          );
         });
     }
   }
