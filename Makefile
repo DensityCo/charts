@@ -40,6 +40,7 @@ $(CHART_PATH_DIST)/%.js: $(CHART_PATH_DIST)
 # ie, charts/$CHART/styles.scss => charts/$CHART/dist/{_styles.scss,styles.css}
 $(CHART_PATH_DIST)/styles.css: $(CHART_PATH_DIST)
 	cp $(CHART_PATH)/styles.scss $(CHART_PATH_DIST)/_styles.scss
+	cp $(CHART_PATH)/styles.scss $(CHART_PATH_DIST)/_sass.scss
 	$(NODE_SASS) $(CHART_PATH)/styles.scss > $@
 
 
