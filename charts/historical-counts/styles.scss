@@ -3,6 +3,7 @@ $historical-counts-font-size: 14px;
 
 /* X Axis */
 .historical-counts-axis-x .tick line { display: none; }
+.historical-counts-axis-x .domain { display: none; }
 .historical-counts-axis-x .tick text { 
   transform: translate(0, 10px);
   font-size: $historical-counts-font-size;
@@ -12,6 +13,10 @@ $historical-counts-font-size: 14px;
 .historical-counts-axis-y {
   transform: translate(-32px, (14px / 2));
   font-size: $historical-counts-font-size;
+}
+.axis-y-maximum-line {
+  stroke: #aaa;
+  transform: translate(32px, -5px);
 }
 
 // This path is the line that is rendered on the chart indicating the data to the user.
@@ -24,7 +29,7 @@ $historical-counts-font-size: 14px;
 .historical-counts-path-outline {
   shape-rendering: crispEdges;
   stroke: $historical-counts-brand-primary;
-  stroke-width: 2px;
+  stroke-width: 1px;
   fill: transparent;
 }
 
@@ -56,13 +61,12 @@ $historical-counts-font-size: 14px;
   fill: #4198ff;
 }
 
+
 // The overlay dialogs above and below the chart.
 .historical-counts-overlay-top, .historical-counts-overlay-bottom {
   fill: #fff;
-  stroke: #ddd;
+  stroke: #dedede;
   user-select: none;
-  -webkit-filter: drop-shadow( -5px -5px 5px #000 );
-  filter: drop-shadow( -5px -5px 5px #000 ); 
 }
 
 .historical-counts-overlay-bottom-text, .historical-counts-overlay-top-text {
@@ -70,4 +74,10 @@ $historical-counts-font-size: 14px;
   stroke: transparent;
   font-weight: 600;
   user-select: none;
+}
+
+.historical-counts-overlay-top-shadow,
+.historical-counts-overlay-bottom-shadow {
+  filter: url(#shadow-blur);
+  fill: rgba(0, 0, 0, 0.1);
 }

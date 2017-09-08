@@ -12,10 +12,12 @@ const DAYS_PER_WEEK = 7,
 const overlayDialogTopHeight = 43;
 const overlayDialogTopWidth = 72;
 const overlayDialogBottomHeight = 43;
-const overlayDialogBottomWidth = 186;
+const overlayDialogBottomWidth = 232;
 const overlayDialogTextSize = 16; // Size of the text
 const overlayDialogTextMargin = 12; // Y spacing between text and its container
 const overlayDialogBorderRadius = 4;
+const overlayDialogTopIconCenterOffset = 21;
+const overlayDialogTopTextCenterOffset = 12;
 
 const overlayDialogTopBottomMargin = 10;
 const overlayDialogBottomTopMargin = 48;
@@ -35,6 +37,12 @@ const overlayDialogBreakToLeftPadding = 20;
 // The count graph component
 export default function historicalCounts(elem) {
   const svg = d3.select(elem).append('svg').attr('class', 'historical-counts');
+
+  // Add filter for use in making shadows behind things.
+  svg.append('filter')
+    .attr('id', 'shadow-blur')
+    .append('feGaussianBlur')
+      .attr('stdDeviation', 5)
 
   const svgGroup = svg.append('g')
     .attr('transform', `translate(${leftMargin},${topMargin})`);
@@ -64,7 +72,7 @@ export default function historicalCounts(elem) {
   const overlayRect = svgGroup.append('g')
     .attr('class', 'overlay-rect');
 
-  return ({start, end, width, height, data, capacity, initialCount}) => {
+  return ({start, end, width, height, data, capacity, initialCount, timeZoneLabel, timeZoneOffset}) => {
     width = width || 800;
     height = height || 400;
     capacity = capacity || null;
@@ -109,8 +117,8 @@ export default function historicalCounts(elem) {
     const xScale = d3.scaleLinear()
       .rangeRound([graphWidth, 0])
       .domain([domainEnd, domainStart]);
-    const largestCount = Math.max.apply(Math, data.map(i => Math.max(i.count, initialCount)));
-    const smallestCount = Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount)));
+    const largestCount = data.length > 0 ? Math.max.apply(Math, data.map(i => Math.max(i.count, initialCount))) : 0;
+    const smallestCount = data.length > 0 ? Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount))) : 0;
     const yScale = d3.scaleLinear()
       .rangeRound([graphHeight - 10, 0])
       .domain([smallestCount, largestCount]);
@@ -190,7 +198,7 @@ export default function historicalCounts(elem) {
     // Render the y axis.
     axisGroup.call(
       require('./axis-y').default,
-      yScale,
+      yScale, graphWidth,
       smallestCount, largestCount, capacity
     );
 
@@ -200,7 +208,7 @@ export default function historicalCounts(elem) {
       .ticks(Math.floor(totalDuration / (MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND)))
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
-        const timeFormat = d3.timeFormat('%-I%p')(d);
+        const timeFormat = moment(d).add(timeZoneOffset, 'hours').format(`hA`);
         return timeFormat.slice(
           0, 
           timeFormat.startsWith('12') ? -1 : -2
@@ -253,28 +261,33 @@ export default function historicalCounts(elem) {
 
     // Draw the overlay line if there is any data
     if (data.length) {
+      function showOverlay() {
+        const mouseX = d3.mouse(overlayRect.node())[0];
+        overlayGroup.call(updateOverlayLine,
+          xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
+          overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
+          overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
+          overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
+          data, mouseX
+        );
+      }
       overlayRect.append('rect')
         .attr('x', -1 * leftMargin)
         .attr('y', -1 * topMargin)
         .attr('width', leftMargin + graphWidth + rightMargin)
         .attr('height', topMargin + graphHeight + bottomMargin)
         .attr('fill', 'transparent')
-        .on('mousemove', () => {
-          const mouseX = d3.mouse(overlayRect.node())[0];
-          overlayGroup.call(updateOverlayLine,
-            xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
-            overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
-            overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
-            data, mouseX
-          );
-        })
+        .on('touchstart', showOverlay)
+        .on('touchmove', showOverlay)
+        .on('mousemove', showOverlay)
         .on('mouseout', () => {
-          overlayGroup.call(updateOverlayLine,
-            xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
-            overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
-            overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
-            data, null
-          );
+          // overlayGroup.call(updateOverlayLine,
+          //   xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
+          //   overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
+          //   overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
+          //   overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
+          //   data, null
+          // );
         });
     }
   }

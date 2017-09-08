@@ -1,9 +1,11 @@
+const axisYMaximumLineDashWidth = 2;
+const axisYMaximumLineDashSpacing = 10;
+
 export default function yAxis(
   selection,
-  scale,
+  scale, graphWidth,
   smallestCount, largestCount, capacity
 ) {
-
   // Create a selection to create or update the axis.
   const yAxisSelection = selection.selectAll('.axis-y').data([
     // We want the axis to redraw if any of the below values change.
@@ -17,9 +19,9 @@ export default function yAxis(
 
   // Lebel the smallest value.
   yAxisEnterSelectionGroup.append('text')
-    .attr('class', 'axis-y-maximum')
-    .attr('y', scale(largestCount))
-    .text(largestCount)
+    .attr('class', 'axis-y-minimum')
+    .attr('y', scale(smallestCount))
+    .text(smallestCount)
 
   // Label the capacity, if a capacity was passed.
   if (capacity) {
@@ -31,9 +33,14 @@ export default function yAxis(
 
   // Label the largest value.
   yAxisEnterSelectionGroup.append('text')
-    .attr('class', 'axis-y-minimum')
-    .attr('y', scale(smallestCount))
-    .text(smallestCount)
+    .attr('class', 'axis-y-maximum')
+    .attr('y', scale(largestCount))
+    .text(largestCount)
+
+  // Add a dotted line horizontally at the maximum position
+  yAxisEnterSelectionGroup.append('path')
+    .attr('y', scale(largestCount))
+    .attr('class', 'axis-y-maximum-line')
 
   // When updating the axis, adjust the contents of each of the above labels as well as their
   // position along the axis.
@@ -50,4 +57,15 @@ export default function yAxis(
   yAxisMergeSelection.select('axis-y-maximum')
     .attr('y', scale(largestCount))
     .text(largestCount);
+
+  // Render a dotted line at the top-most item in the y axis.
+  yAxisEnterSelectionGroup.select('.axis-y-maximum-line')
+    .attr('y', scale(largestCount))
+    .attr('d', `M0,0${(function(graphWidth) {
+      let linePath = '';
+      for (let i = 0; i < graphWidth; i += axisYMaximumLineDashWidth + axisYMaximumLineDashSpacing) {
+        linePath += `H${i+axisYMaximumLineDashWidth} M${i+axisYMaximumLineDashWidth+axisYMaximumLineDashSpacing},0`;
+      }
+      return linePath;
+    })(graphWidth)}`)
 }
