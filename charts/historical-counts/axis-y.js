@@ -59,12 +59,12 @@ export default function yAxis(
     .text(largestCount);
 
   // Render a dotted line at the top-most item in the y axis.
-  yAxisEnterSelectionGroup.select('.axis-y-maximum-line')
-    .attr('y', scale(largestCount))
-    .attr('d', `M0,0${(function(graphWidth) {
+  const maximumLineYPos = scale(largestCount) - 2;
+  yAxisMergeSelection.select('.axis-y-maximum-line')
+    .attr('d', `M0,${maximumLineYPos} ${(function(graphWidth) {
       let linePath = '';
       for (let i = 0; i < graphWidth; i += axisYMaximumLineDashWidth + axisYMaximumLineDashSpacing) {
-        linePath += `H${i+axisYMaximumLineDashWidth} M${i+axisYMaximumLineDashWidth+axisYMaximumLineDashSpacing},0`;
+        linePath += `H${i+axisYMaximumLineDashWidth} M${i+axisYMaximumLineDashWidth+axisYMaximumLineDashSpacing},${maximumLineYPos}`;
       }
       return linePath;
     })(graphWidth)}`)
