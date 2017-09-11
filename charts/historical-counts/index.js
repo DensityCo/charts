@@ -55,6 +55,11 @@ export default function historicalCounts(elem) {
   const graphGroup = svgGroup.append('g')
     .attr('class', 'graph-group');
 
+  graphGroup.append('path')
+    .attr('class', 'historical-counts-path');
+  graphGroup.append('path')
+    .attr('class', 'historical-counts-path-outline');
+
   // The axes go in here.
   const axisGroup = svgGroup.append('g')
     .attr('class', 'axis-group');
@@ -124,7 +129,7 @@ export default function historicalCounts(elem) {
       .domain([smallestCount, capacity > largestCount ? capacity : largestCount]);
 
     const lastX = xScale(moment.min(domainEnd, moment.utc()));
-      const lastY = yScale(lastEvent.count);
+    const lastY = yScale(lastEvent.count);
 
 
     // Render capacity overlay behind the graph path, if a capacity was passed.
@@ -168,25 +173,10 @@ export default function historicalCounts(elem) {
       }
     }, '');
 
-    const graphSelection = graphGroup
-      .selectAll('.historical-counts-path')
-      .data([data]);
-
-    const graphEnterSelection = graphSelection.enter();
-    graphEnterSelection
-      .append('path')
-      .attr('class', 'historical-counts-path');
-    graphEnterSelection
-      .append('path')
-      .attr('class', 'historical-counts-path-outline');
-
-    const graphMergeSelection = graphEnterSelection.merge(graphSelection);
-      graphMergeSelection.select('.historical-counts-path')
-        .attr('d', d => pathPrefix + linePath + pathSuffix);
-      graphMergeSelection.select('.historical-counts-path-outline')
-        .attr('d', d => pathPrefix + linePath);
-
-    graphSelection.exit();
+    graphGroup.select('.historical-counts-path')
+      .attr('d', pathPrefix + linePath + pathSuffix);
+    graphGroup.select('.historical-counts-path-outline')
+      .attr('d', d => pathPrefix + linePath + `H${graphWidth}`);
 
 
 
@@ -259,36 +249,37 @@ export default function historicalCounts(elem) {
     flagSelection.exit().remove('.flag');
 
 
-    // Draw the overlay line if there is any data
-    if (data.length) {
-      function showOverlay() {
-        const mouseX = d3.mouse(overlayRect.node())[0];
+    function showOverlay() {
+      const mouseX = d3.mouse(overlayRect.node())[0];
+      overlayGroup.call(updateOverlayLine,
+        xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
+        overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
+        overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
+        overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
+        data, mouseX
+      );
+    }
+
+    if (overlayRect.selectAll('rect').size() === 0) {
+      overlayRect.append('rect').attr('fill', 'transparent');
+    }
+
+    overlayRect.select('rect')
+      .attr('x', -1 * leftMargin)
+      .attr('y', -1 * topMargin)
+      .attr('width', leftMargin + graphWidth + rightMargin)
+      .attr('height', topMargin + graphHeight + bottomMargin)
+      .on('touchstart', showOverlay)
+      .on('touchmove', showOverlay)
+      .on('mousemove', showOverlay)
+      .on('mouseout', () => {
         overlayGroup.call(updateOverlayLine,
           xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
           overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
           overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
           overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-          data, mouseX
+          data, null
         );
-      }
-      overlayRect.append('rect')
-        .attr('x', -1 * leftMargin)
-        .attr('y', -1 * topMargin)
-        .attr('width', leftMargin + graphWidth + rightMargin)
-        .attr('height', topMargin + graphHeight + bottomMargin)
-        .attr('fill', 'transparent')
-        .on('touchstart', showOverlay)
-        .on('touchmove', showOverlay)
-        .on('mousemove', showOverlay)
-        .on('mouseout', () => {
-          overlayGroup.call(updateOverlayLine,
-            xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
-            overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
-            overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
-            overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-            data, null
-          );
-        });
-    }
+      });
   }
 }

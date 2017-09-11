@@ -293,7 +293,10 @@ storiesOf('Historical Counts', module)
     class AddNewPointsToGraph extends React.Component {
       constructor(props) {
         super(props);
-        this.state = {data: []}
+        this.state = {data: [
+          {count: 1, timestamp: moment().subtract(2, 'second').toISOString()},
+          {count: 3, timestamp: moment().subtract(1, 'second').toISOString()},
+        ]}
       }
       componentDidMount() {
         let currentCount = 0;
@@ -309,8 +312,8 @@ storiesOf('Historical Counts', module)
         clearInterval(this.interval);
       }
       render() {
-        console.log('update', this.state.data);
-        return <HistoricalCounts data={this.state.data} />;
+        // console.log('update', this.state.data);
+        return <HistoricalCounts capacity={2} data={this.state.data} />;
       }
     }
     return <AddNewPointsToGraph />;
