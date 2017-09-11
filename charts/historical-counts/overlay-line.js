@@ -5,7 +5,8 @@ import moment from 'moment';
 const bisect = bisector(d => d.timestamp);
 
 export default function overlayLine(selection,
-  timeScale, countScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
+  timeScale, countScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
+  lastEvent, timeZoneLabel, timeZoneOffset,
   overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
   overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
   overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
@@ -22,8 +23,7 @@ export default function overlayLine(selection,
   if (
     mouseX === null ||
     data.length === 0 ||
-    timeAtPosition < domainStart || // Start bound
-    Math.min(domainEnd, now.valueOf()) < timeAtPosition // End bound
+    !(domainStart < timeAtPosition && timeAtPosition < lastEvent.timestamp) // Not inside of the graph's x range
   ) {
     selection.select('.historical-counts-overlay-line').remove();
     return

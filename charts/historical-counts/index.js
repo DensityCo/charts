@@ -132,7 +132,7 @@ export default function historicalCounts(elem) {
       .rangeRound([graphHeight - 10, 0])
       .domain([smallestCount, capacity > largestCount ? capacity : largestCount]);
 
-    const lastX = xScale(moment.min(domainEnd, moment.utc()));
+    const lastX = xScale(domainEnd);
     const lastY = yScale(lastEvent.count);
 
 
@@ -180,7 +180,7 @@ export default function historicalCounts(elem) {
     graphGroup.select('.historical-counts-path')
       .attr('d', pathPrefix + linePath + pathSuffix);
     graphGroup.select('.historical-counts-path-outline')
-      .attr('d', d => pathPrefix + linePath + `H${graphWidth}`);
+      .attr('d', pathPrefix + linePath + `H${graphWidth}`);
 
 
 
@@ -256,7 +256,8 @@ export default function historicalCounts(elem) {
     function showOverlay() {
       const mouseX = d3.mouse(overlayRect.node())[0];
       overlayGroup.call(updateOverlayLine,
-        xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
+        xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
+        lastEvent, timeZoneLabel, timeZoneOffset,
         overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
         overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
         overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
@@ -278,7 +279,8 @@ export default function historicalCounts(elem) {
       .on('mousemove', showOverlay)
       .on('mouseout', () => {
         overlayGroup.call(updateOverlayLine,
-          xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount, timeZoneLabel, timeZoneOffset,
+          xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
+          lastEvent, timeZoneLabel, timeZoneOffset,
           overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
           overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
           overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
