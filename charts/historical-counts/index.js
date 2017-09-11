@@ -170,7 +170,7 @@ export default function historicalCounts(elem) {
       // Step to the new point
       const xPosition = xScale(i.timestamp);
       const yPosition = yScale(i.count);
-      if (xPosition >= 0) {
+      if (xPosition > 0) {
         return `${total}H${xPosition}V${yPosition}`;
       } else {
         return total;
@@ -180,7 +180,7 @@ export default function historicalCounts(elem) {
     graphGroup.select('.historical-counts-path')
       .attr('d', pathPrefix + linePath + pathSuffix);
     graphGroup.select('.historical-counts-path-outline')
-      .attr('d', pathPrefix + linePath + `H${graphWidth}`);
+      .attr('d', `M0,${yScale(initialCount)}` + linePath + `H${graphWidth}`);
 
 
 
