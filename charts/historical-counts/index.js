@@ -83,13 +83,16 @@ export default function historicalCounts(elem) {
     capacity = capacity || null;
     initialCount = initialCount || 0;
 
-    // Convert the timestamp in each item into epoch milliseconds.
+    // Convert the timestamp in each item into epoch milliseconds, then sort the data to be
+    // oldest-timestamp first.
     data = (data || []).map(i => {
       if (i.timestamp instanceof moment) {
         return Object.assign({}, i, {timestamp: i.timestamp.valueOf()});
       } else {
         return Object.assign({}, i, {timestamp: moment.utc(i.timestamp).valueOf()});
       }
+    }).slice().sort((a, b) => {
+      return a.timestamp - b.timestamp;
     });
 
     const flags = [];
@@ -108,14 +111,15 @@ export default function historicalCounts(elem) {
     const graphWidth = width - leftMargin - rightMargin;
     const graphHeight = height - topMargin - bottomMargin;
 
+
     // Get first and last timestamps
-    const firstEvent = data.length && data[0];
-    const dataStart = firstEvent ? firstEvent.timestamp : moment.utc();
+    const firstEvent = data.length > 0 ? data[0] : null;
+    const dataStart = firstEvent ? firstEvent.timestamp : moment.utc().valueOf();
     const domainStart = start || dataStart;
 
-    const lastEvent = data.length && data[data.length - 1];
+    const lastEvent = data.length > 0 ? data[data.length - 1] : null;
     const lastCount = lastEvent ? lastEvent.count : 0;
-    const dataEnd = lastEvent ? lastEvent.timestamp : moment.utc();
+    const dataEnd = lastEvent ? lastEvent.timestamp : moment.utc().valueOf();
     const domainEnd = end || dataEnd;
 
     // Construct scales
