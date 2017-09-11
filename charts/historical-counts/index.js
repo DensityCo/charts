@@ -121,7 +121,7 @@ export default function historicalCounts(elem) {
     const smallestCount = data.length > 0 ? Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount))) : 0;
     const yScale = d3.scaleLinear()
       .rangeRound([graphHeight - 10, 0])
-      .domain([smallestCount, largestCount]);
+      .domain([smallestCount, capacity > largestCount ? capacity : largestCount]);
 
     const lastX = xScale(moment.min(domainEnd, moment.utc()));
       const lastY = yScale(lastEvent.count);

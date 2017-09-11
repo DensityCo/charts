@@ -55,6 +55,16 @@ storiesOf('Historical Counts', module)
       timeZoneLabel="ET"
     />
   ))
+  .add(`With a capacity bigger than the data region`, () => (
+    <HistoricalCounts
+      data={uncompressData(partialDayOfData)}
+      start={moment("2017-03-29T12:00:00.000Z")}
+      end={moment("2017-03-30T12:00:00.000Z")}
+      timeZoneOffset={-5}
+      timeZoneLabel="ET"
+      capacity={100}
+    />
+  ))
   .add(`Without timezone info`, () => (
     <HistoricalCounts
       data={uncompressData(partialDayOfData)}
