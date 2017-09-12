@@ -171,7 +171,7 @@ export default function overlayLine(selection,
     });
 
   enteringGroup.select('.historical-counts-overlay-bottom-text')
-    .text(moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(`hh:mm A[${timeZoneLabel ? ` (${timeZoneLabel}) ` : ' '}]ddd MMM YY`));
+    .text(moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(`hh:mm A[${timeZoneLabel ? ` (${timeZoneLabel}) ` : ' '}]ddd MMM DD`));
 
   enteringGroup.select('.historical-counts-overlay-top-text')
     .attr('transform', `translate(${overlayDialogTopTextCenterOffset},0)`)
