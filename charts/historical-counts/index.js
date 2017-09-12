@@ -209,7 +209,7 @@ export default function historicalCounts(elem) {
       .tickValues(d3.range(firstHourMark, domainEnd, MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND))
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
-        const timeFormat = moment(d).add(timeZoneOffset, 'hours').format(`hA`);
+        const timeFormat = moment.utc(d).add(timeZoneOffset, 'hours').format(`hA`);
         return timeFormat.slice(
           0, 
           timeFormat.startsWith('12') ? -1 : -2
