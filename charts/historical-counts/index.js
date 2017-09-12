@@ -170,7 +170,11 @@ export default function historicalCounts(elem) {
       // Step to the new point
       const xPosition = xScale(i.timestamp);
       const yPosition = yScale(i.count);
-      if (xPosition > 0) {
+      if (xPosition == 0) {
+        // For the first plotted point, don't draw an outline on the left edge.
+        return `${total}M0,${yPosition}`;
+      } else if (xPosition > 0) {
+        // Plot each point my moving horizontally then vertically.
         return `${total}H${xPosition}V${yPosition}`;
       } else {
         return total;
@@ -197,9 +201,12 @@ export default function historicalCounts(elem) {
     );
 
 
-    const totalDuration = domainEnd - domainStart;
+    // Get the first tick mark's lovation on the chart's x axis.
+    const firstHourMark = moment.utc(domainStart).startOf('hour').valueOf();
     const xAxis = d3.axisBottom(xScale)
-      .ticks(Math.floor(totalDuration / (MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND)))
+      // Position a tick at the first whole hour on the axis, then another tick for each hour
+      // thereafter.
+      .tickValues(d3.range(firstHourMark, domainEnd, MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND))
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
         const timeFormat = moment(d).add(timeZoneOffset, 'hours').format(`hA`);
