@@ -1,7 +1,7 @@
 {
-  "name": "@density/chart-real-time-count",
-  "version": "1.0.2",
-  "description": "Real time count chart",
+  "name": "@density/chart-daily-metrics",
+  "version": "0.0.1",
+  "description": "Daily Metrics chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
   "scss": "dist/_styles.scss",
@@ -11,10 +11,7 @@
   "author": "Density <team+javascript@density.io>",
   "license": "MIT",
   "dependencies": {
-    "classnames": "^2.2.5",
-    "d3": "^4.8.0",
-    "moment": "^2.18.1",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "d3": "^4.10.2",
+    "moment": "^2.18.1"
   }
 }
