@@ -39,10 +39,13 @@ export default function historicalCounts(elem) {
   const svg = d3.select(elem).append('svg').attr('class', 'historical-counts');
 
   // Add filter for use in making shadows behind things.
-  svg.append('filter')
+  const filter = svg.append('filter')
     .attr('id', 'shadow-blur')
-    .append('feGaussianBlur')
-      .attr('stdDeviation', 5)
+  filter.append('feGaussianBlur')
+    .attr('stdDeviation', 4)
+  filter.append('feOffset')
+    .attr('dx', 0)
+    .attr('dy', 2)
 
   const svgGroup = svg.append('g')
     .attr('transform', `translate(${leftMargin},${topMargin})`);
