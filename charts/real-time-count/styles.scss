@@ -14,8 +14,8 @@
   display: flex;
   list-style-type: none;
   padding-left: 0px;
-  margin-left: 1em;
-  margin-right: 1em;
+  margin-left: 15px;
+  margin-right: 15px;
   position: absolute;
   bottom: 0px;
   left: 0px;
@@ -26,7 +26,7 @@
   flex: 1;
   font-weight: 600;
   font-size: 0.85em;
-  color: #FFF;
+  color: #8E9299;
 }
 .real-time-capacity-labels-item:first-child { text-align: left; }
 .real-time-capacity-labels-item:last-child { text-align: right; }
@@ -54,16 +54,17 @@
 
 .real-time-capacity-legend {
   position: absolute;
-  top: 1.4em;
-  right: 1em;
+  top: 15px;
+  right: 15px;
   font-size: 0.85em;
   font-weight: 600;
+  color: #8E9299;
 }
 
 .real-time-capacity-legend .real-time-capacity-count-marker {
   display: inline-block;
   margin-left: 1em;
-  margin-right: 0.8em;
+  margin-right: 0.6em;
 
   position: relative;
   top: -2px;

@@ -15,7 +15,7 @@ const eventMarkerSpacingFromMidLine = 5; // Spacing between the event marker and
 const eventMarkerInfoPopupHeight = 20; // Height of the info popup, not including the pointer.
 const eventMarkerInfoPopupWidth = 20; // Width of the info popup that shows if more than one event happened.
 const eventMarkerInfoPopupSpacingFromMarker = 10; // Spacing between the info popup and the event marker.
-const eventMarkerInfoPopupCaretWidth = 4;
+const eventMarkerInfoPopupCaretWidth = 5;
 const cardHeightInPx = 162;
 const graphDurationInMin = 1;
 
@@ -251,7 +251,7 @@ export default function ingressEgress(elem) {
             // Move to the upper left corner of the caret.
             `M ${caretXPosition} ${eventMarkerInfoPopupHeight}`,
             // Move to the bottom point of the caret.
-            `L ${caretXPosition + (eventMarkerInfoPopupCaretWidth / 2)} ${eventMarkerInfoPopupHeight + eventMarkerInfoPopupCaretWidth}`,
+            `L ${caretXPosition + (eventMarkerInfoPopupCaretWidth / 2)} ${eventMarkerInfoPopupHeight + eventMarkerInfoPopupCaretWidth / 2}`,
             // Move to the upper right of the caret.
             `L ${caretXPosition + eventMarkerInfoPopupCaretWidth} ${eventMarkerInfoPopupHeight}`,
           ].join(' ')
@@ -261,7 +261,7 @@ export default function ingressEgress(elem) {
             // Move to the lower left corner of the caret.
             `M ${caretXPosition} 0`,
             // Move to the top point of the caret.
-            `L ${caretXPosition + (eventMarkerInfoPopupCaretWidth / 2)} ${-1 * eventMarkerInfoPopupCaretWidth}`,
+            `L ${caretXPosition + (eventMarkerInfoPopupCaretWidth / 2)} ${-1 * eventMarkerInfoPopupCaretWidth / 2}`,
             // Move to the upper right of the caret.
             `L ${caretXPosition + eventMarkerInfoPopupCaretWidth} 0`,
           ].join(' ')
