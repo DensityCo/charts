@@ -46,7 +46,7 @@ export default function dailyMetrics(elem, props={}) {
       .attr("transform", "translate(0," + graphHeight + ")")
       .call(d3.axisBottom(xScale));
     yAxisGroup
-      .call(d3.axisLeft(yScale).ticks(10));
+      .call(d3.axisLeft(yScale).ticks(10).tickFormat(d3.format("d")));
 
     const dataSelection = g.selectAll(".daily-metrics-bar-group").data(data);
 
