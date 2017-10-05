@@ -135,7 +135,7 @@ export default function historicalCounts(elem) {
       .rangeRound([graphHeight - 10, 0])
       .domain([smallestCount, capacity > largestCount ? capacity : largestCount]);
 
-    const lastX = xScale(domainEnd);
+    const lastX = xScale(dataEnd);
     const lastY = yScale(lastEvent.count);
 
 
@@ -187,7 +187,7 @@ export default function historicalCounts(elem) {
     graphGroup.select('.historical-counts-path')
       .attr('d', pathPrefix + linePath + pathSuffix);
     graphGroup.select('.historical-counts-path-outline')
-      .attr('d', `M0,${yScale(initialCount)}` + linePath + `H${graphWidth}`);
+      .attr('d', `M0,${yScale(initialCount)}` + linePath + `H${lastX}`);
 
 
 
