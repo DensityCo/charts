@@ -25,11 +25,6 @@ $daily-metrics-brand-primary: #4198FF;
   font-weight: 300;
 }
 
-// Y Axis
-.daily-metrics-axis-y .domain { display: none; }
-.daily-metrics-axis-y .tick { display: none; }
-.daily-metrics-axis-y .tick line { display: none; }
-
 // Move all y axis labels to the right and up a bit.
 .daily-metrics-axis-y { transform: translate(10px, -7px); }
 

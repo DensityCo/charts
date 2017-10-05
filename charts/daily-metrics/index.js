@@ -2,7 +2,7 @@ import moment from 'moment';
 import * as d3 from 'd3';
 import './styles.scss';
 
-const margin = {top: 50, right: 20, bottom: 30, left: 50};
+const margin = {top: 50, right: 20, bottom: 30, left: 20};
 
 export default function dailyMetrics(elem, props={}) {
   const svg = d3.select(elem).append('svg')
@@ -13,9 +13,6 @@ export default function dailyMetrics(elem, props={}) {
 
   const xAxisGroup = g.append("g")
     .attr("class", "daily-metrics-axis daily-metrics-axis-x");
-
-  const yAxisGroup = g.append("g")
-    .attr("class", "daily-metrics-axis daily-metrics-axis-y");
 
   return ({data, width, height}) => {
     svg
@@ -45,8 +42,6 @@ export default function dailyMetrics(elem, props={}) {
     xAxisGroup
       .attr("transform", "translate(0," + graphHeight + ")")
       .call(d3.axisBottom(xScale));
-    yAxisGroup
-      .call(d3.axisLeft(yScale).ticks(10).tickFormat(d3.format("d")));
 
     const dataSelection = g.selectAll(".daily-metrics-bar-group").data(data);
 
