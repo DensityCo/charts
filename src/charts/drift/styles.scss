@@ -1,0 +1,70 @@
+$brand-primary: #4198ff;
+
+.graph-drift {
+  font-family: 'Avenir Next', Helvetica, sans-serif
+}
+
+.graph-drift .axis .domain {
+  display: none
+}
+
+.graph-drift .axis text {
+  font-size: 1.5em;
+  fill: #222A2E;
+  font-weight: 400;
+  transform: translateY(-10px);
+  text-align: left;
+}
+
+.graph-drift .axis-x .tick text {
+  transform: translateY(1em)
+}
+
+.graph-drift .axis-x .tick line {
+  stroke-dasharray: 2 6;
+  stroke-linecap: square;
+  stroke-width: 1px;
+  stroke: #B4B8BF
+}
+
+.graph-drift .axis-y .tick line {
+  display: none
+}
+
+.graph-drift .mid-line {
+  shape-rendering: crispEdges;
+}
+
+.graph-drift .bar {
+  width: 100%;
+
+  .hover-detector {
+    fill: transparent;
+  }
+
+  // The actual bar part of the graph
+  .bar-path {
+    // shape-rendering: crispEdges;
+    fill: #cbcfd6;
+  }
+  &.active .bar-path {
+    fill: $brand-primary;
+  }
+
+  // The text label for the bar. It shows on hover.
+  text { display: none; }
+  &.active text {
+    display: block;
+    font-weight: 500;
+    fill: #4f5457;
+    alignment-baseline: middle;
+
+    // Draw the label on the right or the left, depending on which way the bar goes.
+    &.label-right {
+      text-anchor: start;
+    }
+    &.label-left {
+      text-anchor: end;
+    }
+  }
+}

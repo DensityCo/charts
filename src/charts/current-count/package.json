@@ -1,0 +1,17 @@
+{
+  "name": "@density/chart-current-count",
+  "version": "0.2.5",
+  "description": "Current Count chart",
+  "main": "dist/index.js",
+  "style": "dist/styles.css",
+  "scss": "dist/_styles.scss",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Density <team+javascript@density.io>",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  }
+}

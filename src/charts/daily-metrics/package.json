@@ -1,0 +1,17 @@
+{
+  "name": "@density/chart-daily-metrics",
+  "version": "0.2.0",
+  "description": "Daily Metrics chart",
+  "main": "dist/index.js",
+  "style": "dist/styles.css",
+  "scss": "dist/_styles.scss",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Density <team+javascript@density.io>",
+  "license": "MIT",
+  "dependencies": {
+    "d3": "^4.10.2",
+    "moment": "^2.18.1"
+  }
+}

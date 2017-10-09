@@ -1,0 +1,17 @@
+{
+  "name": "@density/chart-drift",
+  "version": "1.2.1",
+  "description": "Drift chart",
+  "main": "dist/index.js",
+  "style": "dist/styles.css",
+  "scss": "dist/_styles.scss",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Density <team+javascript@density.io>",
+  "license": "MIT",
+  "dependencies": {
+    "d3": "^4.7.4",
+    "moment": "^2.18.1"
+  }
+}

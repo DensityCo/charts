@@ -1,0 +1,81 @@
+.card-dark {
+  background-color: #222A2E;
+  color: #F5F6F7;
+}
+
+.ingress-egress-card {
+  height: 162px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.real-time-capacity-labels {
+  display: flex;
+  list-style-type: none;
+  padding-left: 0px;
+  margin-left: 15px;
+  margin-right: 15px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+
+}
+.real-time-capacity-labels-item {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.85em;
+  color: #8E9299;
+}
+.real-time-capacity-labels-item:first-child { text-align: left; }
+.real-time-capacity-labels-item:last-child { text-align: right; }
+
+.real-time-capacity-mid-line {
+  stroke-width: 1;
+  stroke: #4A5159;
+}
+
+
+
+
+.real-time-capacity-count-marker {
+  border-radius: 50%;
+}
+.real-time-capacity-count-marker.in {
+  fill: #4198ff;
+  background-color: #4198ff;
+}
+.real-time-capacity-count-marker.out {
+  fill: #fff;
+  background-color: #fff;
+}
+
+
+.real-time-capacity-legend {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #8E9299;
+}
+
+.real-time-capacity-legend .real-time-capacity-count-marker {
+  display: inline-block;
+  margin-left: 1em;
+  margin-right: 0.6em;
+
+  position: relative;
+  top: -2px;
+}
+
+.real-time-capacity-info.hidden { display: none; }
+.real-time-capacity-info-content { fill: #fff; }
+.real-time-capacity-info-pointer { fill: #fff; }
+
+.real-time-capacity-info-content-label {
+  fill: #31383c;
+  font-size: 12px;
+  font-weight: bold;
+}
