@@ -1,1 +1,0 @@
-../charts/ingress-egress/story.js

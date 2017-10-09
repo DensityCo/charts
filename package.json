@@ -1,19 +1,45 @@
 {
-  "name": "cra-example",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-scripts": "1.0.14"
-  },
+  "name": "@density/charts",
+  "version": "0.3.8",
+  "description": "A bunch of charts we use in all of our dashboards",
+  "main": "charts/dist/index.js",
   "scripts": {
-    "start": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "start": "npm run storybook",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "storybook": "start-storybook -p 6006 -c .storybook",
+    "build-storybook": "build-storybook",
+    "install-all": "for i in $(find charts/* -type d ! -path '*node_modules*' ! -name 'template' ); do cd $i && yarn && cd -; done",
+    "clean-all": "rm -rf ./node_modules && rm -rf charts/*/node_modules/"
+  },
+  "keywords": [
+    "charts",
+    "react",
+    "graph",
+    "density"
+  ],
+  "author": "Density <team+javascript@density.io>",
+  "license": "MIT",
+  "dependencies": {
+    "@density/node-sass-json-importer": "^4.1.0",
+    "create-react-class": "^15.5.2",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-scripts": "1.0.14"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.2.12",
     "@storybook/addon-links": "^3.2.12",
-    "@storybook/react": "3.1.3"
+    "@storybook/react": "3.1.3",
+    "babel-cli": "^6.24.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "css-loader": "^0.28.1",
+    "moment": "^2.18.1",
+    "node-sass": "^4.5.2",
+    "react-dom": "^15.4.2",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.17.0",
+    "webpack": "^2.3.2"
   }
 }
