@@ -19,6 +19,9 @@ const eventMarkerInfoPopupCaretWidth = 5;
 const cardHeightInPx = 162;
 const graphDurationInMin = 1;
 
+// The Sailec font doesn't have a properly aligned baseline! Offset it manually :(
+const sailecBaselineOffset = 3;
+
 // Generate the proper time label for each fraction of the total time
 function getTimeLabel(graphDurationInMin, fraction) {
   return graphDurationInMin * fraction >= 1 ?
@@ -239,7 +242,7 @@ export default function ingressEgress(elem) {
 
         // add `eventMarkerInfoPopupHeight` to the y position to make the text be positioned from
         // the top of the container, not the bottom.
-        return `translate(${centeredXPosition}, ${centeredYPosition + eventMarkerInfoPopupHeight})`
+        return `translate(${centeredXPosition}, ${centeredYPosition + eventMarkerInfoPopupHeight - sailecBaselineOffset})`
       });
 
     const caretXPosition = (eventMarkerInfoPopupWidth - eventMarkerInfoPopupCaretWidth) / 2;
