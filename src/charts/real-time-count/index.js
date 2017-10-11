@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
-import * as moment from 'moment';
-import * as classnames from 'classnames';
+import moment from 'moment';
+import classnames from 'classnames';
 
 import './styles.scss';
 
