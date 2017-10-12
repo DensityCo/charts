@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
-import * as moment from 'moment';
-import * as classnames from 'classnames';
+import moment from 'moment';
+import classnames from 'classnames';
 
 import './styles.scss';
 
@@ -136,7 +136,7 @@ export default function ingressEgress(elem) {
     // Construct a scale for drawing the time series, which converts from
     // [0, 1 minute ago] to [width, 0]. Ie, if the timedelta is 
     const timeScale = d3.scaleLinear()
-      .rangeRound([graphWidth, 0])
+      .range([graphWidth, 0])
       .domain([0, graphDurationInMin * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND]);
 
     // Calculate the locations of each marker to plot. Then:
