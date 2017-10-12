@@ -16,7 +16,7 @@ const eventMarkerInfoPopupHeight = 20; // Height of the info popup, not includin
 const eventMarkerInfoPopupWidth = 20; // Width of the info popup that shows if more than one event happened.
 const eventMarkerInfoPopupSpacingFromMarker = 10; // Spacing between the info popup and the event marker.
 const eventMarkerInfoPopupCaretWidth = 5;
-const cardHeightInPx = 162;
+const cardHeightInPx = 160;
 const graphDurationInMin = 1;
 
 // The Sailec font doesn't have a properly aligned baseline! Offset it manually :(
