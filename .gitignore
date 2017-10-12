@@ -2,6 +2,7 @@ node_modules/
 charts/*/node_modules/
 .DS_Store
 npm-debug.log
-dist/
+charts/*/dist/
+src/charts/*/dist/
 *.sw*
 storybook-static/
