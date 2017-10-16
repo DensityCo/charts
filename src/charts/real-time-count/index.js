@@ -149,7 +149,7 @@ export default function ingressEgress(elem) {
     const indicatorLocations = getIndicatorLocations(events).map(i => Object.assign({}, i, {
       timedelta: now.valueOf() - i.timestamp.valueOf(),
     })).filter(i => {
-      return timeScale(i.timedelta) > 0;
+      return timeScale(i.timedelta) > -1 * eventMarkerInfoPopupWidth / 2;
     })
 
     // Render data in the chart.
