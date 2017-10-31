@@ -49,7 +49,7 @@ jobs:
               echo "================"
               echo " @density/charts"
               echo "================"
-              make charts/dist/index.js                CHART=drift
+              make dist/index.js                CHART=drift
               set +e
               npm publish --access public
               set -e
