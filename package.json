@@ -21,6 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "@density/node-sass-json-importer": "^4.1.0",
+    "@density/ui": "^4.8.1",
     "create-react-class": "^15.5.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
