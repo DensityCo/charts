@@ -106,7 +106,7 @@ export default function ingressEgress(elem) {
     .attr('height', '100%')
 
   // Render the line down the middle
-  svg.append('line')
+  const midLine = svg.append('line')
     .attr('class', 'real-time-capacity-mid-line')
     .attr('x1', '0')
     .attr('y1', '50%')
@@ -130,8 +130,9 @@ export default function ingressEgress(elem) {
   return ({events}) => {
     const now = moment.utc();
 
-    // Get the graph's width from the bounding box of the svg.
-    const graphWidth = svg.node().getBBox().width;
+    // Get the graph's width from the bounding box of the midline.
+    // This was using the svg's bounding box, but it would expand when data went off the end.
+    const graphWidth = midLine.node().getBBox().width;
 
     // Construct a scale for drawing the time series, which converts from
     // [0, 1 minute ago] to [width, 0]. Ie, if the timedelta is 
@@ -148,7 +149,7 @@ export default function ingressEgress(elem) {
     const indicatorLocations = getIndicatorLocations(events).map(i => Object.assign({}, i, {
       timedelta: now.valueOf() - i.timestamp.valueOf(),
     })).filter(i => {
-      return timeScale(i.timedelta) > 0;
+      return timeScale(i.timedelta) > -1 * eventMarkerInfoPopupWidth / 2;
     })
 
     // Render data in the chart.
