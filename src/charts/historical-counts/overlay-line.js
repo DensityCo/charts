@@ -10,12 +10,19 @@ export default function overlayLine(selection,
   overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
   overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
   overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-  data, mouseX
+  data, mouseX, snapInterval
 ) {
   const now = moment.utc();
 
   // Calculate, given a mouse X coordinate, the count and time at that x coordinate.
-  const timeAtPosition = timeScale.invert(mouseX); // The time the user is hovering over, as a number.
+  let timeAtPosition = timeScale.invert(mouseX); // The time the user is hovering over, as a number.
+
+  // If a `snapInterval` was passed, snap at intervals of `snapInterval` milliseconds
+  if (snapInterval > 0) {
+    timeAtPosition = timeAtPosition - (timeAtPosition % snapInterval);
+    mouseX = timeScale(timeAtPosition);
+  }
+
   const itemIndexAtOverlayPosition = bisect.right(data, timeAtPosition) - 1; // Where on the line is that time?
 
   // If the mouse position was null, or the user moved their mouse outside of the visible section of
@@ -170,8 +177,29 @@ export default function overlayLine(selection,
       return `translate(${phaseShift},0)`;
     });
 
+  // The date to render in the bottom label for the chart.
+  const dateLabel = moment.utc(timeAtPosition)
+    .add(timeZoneOffset, 'hours')
+    .format(`[${timeZoneLabel ? ` (${timeZoneLabel}) ` : ' '}] ddd MMM DD`);
+  
+  // If snapping, format a time representation for the start of the snap interval and the end of the
+  // snap interval. If not snapping, format a represnetation for the time that the cursor is over.
+  const startTimeLabel = moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(`hh:mm A`);
+  let endTimeLabel;
+  if (snapInterval > 0) {
+    endTimeLabel = moment.utc(timeAtPosition)
+      .add(timeZoneOffset, 'hours')
+      .add(snapInterval, 'milliseconds')
+      .format(`hh:mm A`);
+  }
+
+  // Set the contents of the bottom overlay, given the above formatted timestamp calculations.
   enteringGroup.select('.historical-counts-overlay-bottom-text')
-    .text(moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(`hh:mm A[${timeZoneLabel ? ` (${timeZoneLabel}) ` : ' '}]ddd MMM DD`));
+    .text(
+      snapInterval > 0 ?
+      `${startTimeLabel} - ${endTimeLabel} ${dateLabel}` : // Snapping
+        `${startTimeLabel} ${dateLabel}` // No snapping
+    );
 
   enteringGroup.select('.historical-counts-overlay-top-text')
     .attr('transform', `translate(${overlayDialogTopTextCenterOffset},0)`)

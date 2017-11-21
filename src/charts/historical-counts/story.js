@@ -80,6 +80,15 @@ storiesOf('Historical Counts', module)
       timeZoneLabel="ET"
     />
   ))
+  .add(`With snapping at 2 minute intervals`, () => (
+    <HistoricalCounts
+      data={uncompressData(partialDayOfData)}
+      capacity={5}
+      timeZoneOffset={-5}
+      timeZoneLabel="ET"
+      snapInterval={2 * 60 * 1000} /* In miliseconds */
+    />
+  ))
   .add(`With only a partial day's worth of data, and a start / end time.
         Notice that the overlay line only shows when hovering over the data, and not the whitespace.`, () => (
     <HistoricalCounts

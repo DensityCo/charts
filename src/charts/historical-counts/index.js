@@ -12,7 +12,7 @@ const DAYS_PER_WEEK = 7,
 const overlayDialogTopHeight = 43;
 const overlayDialogTopWidth = 72;
 const overlayDialogBottomHeight = 43;
-const overlayDialogBottomWidth = 232;
+const overlayDialogBottomWidth = 310;
 const overlayDialogTextSize = 16; // Size of the text
 const overlayDialogTextMargin = 12; // Y spacing between text and its container
 const overlayDialogBorderRadius = 4;
@@ -80,11 +80,23 @@ export default function historicalCounts(elem) {
   const overlayRect = svgGroup.append('g')
     .attr('class', 'overlay-rect');
 
-  return ({start, end, width, height, data, capacity, initialCount, timeZoneLabel, timeZoneOffset}) => {
+  return ({
+    start,
+    end,
+    width,
+    height,
+    data,
+    capacity,
+    initialCount,
+    timeZoneLabel,
+    timeZoneOffset,
+    snapInterval,
+  }) => {
     width = width || 800;
     height = height || 400;
     capacity = capacity || null;
     initialCount = initialCount || 0;
+    snapInterval = snapInterval || 0; /* Default to no snapping */
 
     // Convert the timestamp in each item into epoch milliseconds, then sort the data to be
     // oldest-timestamp first.
@@ -271,7 +283,7 @@ export default function historicalCounts(elem) {
         overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
         overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
         overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-        data, mouseX
+        data, mouseX, snapInterval
       );
     }
 
