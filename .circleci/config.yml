@@ -4,6 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:6.11
+    resource_class: small
     steps:
       - checkout
       - run:
