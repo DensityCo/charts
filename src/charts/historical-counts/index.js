@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 import updateOverlayLine from './overlay-line';
 
 const DAYS_PER_WEEK = 7,
+      HOURS_PER_DAY = 24,
       MINUTES_PER_HOUR = 60,
       SECONDS_PER_MINUTE = 60,
       MILLISECONDS_PER_SECOND = 1000;
@@ -80,7 +81,7 @@ export default function historicalCounts(elem) {
   const overlayRect = svgGroup.append('g')
     .attr('class', 'overlay-rect');
 
-  return ({start, end, width, height, data, capacity, initialCount, timeZoneLabel, timeZoneOffset}) => {
+  return ({start, end, width, height, data, capacity, initialCount, timeZoneLabel, timeZoneOffset, xAxisResolution}) => {
     width = width || 800;
     height = height || 400;
     capacity = capacity || null;
@@ -206,18 +207,45 @@ export default function historicalCounts(elem) {
 
     // Get the first tick mark's lovation on the chart's x axis.
     const firstHourMark = moment.utc(domainStart).startOf('hour').valueOf();
-    const xAxis = d3.axisBottom(xScale)
+
+    // Figure out how much time to put between ticks. Defaults to an hour.
+    xAxisResolution = xAxisResolution || 'hour';
+    let xAxisTimeBetweenTicks = MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+    if (xAxisResolution === 'day') {
+      xAxisTimeBetweenTicks *= HOURS_PER_DAY;
+    }
+    if (xAxisResolution === 'week') {
+      xAxisTimeBetweenTicks *= (DAYS_PER_WEEK * HOURS_PER_DAY);
+    }
+
+    let xAxis = d3.axisBottom(xScale)
       // Position a tick at the first whole hour on the axis, then another tick for each hour
       // thereafter.
-      .tickValues(d3.range(firstHourMark, domainEnd, MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND))
+      .tickValues(d3.range(firstHourMark, domainEnd, xAxisTimeBetweenTicks))
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
-        const timeFormat = moment.utc(d).add(timeZoneOffset, 'hours').format(`hA`);
-        return timeFormat.slice(
-          0, 
-          timeFormat.startsWith('12') ? -1 : -2
-        ).toLowerCase();
+        if (xAxisResolution === 'hour') {
+          // "5a" or "8p"
+          const timeFormat = moment.utc(d).add(timeZoneOffset, 'hours').format(`hA`);
+          return timeFormat.slice(
+            0, 
+            timeFormat.startsWith('12') ? -1 : -2
+          ).toLowerCase();
+        } else if (xAxisResolution === 'day') {
+          // "12"
+          return moment.utc(d).add(timeZoneOffset, 'hours').format(`DD`);
+        } else if (xAxisResolution === 'week') {
+          // "05/12"
+          return moment.utc(d).add(timeZoneOffset, 'hours').format(`MM/DD`);
+        }
       });
+
+    // Allow setting explicitly the number of axes on the x axis
+    // if (typeof xAxisTickNumber === 'number') {
+    //   console.log('TICK NUMBER', xAxisTickNumber)
+    //   xAxis = xAxis.ticks(xAxisTickNumber)
+    // }
+
     axisGroup.append("g")
       .attr("class", 'historical-counts-axis-x')
       .attr("transform", `translate(0,${graphHeight})`)
