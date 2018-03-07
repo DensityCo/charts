@@ -34,6 +34,11 @@ such as a React or Angular app, then check out [our companion helper library](ht
 
 - `initialCount` *(optional)* An integer to specify what the count was before the first event. Defaults to 0.
 
+- `xAxisResolution` *(optional)* A value of either `hour` (the default), `day`, or `week`. This
+  value determines the distance between ticks on the x axis. This is important because for large
+  time spans, a value of `hour` will produce too many labels and they will all collide into a big
+  blob. Not good.
+
 # How this chart is structured
 ```
 .
