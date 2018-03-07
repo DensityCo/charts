@@ -10,7 +10,7 @@ export default function overlayLine(selection,
   overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
   overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
   overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-  data, mouseX
+  data, mouseX, xAxisResolution
 ) {
   const now = moment.utc();
 
@@ -170,8 +170,14 @@ export default function overlayLine(selection,
       return `translate(${phaseShift},0)`;
     });
 
+  // Decide how to format the time shown in the lower panel on the hover overlay.
+  let timeFormat = `hh:mm A[${timeZoneLabel ? ` (${timeZoneLabel}) ` : ' '}]ddd MMM DD`;
+  if (xAxisResolution === 'day' || xAxisResolution === 'week') {
+    timeFormat = `ddd MM DD`;
+  }
+
   enteringGroup.select('.historical-counts-overlay-bottom-text')
-    .text(moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(`hh:mm A[${timeZoneLabel ? ` (${timeZoneLabel}) ` : ' '}]ddd MMM DD`));
+    .text(moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(timeFormat));
 
   enteringGroup.select('.historical-counts-overlay-top-text')
     .attr('transform', `translate(${overlayDialogTopTextCenterOffset},0)`)

@@ -299,7 +299,7 @@ export default function historicalCounts(elem) {
         overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
         overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
         overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-        data, mouseX
+        data, mouseX, xAxisResolution
       );
     }
 
