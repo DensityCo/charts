@@ -173,7 +173,7 @@ export default function overlayLine(selection,
   // Decide how to format the time shown in the lower panel on the hover overlay.
   let timeFormat = `hh:mm A[${timeZoneLabel ? ` (${timeZoneLabel}) ` : ' '}]ddd MMM DD`;
   if (xAxisResolution === 'day' || xAxisResolution === 'week') {
-    timeFormat = `ddd MM DD`;
+    timeFormat = `ddd MMM DD`;
   }
 
   enteringGroup.select('.historical-counts-overlay-bottom-text')
