@@ -23,6 +23,14 @@ such as a React or Angular app, then check out [our companion helper library](ht
 ## Properties
 - `events`: An array of `{countChange: <direction of count change>, timestamp: <iso 8601 timestamp, epoch, or moment>}` objects.
 
+- `eventMarkerRadius`: The event marker radius (the dots on the graph) in px
+- `eventMarkerSpacingFromMidLine`: Spacing between the event marker and the middle line
+- `eventMarkerInfoPopupHeight`: Height of the info popup, not including the pointer.
+- `eventMarkerInfoPopupWidth`: Width of the info popup that shows if more than one event happened.
+- `eventMarkerInfoPopupSpacingFromMarker`: Spacing between the info popup and the event marker.
+- `eventMarkerInfoPopupCaretWidth`: Size of the caret on the top or bottom of the info popup.
+- `eventMarkerInfoPopupFontSize`:  FOnt size of the count label inside of the info popup.
+
   Example:
 ```javascript
 [
