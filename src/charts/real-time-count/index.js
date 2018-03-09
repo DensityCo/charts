@@ -10,12 +10,13 @@ const SECONDS_PER_MINUTE = 60,
 // ------------------------------------------------------------------------------
 // Constants required for rendering the graph
 // ------------------------------------------------------------------------------
-const eventMarkerRadius = 3; // The event marker radius in px
-const eventMarkerSpacingFromMidLine = 5; // Spacing between the event marker and the middle line
-const eventMarkerInfoPopupHeight = 20; // Height of the info popup, not including the pointer.
-const eventMarkerInfoPopupWidth = 20; // Width of the info popup that shows if more than one event happened.
-const eventMarkerInfoPopupSpacingFromMarker = 10; // Spacing between the info popup and the event marker.
-const eventMarkerInfoPopupCaretWidth = 5;
+const eventMarkerRadiusDefault= 3; // The event marker radius in px
+const eventMarkerSpacingFromMidLineDefault = 5; // Spacing between the event marker and the middle line
+const eventMarkerInfoPopupHeightDefault = 20; // Height of the info popup, not including the pointer.
+const eventMarkerInfoPopupWidthDefault = 20; // Width of the info popup that shows if more than one event happened.
+const eventMarkerInfoPopupSpacingFromMarkerDefault = 10; // Spacing between the info popup and the event marker.
+const eventMarkerInfoPopupCaretWidthDefault = 5;
+const eventMarkerInfoPopupFontSizeDefault = 12;
 const cardHeightInPx = 160;
 const graphDurationInMin = 1;
 
@@ -90,12 +91,12 @@ export default function ingressEgress(elem) {
 
   legend.append('div')
     .attr('class', 'real-time-capacity-count-marker in')
-    .attr('style', `width: ${eventMarkerRadius * 2}px; height: ${eventMarkerRadius * 2}px`)
+    .attr('style', `width: ${eventMarkerRadiusDefault * 2}px; height: ${eventMarkerRadiusDefault * 2}px`)
   legend.append('span').text('In')
 
   legend.append('div')
     .attr('class', 'real-time-capacity-count-marker out')
-    .attr('style', `width: ${eventMarkerRadius * 2}px; height: ${eventMarkerRadius * 2}px`)
+    .attr('style', `width: ${eventMarkerRadiusDefault * 2}px; height: ${eventMarkerRadiusDefault * 2}px`)
   legend.append('span').text('Out')
 
 
@@ -127,8 +128,24 @@ export default function ingressEgress(elem) {
     .attr('class', 'real-time-capacity-labels-item')
     .text(`Now`);
 
-  return ({events}) => {
+  return ({
+    events,
+
+    eventMarkerRadius, eventMarkerSpacingFromMidLine,
+    eventMarkerInfoPopupWidth, eventMarkerInfoPopupHeight,
+    eventMarkerInfoPopupSpacingFromMarker, eventMarkerInfoPopupCaretWidth,
+    eventMarkerInfoPopupFontSize,
+  }) => {
     const now = moment.utc();
+
+    eventMarkerRadius = eventMarkerRadius || eventMarkerRadiusDefault;
+    eventMarkerSpacingFromMidLine = eventMarkerSpacingFromMidLine || eventMarkerSpacingFromMidLineDefault;
+    eventMarkerInfoPopupWidth = eventMarkerInfoPopupWidth || eventMarkerInfoPopupWidthDefault;
+    eventMarkerInfoPopupHeight = eventMarkerInfoPopupHeight || eventMarkerInfoPopupHeightDefault;
+    eventMarkerInfoPopupSpacingFromMarker = eventMarkerInfoPopupSpacingFromMarker || eventMarkerInfoPopupSpacingFromMarkerDefault;
+    eventMarkerInfoPopupCaretWidth = eventMarkerInfoPopupCaretWidth || eventMarkerInfoPopupCaretWidthDefault;
+    eventMarkerInfoPopupFontSize = eventMarkerInfoPopupFontSize || eventMarkerInfoPopupFontSizeDefault;
+
 
     // Get the graph's width from the bounding box of the midline.
     // This was using the svg's bounding box, but it would expand when data went off the end.
@@ -233,11 +250,12 @@ export default function ingressEgress(elem) {
 
     dataMergeSelection.select('text')
       .text(d => Math.abs(d.count))
+      .attr('font-size', eventMarkerInfoPopupFontSize)
       .attr('transform', function(d) {
         // Center the text horizontally and vertically within the info popup
         const bbox = this.getBoundingClientRect();
         const textWidth = bbox.right - bbox.left;
-        const textHeight = bbox.bottom - bbox.top + 14;
+        const textHeight = bbox.bottom - bbox.top + eventMarkerInfoPopupFontSize + 2;
         const centeredXPosition = (eventMarkerInfoPopupWidth - textWidth) / 2;
         const centeredYPosition = (eventMarkerInfoPopupHeight - textHeight) / 2;
 

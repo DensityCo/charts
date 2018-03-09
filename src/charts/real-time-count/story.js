@@ -52,6 +52,27 @@ storiesOf('Real Time Count', module)
       ]}
     />
   ))
+  .add('With a custom viewbox that renders the chart larger', () => (
+    <IngressEgress
+      events={[
+        {countChange: 1, timestamp: new Date().getTime() - 50000},
+        {countChange: 1, timestamp: new Date().getTime() -  43402 },
+        {countChange: 1, timestamp: new Date().getTime() -  43401 },
+        {countChange: 1, timestamp: new Date().getTime() -  42001 },
+        {countChange: 1, timestamp: new Date().getTime() - 42000 },
+        {countChange: 1, timestamp: new Date().getTime() - 30000 },
+        {countChange: -1, timestamp: new Date().getTime() - 20000 },
+        {countChange: -1, timestamp: new Date().getTime() - 20500 },
+      ]}
+      eventMarkerRadius={5}
+      eventMarkerSpacingFromMidLine={10}
+      eventMarkerInfoPopupHeight={30}
+      eventMarkerInfoPopupWidth={30}
+      eventMarkerInfoPopupSpacingFromMarker={15}
+      eventMarkerInfoPopupCaretWidth={10}
+      eventMarkerInfoPopupFontSize={20}
+    />
+  ))
   .add('With a bunch of random data', () => (
     <IngressEgress events={generateRandomCountChangeEvents()} />
   ))
