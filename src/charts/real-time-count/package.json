@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-real-time-count",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Real time count chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
