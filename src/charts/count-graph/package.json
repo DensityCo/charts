@@ -11,6 +11,6 @@
   "author": "Density <team+javascript@density.io>",
   "license": "MIT",
   "dependencies": {
-    "d3": "^4.7.4"
+    "d3": "^4.13.0"
   }
 }
