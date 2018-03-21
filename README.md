@@ -83,8 +83,8 @@ Instead, basing our charts on the raw DOM api gives us a few benefits:
   includes non-react based projects and react-based projects alike.
 - A chart is just a function - no classes to worry about.
 
-### Hold on, then how do I render my chart in my react app? 
-You're full of great questions today. Luckily, there's a helper function to do just that:
+### How would I render my chart in a non-react application?
+Luckily, there's a helper function to do just that:
 
 ```javascript
 import {chartAsReactComponent} from './charts';
@@ -96,8 +96,8 @@ const MyChartComponent = chartAsReactComponent(myChart);
 ReactDOM.render(<MyChartComponent oneProp="foo" />, document.body);
 ```
 
-### Whoa. But then how do I make a react-based chart? DID YOU THINK OF THAT? HUH? HUH?
-
+### Whoa. How would I create a react / angular / vue / some other framework-bsed chart?
+Here's a react example. These concepts should translate to any other framework.
 ```javascript
 import * as React from 'react';
 import ReactDOM from 'react-dom';
