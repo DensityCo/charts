@@ -10,6 +10,9 @@ const DAYS_PER_WEEK = 7,
       SECONDS_PER_MINUTE = 60,
       MILLISECONDS_PER_SECOND = 1000;
 
+
+const NOOP = (a => a);
+
 const overlayDialogTopHeight = 43;
 const overlayDialogTopWidth = 72;
 const overlayDialogBottomHeight = 43;
@@ -81,11 +84,37 @@ export default function historicalCounts(elem) {
   const overlayRect = svgGroup.append('g')
     .attr('class', 'overlay-rect');
 
-  return ({start, end, width, height, data, capacity, initialCount, timeZoneLabel, timeZoneOffset, xAxisResolution}) => {
+  return ({
+    // Explicit start and end timestamps for data. If unspecified, defaults to the upper and lower
+    // bounds of the data.
+    start,
+    end,
+
+    width,
+    height,
+
+    data,
+    capacity,
+    initialCount,
+    timeZoneLabel,
+    timeZoneOffset,
+    xAxisResolution,
+
+    xAxisLabelFormatter,
+    yAxisLabelFormatter,
+    bottomOverlayLabelFormatter,
+    topOverlayLabelFormatter,
+  }) => {
     width = width || 800;
     height = height || 400;
     capacity = capacity || null;
     initialCount = initialCount || 0;
+
+    // By default, each formatter takes its input and directly passes it to the output.
+    xAxisLabelFormatter = xAxisLabelFormatter || NOOP;
+    yAxisLabelFormatter = yAxisLabelFormatter || NOOP;
+    bottomOverlayLabelFormatter = bottomOverlayLabelFormatter || NOOP;
+    topOverlayLabelFormatter = topOverlayLabelFormatter || NOOP;
 
     // Convert the timestamp in each item into epoch milliseconds, then sort the data to be
     // oldest-timestamp first.
@@ -201,7 +230,8 @@ export default function historicalCounts(elem) {
     axisGroup.call(
       require('./axis-y').default,
       yScale, graphWidth,
-      smallestCount, largestCount, capacity
+      smallestCount, largestCount, capacity,
+      yAxisLabelFormatter
     );
 
 
@@ -224,27 +254,25 @@ export default function historicalCounts(elem) {
       .tickValues(d3.range(firstHourMark, domainEnd, xAxisTimeBetweenTicks))
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
-        if (xAxisResolution === 'hour') {
-          // "5a" or "8p"
-          const timeFormat = moment.utc(d).add(timeZoneOffset, 'hours').format(`hA`);
-          return timeFormat.slice(
-            0, 
-            timeFormat.startsWith('12') ? -1 : -2
-          ).toLowerCase();
-        } else if (xAxisResolution === 'day') {
-          // "12"
-          return moment.utc(d).add(timeZoneOffset, 'hours').format(`DD`);
-        } else if (xAxisResolution === 'week') {
-          // "05/12"
-          return moment.utc(d).add(timeZoneOffset, 'hours').format(`MM/DD`);
-        }
-      });
+        const result = (function() {
+          if (xAxisResolution === 'hour') {
+            // "5a" or "8p"
+            const timeFormat = moment.utc(d).add(timeZoneOffset, 'hours').format(`hA`);
+            return timeFormat.slice(
+              0, 
+              timeFormat.startsWith('12') ? -1 : -2
+            ).toLowerCase();
+          } else if (xAxisResolution === 'day') {
+            // "12"
+            return moment.utc(d).add(timeZoneOffset, 'hours').format(`DD`);
+          } else if (xAxisResolution === 'week') {
+            // "05/12"
+            return moment.utc(d).add(timeZoneOffset, 'hours').format(`MM/DD`);
+          }
+        })();
 
-    // Allow setting explicitly the number of axes on the x axis
-    // if (typeof xAxisTickNumber === 'number') {
-    //   console.log('TICK NUMBER', xAxisTickNumber)
-    //   xAxis = xAxis.ticks(xAxisTickNumber)
-    // }
+        return xAxisLabelFormatter(result);
+      });
 
     axisGroup.append("g")
       .attr("class", 'historical-counts-axis-x')
@@ -299,7 +327,8 @@ export default function historicalCounts(elem) {
         overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
         overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
         overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-        data, mouseX, xAxisResolution
+        data, mouseX, xAxisResolution,
+        bottomOverlayLabelFormatter, topOverlayLabelFormatter
       );
     }
 

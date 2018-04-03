@@ -10,7 +10,8 @@ export default function overlayLine(selection,
   overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
   overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
   overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-  data, mouseX, xAxisResolution
+  data, mouseX, xAxisResolution,
+  bottomOverlayLabelFormatter, topOverlayLabelFormatter
 ) {
   const now = moment.utc();
 
@@ -177,9 +178,9 @@ export default function overlayLine(selection,
   }
 
   enteringGroup.select('.historical-counts-overlay-bottom-text')
-    .text(moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(timeFormat));
+    .text(bottomOverlayLabelFormatter(moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(timeFormat)));
 
   enteringGroup.select('.historical-counts-overlay-top-text')
     .attr('transform', `translate(${overlayDialogTopTextCenterOffset},0)`)
-    .text(countAtPosition);
+    .text(topOverlayLabelFormatter(countAtPosition));
 }

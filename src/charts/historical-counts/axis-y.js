@@ -4,7 +4,8 @@ const axisYMaximumLineDashSpacing = 10;
 export default function yAxis(
   selection,
   scale, graphWidth,
-  smallestCount, largestCount, capacity
+  smallestCount, largestCount, capacity,
+  yAxisLabelFormatter
 ) {
   // Create a selection to create or update the axis.
   const yAxisSelection = selection.selectAll('.axis-y').data([
@@ -21,21 +22,21 @@ export default function yAxis(
   yAxisEnterSelectionGroup.append('text')
     .attr('class', 'axis-y-minimum')
     .attr('y', scale(smallestCount))
-    .text(smallestCount)
+    .text(yAxisLabelFormatter(smallestCount, 0));
 
   // Label the capacity, if a capacity was passed.
   if (capacity) {
     yAxisEnterSelectionGroup.append('text')
       .attr('class', 'axis-y-capacity')
       .attr('y', scale(capacity))
-      .text(capacity)
+      .text(yAxisLabelFormatter(capacity, -1));
   }
 
   // Label the largest value.
   yAxisEnterSelectionGroup.append('text')
     .attr('class', 'axis-y-maximum')
     .attr('y', scale(largestCount))
-    .text(largestCount)
+    .text(yAxisLabelFormatter(largestCount, 1));
 
   // Add a dotted line horizontally at the maximum position
   yAxisEnterSelectionGroup.append('path')
@@ -48,15 +49,15 @@ export default function yAxis(
 
   yAxisMergeSelection.select('axis-y-minimum')
     .attr('y', scale(smallestCount))
-    .text(smallestCount);
+    .text(yAxisLabelFormatter(smallestCount, 0));
 
   yAxisMergeSelection.select('axis-y-capacity')
     .attr('y', scale(capacity))
-    .text(capacity);
+    .text(yAxisLabelFormatter(capacity, -1));
 
   yAxisMergeSelection.select('axis-y-maximum')
     .attr('y', scale(largestCount))
-    .text(largestCount);
+    .text(yAxisLabelFormatter(largestCount, 1));
 
   // Render a dotted line at the top-most item in the y axis.
   const maximumLineYPos = scale(largestCount) - 2;
