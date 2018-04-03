@@ -6,12 +6,12 @@ const bisect = bisector(d => d.timestamp);
 
 export default function overlayLine(selection,
   timeScale, countScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
-  lastEvent, timeZoneLabel, timeZoneOffset,
+  lastEvent,
   overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
   overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
   overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
   data, mouseX, xAxisResolution,
-  bottomOverlayLabelFormatter, topOverlayLabelFormatter
+  bottomOverlayLabelFormat, topOverlayLabelFormat
 ) {
   const now = moment.utc();
 
@@ -171,16 +171,10 @@ export default function overlayLine(selection,
       return `translate(${phaseShift},0)`;
     });
 
-  // Decide how to format the time shown in the lower panel on the hover overlay.
-  let timeFormat = `hh:mm A[${timeZoneLabel ? ` (${timeZoneLabel}) ` : ' '}]ddd MMM DD`;
-  if (xAxisResolution === 'day' || xAxisResolution === 'week') {
-    timeFormat = `ddd MMM DD YYYY`;
-  }
-
   enteringGroup.select('.historical-counts-overlay-bottom-text')
-    .text(bottomOverlayLabelFormatter(moment.utc(timeAtPosition).add(timeZoneOffset, 'hours').format(timeFormat)));
+    .text(bottomOverlayLabelFormat(timeAtPosition));
 
   enteringGroup.select('.historical-counts-overlay-top-text')
     .attr('transform', `translate(${overlayDialogTopTextCenterOffset},0)`)
-    .text(topOverlayLabelFormatter(countAtPosition));
+    .text(topOverlayLabelFormat(countAtPosition));
 }

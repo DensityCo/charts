@@ -1,5 +1,8 @@
 import './styles.scss';
+
 import moment from 'moment';
+import 'moment-timezone';
+
 import * as d3 from 'd3';
 
 import updateOverlayLine from './overlay-line';
@@ -71,11 +74,6 @@ export default function historicalCounts(elem) {
   const axisGroup = svgGroup.append('g')
     .attr('class', 'axis-group');
 
-  // Flags are all stuck in this group, must be above the axes, otehrwise the horizontal axis rules
-  // cross over the flag line and make it look like a dotted line.
-  const flagGroup = svgGroup.append('g')
-    .attr('class', 'flag-group');
-
   // Put all the overlay stuff in here (the line and dialog)
   const overlayGroup = svgGroup.append('g')
     .attr('class', 'overlay-group');
@@ -96,25 +94,41 @@ export default function historicalCounts(elem) {
     data,
     capacity,
     initialCount,
-    timeZoneLabel,
-    timeZoneOffset,
-    xAxisResolution,
 
-    xAxisLabelFormatter,
-    yAxisLabelFormatter,
-    bottomOverlayLabelFormatter,
-    topOverlayLabelFormatter,
+    timeZone,
+    timeZoneFormat,
+
+    xAxisResolution,
+    xAxisLabelFormat,
+    yAxisLabelFormat,
+    bottomOverlayLabelFormat,
+    topOverlayLabelFormat,
   }) => {
     width = width || 800;
     height = height || 400;
     capacity = capacity || null;
     initialCount = initialCount || 0;
+    timeZone = timeZone || 'UTC';
 
-    // By default, each formatter takes its input and directly passes it to the output.
-    xAxisLabelFormatter = xAxisLabelFormatter || NOOP;
-    yAxisLabelFormatter = yAxisLabelFormatter || NOOP;
-    bottomOverlayLabelFormatter = bottomOverlayLabelFormatter || NOOP;
-    topOverlayLabelFormatter = topOverlayLabelFormatter || NOOP;
+    xAxisLabelFormat = xAxisLabelFormat || (n => {
+      // "5a" or "8p"
+      const timeFormat = moment.utc(n).tz(timeZone).format(`hA`);
+      return timeFormat.slice(
+        0, 
+        timeFormat.startsWith('12') ? -1 : -2
+      ).toLowerCase();
+    });
+    yAxisLabelFormat = yAxisLabelFormat || NOOP;
+    bottomOverlayLabelFormat = bottomOverlayLabelFormat || (n => {
+      // Decide how to format the time shown in the lower panel on the hover overlay.
+      let timeFormat = `hh:mm A[${timeZone ? ` (${timeZoneFormat(timeZone)}) ` : ' '}]ddd MMM DD`;
+      if (xAxisResolution === 'day' || xAxisResolution === 'week') {
+        timeFormat = `ddd MMM DD YYYY`;
+      }
+      return moment.utc(n).tz(timeZone).format(timeFormat);
+    });
+    topOverlayLabelFormat = topOverlayLabelFormat || NOOP;
+    timeZoneFormat = timeZoneFormat || NOOP;
 
     // Convert the timestamp in each item into epoch milliseconds, then sort the data to be
     // oldest-timestamp first.
@@ -128,24 +142,17 @@ export default function historicalCounts(elem) {
       return a.timestamp - b.timestamp;
     });
 
-    const flags = [];
-
     // Adjust the svg size and viewbox to match the passed in values.
     svg
       .attr('height', height)
       .attr('width', width)
       .attr('viewBox', `0 0 ${width} ${height}`)
 
-    if (!Array.isArray(data)) {
-      throw new Error(`A 'data' prop is required.`);
-    }
-
     // Get the drawn graph size, minus the borders.
     const graphWidth = width - leftMargin - rightMargin;
     const graphHeight = height - topMargin - bottomMargin;
 
-
-    // Get first and last timestamps
+    // Get everything you'd ever want to know about the first and last events
     const firstEvent = data.length > 0 ? data[0] : null;
     const dataStart = firstEvent ? firstEvent.timestamp : moment.utc().valueOf();
     const domainStart = start || dataStart;
@@ -155,18 +162,19 @@ export default function historicalCounts(elem) {
     const dataEnd = lastEvent ? lastEvent.timestamp : moment.utc().valueOf();
     const domainEnd = end || dataEnd;
 
+    const largestCount = data.length > 0 ? Math.max.apply(Math, data.map(i => Math.max(i.count, initialCount))) : 0;
+    const smallestCount = data.length > 0 ? Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount))) : 0;
+
     // Construct scales
     const xScale = d3.scaleLinear()
       .rangeRound([graphWidth, 0])
       .domain([domainEnd, domainStart]);
-    const largestCount = data.length > 0 ? Math.max.apply(Math, data.map(i => Math.max(i.count, initialCount))) : 0;
-    const smallestCount = data.length > 0 ? Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount))) : 0;
     const yScale = d3.scaleLinear()
       .rangeRound([graphHeight - 10, 0])
       .domain([smallestCount, capacity > largestCount ? capacity : largestCount]);
 
     const lastX = xScale(dataEnd);
-    const lastY = yScale(lastEvent.count);
+    const lastY = yScale(lastCount);
 
 
     // Render capacity overlay behind the graph path, if a capacity was passed.
@@ -197,9 +205,6 @@ export default function historicalCounts(elem) {
 
     // Build the path by looping through the data
     const linePath = data.reduce((total, i) => {
-      // Extract flags so we can draw them on top
-      if (i.flag) { flags.push(i); }
-
       // Step to the new point
       const xPosition = xScale(i.timestamp);
       const yPosition = yScale(i.count);
@@ -231,7 +236,7 @@ export default function historicalCounts(elem) {
       require('./axis-y').default,
       yScale, graphWidth,
       smallestCount, largestCount, capacity,
-      yAxisLabelFormatter
+      yAxisLabelFormat
     );
 
 
@@ -253,26 +258,7 @@ export default function historicalCounts(elem) {
       // thereafter.
       .tickValues(d3.range(firstHourMark, domainEnd, xAxisTimeBetweenTicks))
       .tickSizeOuter(0)
-      .tickFormat((d, i) => {
-        const result = (function() {
-          if (xAxisResolution === 'hour') {
-            // "5a" or "8p"
-            const timeFormat = moment.utc(d).add(timeZoneOffset, 'hours').format(`hA`);
-            return timeFormat.slice(
-              0, 
-              timeFormat.startsWith('12') ? -1 : -2
-            ).toLowerCase();
-          } else if (xAxisResolution === 'day') {
-            // "12"
-            return moment.utc(d).add(timeZoneOffset, 'hours').format(`DD`);
-          } else if (xAxisResolution === 'week') {
-            // "05/12"
-            return moment.utc(d).add(timeZoneOffset, 'hours').format(`MM/DD`);
-          }
-        })();
-
-        return xAxisLabelFormatter(result);
-      });
+      .tickFormat(xAxisLabelFormat);
 
     axisGroup.append("g")
       .attr("class", 'historical-counts-axis-x')
@@ -280,55 +266,16 @@ export default function historicalCounts(elem) {
       .call(xAxis);
 
 
-
-    // Generate flag lines
-    // Each consists of a `g.flag` wrapper, with a `path.flag-line` and `text.flag-line-label`
-    // inside.
-    const flagSelection = flagGroup.selectAll('.flag').data(flags);
-
-    const flagEnterSelection = flagSelection.enter().append('g')
-      .attr('class', 'flag')
-    flagEnterSelection.append('line')
-      .attr('class', 'flag-line')
-      .attr('x1', 0)
-      .attr('y1', 0)
-      .attr('x2', 0)
-      .attr('y2', graphHeight)
-    flagEnterSelection.append('rect')
-      .attr('class', 'flag-line-label-background')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', 40)
-      .attr('height', 28)
-    flagEnterSelection.append('text')
-      .attr('class', 'flag-line-label')
-
-    const flagMergeSelection = flagEnterSelection.merge(flagSelection)
-    // Move the group / line / text to the flag's position
-    flagMergeSelection
-      .attr('transform', d => `translate(${xScale(d.timestamp)},0)`)
-
-    // Adjust if the graph height changed
-    flagMergeSelection.select('.flag-line')
-      .attr('y2', graphHeight)
-
-    // Adjust the flag label
-    flagMergeSelection.select('.flag-line-label')
-      .text(d => d.count);
-
-    flagSelection.exit().remove('.flag');
-
-
     function showOverlay() {
       const mouseX = d3.mouse(overlayRect.node())[0];
       overlayGroup.call(updateOverlayLine,
         xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
-        lastEvent, timeZoneLabel, timeZoneOffset,
+        lastEvent,
         overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
         overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
         overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
         data, mouseX, xAxisResolution,
-        bottomOverlayLabelFormatter, topOverlayLabelFormatter
+        bottomOverlayLabelFormat, topOverlayLabelFormat
       );
     }
 
@@ -347,7 +294,7 @@ export default function historicalCounts(elem) {
       .on('mouseout', () => {
         overlayGroup.call(updateOverlayLine,
           xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
-          lastEvent, timeZoneLabel, timeZoneOffset,
+          lastEvent,
           overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
           overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
           overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,

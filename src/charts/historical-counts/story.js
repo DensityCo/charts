@@ -29,21 +29,8 @@ storiesOf('Historical Counts', module)
       start={moment("2017-03-28T12:00:00.000Z")}
       end={moment("2017-03-29T12:00:00.000Z")}
       capacity={20}
-      timeZoneOffset={-5}
-      timeZoneLabel="ET"
-    />
-  })
-  .add(`With lots of flags.`, () => {
-    const fullDayWithFlag = uncompressData(fullDayOfData).map((x, i) => {
-      if ([140, 250, 280, 320, 350, 370, 380].indexOf(i) > -1) { x.flag = true; }
-      return x;
-    });
-    return <HistoricalCounts
-      data={fullDayWithFlag}
-      start={moment("2017-03-28T12:00:00.000Z")}
-      end={moment("2017-03-29T12:00:00.000Z")}
-      timeZoneOffset={-5}
-      timeZoneLabel="ET"
+      timeZone={"America/New_York"}
+      timeZoneFormat={n => 'ET'}
     />
   })
   .add(`With a partial day's worth of data, with an explicit start / end.`, () => (
@@ -51,8 +38,9 @@ storiesOf('Historical Counts', module)
       data={uncompressData(partialDayOfData)}
       start={moment("2017-03-29T12:00:00.000Z")}
       end={moment("2017-03-30T12:00:00.000Z")}
-      timeZoneOffset={-5}
-      timeZoneLabel="ET"
+      capacity={20}
+      timeZone={"America/New_York"}
+      timeZoneFormat={n => 'ET'}
     />
   ))
   .add(`With a capacity bigger than the data region`, () => (
@@ -60,9 +48,9 @@ storiesOf('Historical Counts', module)
       data={uncompressData(partialDayOfData)}
       start={moment("2017-03-29T12:00:00.000Z")}
       end={moment("2017-03-30T12:00:00.000Z")}
-      timeZoneOffset={-5}
-      timeZoneLabel="ET"
       capacity={100}
+      timeZone={"America/New_York"}
+      timeZoneFormat={n => 'ET'}
     />
   ))
   .add(`Without timezone info`, () => (
@@ -70,14 +58,16 @@ storiesOf('Historical Counts', module)
       data={uncompressData(partialDayOfData)}
       start={moment("2017-03-29T12:00:00.000Z")}
       end={moment("2017-03-30T12:00:00.000Z")}
+      timeZone={"America/New_York"}
+      timeZoneFormat={n => 'ET'}
     />
   ))
   .add(`Without start / end on a partial day's data, the graph scales to fit the data.`, () => (
     <HistoricalCounts
       data={uncompressData(partialDayOfData)}
       capacity={5}
-      timeZoneOffset={-5}
-      timeZoneLabel="ET"
+      timeZone={"America/New_York"}
+      timeZoneFormat={n => 'ET'}
     />
   ))
   .add(`With only a partial day's worth of data, and a start / end time.
@@ -314,8 +304,6 @@ storiesOf('Historical Counts', module)
       {timestamp: "2018-03-07T08:00:00.000Z", count: 2598},
     ];
 
-      // start={moment("2018-02-10T08:00:00.000Z")}
-      // end={moment("2018-03-8T16:00:00.000Z")}
     return <HistoricalCounts
       data={data}
       xAxisResolution="week"
@@ -352,10 +340,10 @@ storiesOf('Historical Counts', module)
 
     return <HistoricalCounts
       data={data}
-      xAxisLabelFormatter={x => `X PREFIX ${x}`}
-      yAxisLabelFormatter={x => `Y PREFIX ${x}`}
-      bottomOverlayLabelFormatter={b => `B ${b}`}
-      topOverlayLabelFormatter={t => `T ${t}`}
+      xAxisLabelFormat={x => `X PREFIX ${x}`}
+      yAxisLabelFormat={x => `Y PREFIX ${x}`}
+      bottomOverlayLabelFormat={b => `B ${b}`}
+      topOverlayLabelFormat={t => `T ${t}`}
       xAxisResolution="week"
     />;
   })
