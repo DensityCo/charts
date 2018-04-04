@@ -1,6 +1,10 @@
 $historical-counts-brand-primary: #4198FF;
 $historical-counts-font-size: 14px;
 
+.historical-counts-font-size-tester {
+  font-size: $historical-counts-font-size;
+}
+
 /* X Axis */
 .historical-counts-axis-x .tick line { display: none; }
 .historical-counts-axis-x .domain { display: none; }

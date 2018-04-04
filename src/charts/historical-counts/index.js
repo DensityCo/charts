@@ -17,9 +17,7 @@ const DAYS_PER_WEEK = 7,
 const NOOP = (a => a);
 
 const overlayDialogTopHeight = 43;
-const overlayDialogTopWidth = 72;
 const overlayDialogBottomHeight = 43;
-const overlayDialogBottomWidth = 232;
 const overlayDialogTextSize = 16; // Size of the text
 const overlayDialogTextMargin = 12; // Y spacing between text and its container
 const overlayDialogBorderRadius = 4;
@@ -44,6 +42,10 @@ const overlayDialogBreakToLeftPadding = 20;
 // The count graph component
 export default function historicalCounts(elem) {
   const svg = d3.select(elem).append('svg').attr('class', 'historical-counts');
+
+  // Used so that the font size can be programatically calculated.
+  const fontSizeTester = svg.append('text')
+    .attr('class', 'historical-counts-font-size-tester');
 
   // Add filter for use in making shadows behind things.
   const filter = svg.append('filter')
@@ -82,6 +84,11 @@ export default function historicalCounts(elem) {
   const overlayRect = svgGroup.append('g')
     .attr('class', 'overlay-rect');
 
+  function getTextWidth(text) {
+    fontSizeTester.text(text);
+    return fontSizeTester.node().getComputedTextLength();
+  }
+
   return ({
     // Explicit start and end timestamps for data. If unspecified, defaults to the upper and lower
     // bounds of the data.
@@ -103,12 +110,18 @@ export default function historicalCounts(elem) {
     yAxisLabelFormat,
     bottomOverlayLabelFormat,
     topOverlayLabelFormat,
+
+    renderPersonIcon,
   }) => {
     width = width || 800;
     height = height || 400;
     capacity = capacity || null;
     initialCount = initialCount || 0;
     timeZone = timeZone || 'UTC';
+    renderPersonIcon = typeof renderPersonIcon === 'undefined' ? true : renderPersonIcon;
+
+    topOverlayLabelFormat = topOverlayLabelFormat || NOOP;
+    timeZoneFormat = timeZoneFormat || NOOP;
 
     xAxisLabelFormat = xAxisLabelFormat || (n => {
       // "5a" or "8p"
@@ -127,8 +140,6 @@ export default function historicalCounts(elem) {
       }
       return moment.utc(n).tz(timeZone).format(timeFormat);
     });
-    topOverlayLabelFormat = topOverlayLabelFormat || NOOP;
-    timeZoneFormat = timeZoneFormat || NOOP;
 
     // Convert the timestamp in each item into epoch milliseconds, then sort the data to be
     // oldest-timestamp first.
@@ -165,7 +176,8 @@ export default function historicalCounts(elem) {
     const largestCount = data.length > 0 ? Math.max.apply(Math, data.map(i => Math.max(i.count, initialCount))) : 0;
     const smallestCount = data.length > 0 ? Math.min.apply(Math, data.map(i => Math.min(i.count, initialCount))) : 0;
 
-    // Construct scales
+    // Construct scales, which are used to map a raw value in the x and y directions into pixel
+    // values.
     const xScale = d3.scaleLinear()
       .rangeRound([graphWidth, 0])
       .domain([domainEnd, domainStart]);
@@ -270,12 +282,13 @@ export default function historicalCounts(elem) {
       const mouseX = d3.mouse(overlayRect.node())[0];
       overlayGroup.call(updateOverlayLine,
         xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
-        lastEvent,
+        lastEvent, getTextWidth,
         overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
-        overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
+        overlayDialogTopHeight, overlayDialogBottomHeight,
         overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
         data, mouseX, xAxisResolution,
-        bottomOverlayLabelFormat, topOverlayLabelFormat
+        bottomOverlayLabelFormat, topOverlayLabelFormat,
+        renderPersonIcon,
       );
     }
 
@@ -294,11 +307,13 @@ export default function historicalCounts(elem) {
       .on('mouseout', () => {
         overlayGroup.call(updateOverlayLine,
           xScale, yScale, domainStart, domainEnd, graphWidth, graphHeight, initialCount,
-          lastEvent,
+          lastEvent, getTextWidth,
           overlayDialogTopBottomMargin, overlayDialogBottomTopMargin, overlayDialogBorderRadius,
-          overlayDialogTopWidth, overlayDialogTopHeight, overlayDialogBottomWidth, overlayDialogBottomHeight,
+          overlayDialogTopHeight, overlayDialogBottomHeight,
           overlayDialogTopIconCenterOffset, overlayDialogTopTextCenterOffset,
-          data, null
+          data, null, xAxisResolution,
+          bottomOverlayLabelFormat, topOverlayLabelFormat,
+          renderPersonIcon
         );
       });
   }

@@ -342,9 +342,10 @@ storiesOf('Historical Counts', module)
       data={data}
       xAxisLabelFormat={x => `X PREFIX ${x}`}
       yAxisLabelFormat={x => `Y PREFIX ${x}`}
-      bottomOverlayLabelFormat={b => `B ${b}`}
-      topOverlayLabelFormat={t => `T ${t}`}
+      bottomOverlayLabelFormat={b => `PRE ${b} SUFFIX`}
+      topOverlayLabelFormat={t => `TOP PREFIX ${t} TOP SUFFIX`}
       xAxisResolution="week"
+      renderPersonIcon={false}
     />;
   })
   .add('Events in reverse order', () => (
