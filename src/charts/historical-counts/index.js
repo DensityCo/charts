@@ -46,6 +46,7 @@ export default function historicalCounts(elem) {
   // Used so that the font size can be programatically calculated.
   const fontSizeTester = svg.append('text')
     .attr('class', 'historical-counts-font-size-tester');
+    .attr('transform', 'translate(0,-100)'); /* make sure it's off screen */
 
   // Add filter for use in making shadows behind things.
   const filter = svg.append('filter')
