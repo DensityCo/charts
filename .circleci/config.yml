@@ -16,8 +16,8 @@ jobs:
       - run:
           name: "Build charts"
           command: |
-            # Publish all charts once on master
-            if [ "$CIRCLE_BRANCH" == "master" ]; then
+            # Publish all charts once on trunk
+            if [ "$CIRCLE_BRANCH" == "trunk" ]; then
               echo "Publishing all charts..."
               for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
                 # This isn't a chart, but a template for `./make-chart`
@@ -55,7 +55,7 @@ jobs:
               npm publish --access public
               set -e
             else
-              echo "Packages are only published to npm on branch 'master'."
+              echo "Packages are only published to npm on branch 'trunk'."
             fi
             exit 0
       - run:

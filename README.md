@@ -1,4 +1,4 @@
-<img src="https://cdn.rawgit.com/DensityCo/charts/master/logo.svg" height="50" />
+<img src="https://cdn.rawgit.com/DensityCo/charts/trunk/logo.svg" height="50" />
 
 <br />
 
@@ -25,7 +25,7 @@ a component while developing. Basically, it's awesome.
 │   │   ├── story.js      # A bunch of test cases for our chart, via react-storybook.
 │   │   ├── styles.scss   # Styles for our chart.
 │   │   └── package.json  # Each chart is is own package with its own dependencies.
-│   │ 
+│   │
 │   └── index.js          # A few utility functions that make the package work.
 ├── make-chart            # A generator to make new charts.
 ├── package.json
