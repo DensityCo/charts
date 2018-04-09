@@ -79,8 +79,10 @@ jobs:
           name: "Push preview to the cloud"
           command: |
             sudo apt-get update
-            sudo apt-get install -y awscli
+            sudo apt-get install -y python-pip python-dev
+            sudo pip install -U 'awscli>=1.15'
             aws s3 sync storybook-static/ s3://charts-preview.density.rodeo/$CIRCLE_SHA1 --region us-east-1
+            aws cloudfront create-invalidation --distribution-id E1RS67LHMIGYIQ --paths "/"
       - run:
           name: "Post preview link to any pull requests commit is part of"
           command: |
