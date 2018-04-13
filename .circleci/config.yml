@@ -15,7 +15,7 @@ jobs:
             echo "yarn --version = $(yarn --version)"
 
       - restore_cache:
-          key: node_modules-{{checksum "./package.json"}}
+          key: node_modules-{{checksum "./package.json"}}-v2
       - run:
           name: "Install dependencies"
           command: |
@@ -28,7 +28,7 @@ jobs:
               echo
             done
       - save_cache:
-          key: node_modules-{{checksum "./package.json"}}
+          key: node_modules-{{checksum "./package.json"}}-v2
           paths:
             - "./node_modules"
 
