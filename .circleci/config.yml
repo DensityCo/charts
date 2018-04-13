@@ -3,7 +3,7 @@ version: 2
 jobs:
   preview:
     docker:
-      - image: circleci/node:8.11
+      - image: circleci/node:8.11.1
     resource_class: small
     steps:
       - checkout
@@ -45,6 +45,7 @@ jobs:
 
             echo "* Copying to S3..."
             aws s3 sync storybook-static/ s3://charts-preview.density.rodeo/${CIRCLE_SHA1} --region us-east-1
+            aws cloudfront create-invalidation --distribution-id E1RS67LHMIGYIQ --paths "/"
       - run:
           name: "Post preview link to any pull requests commit is part of"
           command: |
