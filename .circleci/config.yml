@@ -52,7 +52,7 @@ jobs:
             curl -X POST \
             -d "{\"state\":\"success\", \"context\": \"ci-preview\", \"target_url\": \"https://charts-preview.density.rodeo/${CIRCLE_SHA1}\"}" \
             -H "Authorization: Bearer $GITHUB_MACHINE_USER_TOKEN" \
-            https://api.github.com/repos/densityco/ui/statuses/${CIRCLE_SHA1}
+            https://api.github.com/repos/densityco/charts/statuses/${CIRCLE_SHA1}
 
   publish:
     docker:
