@@ -3,9 +3,14 @@
 This project has a build process to transpile es2015 code down to es5 prior to release.
 Feel free to use as much es2015 (and object spread) in your source as you'd like.
 
+## Makefile
+The build process for all the charts exists within this project's `Makefile`. To see a list of all
+targets, run `make help`.
+
 ## Creating a new chart
 ```
-$ ./make-chart
+$ make chart
+./make-chart
 Let's make a new chart.
 Enter the name of your chart, in dash-case: foo-bar
 Enter the name of your chart, in english (ie, `My chart`): Foo Bar
@@ -33,16 +38,14 @@ free to use this auto-built storybook to help with code reviews.
 
 ## Publishing
 
+_NOTE: Only density employees can publish packages. We'd love your contribution though - feel free
+to submit a pull request!_
+
 Even though all of our charts live in one repository, they all have separate packages on our private
 npm registry. Each chart has the package name of `@density/chart-MY-CHART-NAME`. Once you have a new
 change and want to publish it, it's pretty easy:
 
-1. First, make sure you have an account on our private npm registry and are logged in. Talk to @ryan
-   on slack if you need to get set up.
-2. Bump the version of the package (FOLLOW SEMVER!): `cd charts/my-chart && npm version [patch|minor|major]`
-3. `make publish CHART=my-chart` will build the chart clean and publish the new version to the npm
-   registry.
-
-*NOTE*: One other thing is always built prior to publishing a package - `chart/index.js`. It
-contains helpers like the function to convert a chart to a react component. It's build whenever
-`make publish CHART=XXX` is run, or can be built seperately by running `make charts/dist/index.js`.
+1. First, make sure you have an account on our public npm registry and are logged in. Talk to @ryan
+   on slack if you need help getting set up.
+2. Bump the version of the package (FOLLOW SEMVER!): `make my-chart-major` / `make my-chart-minor` / `make my-chart-patch`
+3. `make my-chart-publish` will build the chart clean and publish the new version to the npm registry.

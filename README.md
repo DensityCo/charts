@@ -7,16 +7,31 @@
 [![Package Version](https://img.shields.io/npm/v/@density/charts.svg)](https://npmjs.com/@density/charts)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-This repository contains all of our charts for displaying data. Many are written in D3, some in
-react, and a few even with raw DOM apis!
+This repository contains a number of charts used within other Density projects like our
+[dashboard](https://github.com/densityco/dashboard) to render count data, show trends, and help
+Density customers understand the data that their units have collected.
 
+## Why Open Source?
+We want to make it as easy as possible to integrate Density data into your internal tools. Providing
+charts that make this process seamless makes the process easier for those building the internal
+tools but also gives examples as to the way we present count data visually within systems such as
+out dashboard and dispatch email alerts.
 
-## This uses React Storybook.
+## Getting started
+```
+$ git clone git@github.com:densityco/charts.git
+$ cd charts/
+$ npm install
+$ npm run installall # install all dependencies in each chart subpackage
+$ npm run storybook # start the storybook
+```
+
+### This uses React Storybook.
 This project relies heavily on react storybook, which is a open source system for displaying react
 components while in development. It supports hot reload and allows one to see all possible states of
 a component while developing. Basically, it's awesome.
 
-## Project Structure
+### Project Structure
 ```
 .
 ├── charts                # All charts live inside the charts folder.
@@ -33,16 +48,7 @@ a component while developing. Basically, it's awesome.
     └── drift-chart.js -> ../charts/drift-chart/story.js
 ```
 
-## Getting started
-```
-$ git clone git@github.com:densityco/charts.git
-$ cd charts/
-$ npm install
-$ npm run installall # install all dependencies in each chart subpackage
-# npm run storybook # start the storybook
-```
-
-## Chart structure
+### Chart structure
 Each chart contains a `index.js`, which must default-ly export a function. That function must accept
 a single element: a DOM element. This function contructs your chart and returns another fucntion
 that can be used to inject props to your chart. Here's an example:
@@ -71,17 +77,17 @@ The function is initially called when the chart first renders, and then called a
 value in `props` changes.
 
 ### Why do it this way over a stateless React component?
-Great question. We forsee a future where not all of our projects will be react-based. In fact, many
+Great question. We foresee a future where not all of our projects will be react-based. In fact, many
 of our existing "web" projects aren't, including the marketing site and may of our internal customer
 projects. Therefore, we feel that favoring react over any other technology and forcing ourselves to
 use react into the future is a bad idea.
 
 Instead, basing our charts on the raw DOM api gives us a few benefits:
-- Using libraries like D3 are a pain in the context of React since they both try to control the DOM.
+- Using libraries like d3 are a pain in the context of React since they both try to control the DOM.
   Exposing a raw DOM api eliminates this problem.
-- Our charts will work anywhere that the DOM api is available (Read: every browser ever.), which
-  includes non-react based projects and react-based projects alike.
-- A chart is just a function - no classes to worry about.
+- Our charts will work anywhere that the DOM api is available, which includes non-react based
+  projects and react-based projects alike.
+- A chart can be nicely represented as a function.
 
 ### How would I render my chart in a non-react application?
 Luckily, there's a helper function to do just that:
@@ -96,7 +102,7 @@ const MyChartComponent = chartAsReactComponent(myChart);
 ReactDOM.render(<MyChartComponent oneProp="foo" />, document.body);
 ```
 
-### Whoa. How would I create a react / angular / vue / some other framework-bsed chart?
+### How would I create a react / angular / vue / some other framework-based chart?
 Here's a react example. These concepts should translate to any other framework.
 ```javascript
 import * as React from 'react';

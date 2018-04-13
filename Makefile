@@ -41,13 +41,22 @@ clean:
 	rm -rf charts/*/dist/
 
 .PHONY: build
-build: dist/styles.css
+build: dist/index.js
 
 .PHONY: publish
 publish: clean build
 	npm publish --access public
 
-dist/:
+# There's a special rule for charts/index.js, sorry :/
+# ie, charts/index.js => dist/index.js
+dist/%.js: dist
+	$(BABEL) charts/$(@F) \
+		--ignore=node_modules,charts/dist \
+		--presets=babel-preset-es2015,babel-preset-react \
+		--plugins=babel-plugin-transform-object-rest-spread \
+		> $@
+
+dist:
 	mkdir -p dist/
 
 .PHONY: version

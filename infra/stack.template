@@ -1,0 +1,208 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Metadata": {},
+  "Parameters": {
+    "AWSRegion": {
+      "Type": "String"
+    },
+    "ErrorDocument": {
+      "Default": "error.html",
+      "Type": "String"
+    },
+    "SSLCertificateARN": {
+      "Type": "String"
+    },
+    "HostedZoneName": {
+      "Description": "Domain of the site to be deployed (i.e. \"density.io\").",
+      "Type": "String"
+    },
+    "IndexDocument": {
+      "Default": "index.html",
+      "Type": "String"
+    },
+    "SubdomainName": {
+      "Description": "Subdomain name (i.e. \"jobs.density.io\")",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "S3Bucket": {
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "b5d4e4c8-a768-4c06-b7e0-8969660d0b03"
+        }
+      },
+      "Properties": {
+        "AccessControl": "PublicRead",
+        "BucketName": {
+          "Ref": "SubdomainName"
+        },
+        "WebsiteConfiguration": {
+          "ErrorDocument": {
+            "Ref": "ErrorDocument"
+          },
+          "IndexDocument": {
+            "Ref": "IndexDocument"
+          }
+        }
+      },
+      "Type": "AWS::S3::Bucket"
+    },
+    "S3Policy": {
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "0941dfc0-d9f4-426b-b9d1-32853d60f626"
+        }
+      },
+      "Properties": {
+        "Bucket": {
+          "Ref": "S3Bucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Effect": "Allow",
+              "Principal": "*",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "SubdomainName"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "Type": "AWS::S3::BucketPolicy"
+    },
+    "cloudFrontDistribution": {
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "00ef4216-5858-4a24-b3e2-18134ee16807"
+        }
+      },
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": [
+            {
+              "Ref": "SubdomainName"
+            }
+          ],
+          "DefaultCacheBehavior": {
+            "AllowedMethods": [
+              "DELETE",
+              "GET",
+              "HEAD",
+              "OPTIONS",
+              "PATCH",
+              "POST",
+              "PUT"
+            ],
+            "ForwardedValues": {
+              "Cookies": {
+                "Forward": "none"
+              },
+              "QueryString": "true"
+            },
+            "DefaultTTL": 0,
+            "MaxTTL": 0,
+            "MinTTL": 0,
+            "TargetOriginId": "cloudfrontOrigin",
+            "ViewerProtocolPolicy": "redirect-to-https"
+          },
+          "DefaultRootObject": "index.html",
+          "Enabled": "true",
+          "ViewerCertificate": {
+            "SslSupportMethod": "sni-only",
+            "AcmCertificateArn": {
+              "SSLCertificateARN"
+            }
+          },
+          "Origins": [
+            {
+              "CustomOriginConfig": {
+                "HTTPPort": "80",
+                "HTTPSPort": "443",
+                "OriginProtocolPolicy": "http-only"
+              },
+              "DomainName": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "SubdomainName"
+                    },
+                    ".s3-website-",
+                    {
+                      "Ref": "AWSRegion"
+                    },
+                    ".amazonaws.com"
+                  ]
+                ]
+              },
+              "Id": "cloudfrontOrigin"
+            }
+          ],
+          "ViewerCertificate": {
+            "SslSupportMethod": "sni-only",
+            "AcmCertificateArn": "arn:aws:acm:us-east-1:937369328181:certificate/f53501b3-5cf5-40d9-9241-393519d0654d"
+          },
+          "PriceClass": "PriceClass_200"
+        }
+      },
+      "Type": "AWS::CloudFront::Distribution"
+    },
+    "recordSet": {
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "ed268921-a463-4a34-9447-dc8d38da0c61"
+        }
+      },
+      "Properties": {
+        "HostedZoneName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "HostedZoneName"
+              },
+              "."
+            ]
+          ]
+        },
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "SubdomainName"
+              },
+              "."
+            ]
+          ]
+        },
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
+              "cloudFrontDistribution",
+              "DomainName"
+            ]
+          }
+        ],
+        "TTL": "900",
+        "Type": "CNAME"
+      },
+      "Type": "AWS::Route53::RecordSet"
+    }
+  }
+}
