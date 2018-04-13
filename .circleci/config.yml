@@ -22,9 +22,9 @@ jobs:
             echo "# Top level package"
             npm i
             echo
-            for component in $(make components-list); do
-              echo "# ${component}"
-              pushd components/${component} && npm i && popd
+            for chart in $(make charts-list); do
+              echo "# ${chart}"
+              pushd charts/${chart} && npm i && popd
               echo
             done
       - save_cache:
@@ -68,12 +68,12 @@ jobs:
       - run:
           name: "Publish to npm registry"
           command: |
-            for component in $(make components-list); do
+            for chart in $(make charts-list); do
               echo "****************"
-              echo "* Publishing $component"
+              echo "* Publishing $chart"
               echo "****************"
               set +e
-              make $component-publish
+              make $chart-publish
               set -e
               echo
             done
