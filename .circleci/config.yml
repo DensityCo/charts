@@ -1,91 +1,101 @@
 version: 2
 
 jobs:
-  build:
+  preview:
     docker:
-      - image: circleci/node:6.11
+      - image: circleci/node:8.11
     resource_class: small
     steps:
       - checkout
       - run:
-          name: "Add token to npmrc for publishing packages"
-          command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+          name: "Print out versions"
+          command: |
+            echo "node -v = $(node -v)"
+            echo "npm -v = $(npm -v)"
+            echo "yarn --version = $(yarn --version)"
+
+      - restore_cache:
+          key: node_modules-{{checksum "./package.json"}}
       - run:
           name: "Install dependencies"
-          command: yarn
-      - run:
-          name: "Build charts"
           command: |
-            # Publish all charts once on trunk
-            if [ "$CIRCLE_BRANCH" == "trunk" ]; then
-              echo "Publishing all charts..."
-              for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
-                # This isn't a chart, but a template for `./make-chart`
-                if [ "$chart" == "template" -o "$chart" == "dist" ]; then
-                  continue
-                fi
-
-                echo
-                echo
-                echo "================"
-                echo " $chart"
-                echo "================"
-
-                # If the published version is different from this version, then publish a new version.
-                if [ \
-                  "$(cat charts/$chart/package.json | jq .version)" != \
-                  "$(npm show "@density/chart-$chart" --json | jq '.["dist-tags"].latest')" \
-                ]; then
-                  set +e
-                  make publish CHART=$chart
-                  set -e
-                else
-                  echo "Chart $chart is up to date."
-                fi
-              done
-
-              # Finally, try to publish the main package
+            echo "# Top level package"
+            npm i
+            echo
+            for component in $(make components-list); do
+              echo "# ${component}"
+              pushd components/${component} && npm i && popd
               echo
-              echo
-              echo "================"
-              echo " @density/charts"
-              echo "================"
-              make dist/index.js                CHART=drift
-              set +e
-              npm publish --access public
-              set -e
-            else
-              echo "Packages are only published to npm on branch 'trunk'."
-            fi
-            exit 0
-      - run:
-          name: "Build storybook"
-          command: |
-            # Finally, build storybook.
-            for chart in $(find charts/ -maxdepth 1 -mindepth 1 -type d -printf "%f\n"); do
-              # This isn't a chart, but a template for `./make-chart`
-              if [ "$chart" == "template" -o "$chart" == "dist" ]; then
-                continue
-              fi
-
-              cd charts/$chart
-              npm i
-              cd ../..
             done
+      - save_cache:
+          key: node_modules-{{checksum "./package.json"}}
+          paths:
+            - "./node_modules"
 
-            echo "Building storybook..."
-            yarn build-storybook
+      - run:
+          name: "Build preview"
+          command: npm run build-storybook
       - run:
           name: "Push preview to the cloud"
           command: |
+            echo "* Installing amazon's cli..."
             sudo apt-get update
-            sudo apt-get install -y awscli
-            aws s3 sync storybook-static/ s3://charts-preview.density.rodeo/$CIRCLE_SHA1 --region us-east-1
+            sudo apt-get install -y python-pip python-dev
+            sudo pip install -U 'awscli>=1.15'
+
+            echo "* Copying to S3..."
+            aws s3 sync storybook-static/ s3://charts-preview.density.rodeo/${CIRCLE_SHA1} --region us-east-1
       - run:
           name: "Post preview link to any pull requests commit is part of"
           command: |
             echo "* Posting status to commit ${CIRCLE_SHA1}"
             curl -X POST \
-            -d "{\"state\":\"success\", \"context\": \"ci-preview\", \"target_url\": \"https://ui-preview.density.rodeo/$CIRCLE_SHA1\"}" \
+            -d "{\"state\":\"success\", \"context\": \"ci-preview\", \"target_url\": \"https://charts-preview.density.rodeo/${CIRCLE_SHA1}\"}" \
             -H "Authorization: Bearer $GITHUB_MACHINE_USER_TOKEN" \
-            https://api.github.com/repos/densityco/dashboard/statuses/${CIRCLE_SHA1}
+            https://api.github.com/repos/densityco/ui/statuses/${CIRCLE_SHA1}
+
+  publish:
+    docker:
+      - image: circleci/node:8.11
+    resource_class: small
+    steps:
+      - checkout
+      - restore_cache:
+          key: node_modules-{{checksum "./package.json"}}
+      - run:
+          name: "Add npm token to npmrc"
+          command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+      - run:
+          name: "Publish to npm registry"
+          command: |
+            for component in $(make components-list); do
+              echo "****************"
+              echo "* Publishing $component"
+              echo "****************"
+              set +e
+              make $component-publish
+              set -e
+              echo
+            done
+
+            echo "****************"
+            echo "* Publishing main package"
+            echo "****************"
+            set +e
+            make publish
+            set -e
+
+workflows:
+  version: 2
+  npm-deployment:
+    jobs:
+      # For all pushes, build/deploy to `https://charts-preview.density.rodeo/SHA`
+      - preview
+
+      # Trunk is published to npm
+      - publish:
+          requires:
+            - preview
+          filters:
+            branches:
+              only: trunk
