@@ -10,5 +10,9 @@
   },
   "author": "Density <team+javascript@density.io>",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "d3": "^5.0.0",
+    "moment": "^2.22.1",
+    "moment-timezone": "^0.5.14"
+  }
 }
