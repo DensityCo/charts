@@ -107,8 +107,17 @@ export function overlayTwoPopups({
         graphWidth,
         graphHeight,
         defaultDataset,
+        dataPoints,
       } = data;
       const xInMs = xScale.invert(mouseX);
+
+      // Ensure that the overlay is only being drawn when the user is hovering over the data
+      if (dataPoints.firstEventXValue < xInMs && xInMs > dataPoints.lastEventXValue) {
+        selection.remove();
+        return
+      }
+
+      // Figure out the event at the user's current mouse position
       const eventIndexAtOverlayPosition = d3
         .bisector(d => moment.utc(d.timestamp).valueOf())
         .right(defaultDataset.data, xInMs) - 1;

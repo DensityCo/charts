@@ -136,7 +136,7 @@ export default function lineChart(elem, props={}) {
     // ------------------------------------------------------------------------
     // OVERLAY
     // ------------------------------------------------------------------------
-    function overlayMouseAction(action) {
+    function overlayMouseAction(action, defaultDataset) {
       return function() {
         // Break early if we shouldn't draw the overlay point
         if (!overlayShowPoint) {
@@ -148,7 +148,11 @@ export default function lineChart(elem, props={}) {
           const coordinates = d3.mouse(this);
           x = coordinates[0] - leftMargin;
           y = coordinates[1] - topMargin;
-          selectionData = [x];
+
+          // Ensure that the user is hovering over data, and not over an empty space in the chart
+          if (!(dataPoints.firstEventXValue < xScale.invert(x) && xScale.invert(x) > dataPoints.lastEventXValue)) {
+            selectionData = [x];
+          }
         }
 
         // Render the point on the graph that correspnds to where the user currently has their
@@ -191,6 +195,7 @@ export default function lineChart(elem, props={}) {
                 graphWidth,
                 graphHeight,
                 defaultDataset,
+                dataPoints,
               }, d3.select(this)); /* this = reference to the g.overlay-view created above */
             })
         .merge(overlaySelection)
@@ -204,6 +209,7 @@ export default function lineChart(elem, props={}) {
                 graphWidth,
                 graphHeight,
                 defaultDataset,
+                dataPoints,
               }, d3.select(this)); /* this = reference to the g.overlay-view created above */
             }
           });
@@ -217,6 +223,7 @@ export default function lineChart(elem, props={}) {
                 graphWidth,
                 graphHeight,
                 defaultDataset,
+                dataPoints,
               }, d3.select(this)); /* this = reference to the g.overlay-view created above */
           });
       };
@@ -230,8 +237,9 @@ export default function lineChart(elem, props={}) {
         .attr('y', topMargin)
         .attr('width', graphWidth)
         .attr('height', graphHeight)
-        .on('mousemove', overlayMouseAction('mousemove'))
-        .on('mouseleave', overlayMouseAction('mouseleave'))
+    .merge(overlayPointSelection)
+      .on('mousemove', overlayMouseAction('mousemove', defaultDataset))
+      .on('mouseleave', overlayMouseAction('mouseleave', defaultDataset))
     overlayPointSelection.exit().remove()
 
     // ------------------------------------------------------------------------

@@ -101,7 +101,7 @@ export function yAxisMinMax({
       {value: lastEventYValue, hasRule: false},
     ];
 
-    const selection = element.selectAll('.axis-y-point').data(axisPoints);
+    const selection = element.selectAll('.axis-y-point').data(axisPoints, d => JSON.stringify(d));
 
     // On enter selection, create a group with a text element and line inside. These will be used to
     // render each datapoint on the y axis.
