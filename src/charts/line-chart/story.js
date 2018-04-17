@@ -3,8 +3,9 @@ import {storiesOf} from '@storybook/react';
 import {chartAsReactComponent} from '../index';
 import moment from 'moment';
 
-import lineChart, { dataWaterline, overlayTwoPopups, overlayExample } from './index';
+import lineChart, { dataWaterline } from './index';
 import { xAxisDailyTick, yAxisMinMax, exampleAxis } from './axes';
+import { overlayTwoPopups, overlayExample } from './overlays';
 
 const ONE_MINUTE_IN_MS = 60 * 1000,
       ONE_HOUR_IN_MS = ONE_MINUTE_IN_MS * 60,
@@ -41,38 +42,38 @@ storiesOf('Line Chart', module)
       overlayPointRadius={4.5}
 
       overlays={[
-        // overlayTwoPopups({
-        //   topPopupFormatter: {
-        //     enter: selection => {
-        //       selection.append('text')
-        //         .attr('text-anchor', 'middle')
-        //         .attr('font-weight', '500')
-        //     },
-        //     merge: ({item, xScale, mouseX, topOverlayWidth}, selection) => {
-        //       selection.select('text')
-        //         .attr('transform', `translate(${topOverlayWidth / 2},26)`)
-        //         .text(`${item.value}`);
-        //     },
-        //     exit: selection => selection.remove(),
-        //   },
-        //   bottomPopupFormatter: {
-        //     enter: selection => {
-        //       selection.append('text')
-        //         .attr('text-anchor', 'middle')
-        //         .attr('font-weight', '500')
-        //     },
-        //     merge: ({xScale, mouseX, bottomOverlayWidth}, selection) => {
-        //       selection.select('text')
-        //         .attr('transform', `translate(${bottomOverlayWidth / 2},26)`)
-        //         .text(`${moment.utc(xScale.invert(mouseX)).format()}`);
-        //     },
-        //     exit: selection => selection.remove(),
-        //   },
-        //
-        //   bottomOverlayTopMargin: 40,
-        //   topOverlayBottomMargin: 10,
-        // }),
-        overlayExample({color: 'red'}),
+        overlayTwoPopups({
+          topPopupFormatter: {
+            enter: selection => {
+              selection.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-weight', '500')
+            },
+            merge: ({item, xScale, mouseX, topOverlayWidth}, selection) => {
+              selection.select('text')
+                .attr('transform', `translate(${topOverlayWidth / 2},26)`)
+                .text(`${item.value}`);
+            },
+            exit: selection => selection.remove(),
+          },
+          bottomPopupFormatter: {
+            enter: selection => {
+              selection.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-weight', '500')
+            },
+            merge: ({xScale, mouseX, bottomOverlayWidth}, selection) => {
+              selection.select('text')
+                .attr('transform', `translate(${bottomOverlayWidth / 2},26)`)
+                .text(`${moment.utc(xScale.invert(mouseX)).format()}`);
+            },
+            exit: selection => selection.remove(),
+          },
+
+          bottomOverlayTopMargin: 40,
+          topOverlayBottomMargin: 10,
+        }),
+        // overlayExample({color: 'red'}),
       ]}
 
       data={[
