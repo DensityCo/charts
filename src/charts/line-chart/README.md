@@ -49,10 +49,14 @@ function is called by the user so that they can pass configuration parameters to
 lower level function is called by the chart to pass more non-user-provided configuration parameters
 and an element to render the axis within. Effectively, an axis looks like this:
 
-```
-// A "simple" example axis. This demonstrates how to build an axis that works with the line chart.
-// Usage as a react prop: xAxis={exampleAxis({color: 'red'})}
-//
+```jsx
+// Axis Usage
+
+<LineChart
+  ... other props
+  xAxis={exampleAxis({color: 'red'})}
+  ... other props
+/>
 export function exampleAxis({color}) {
   color = color || 'royalblue';
   return ({scale}, element) => {
@@ -83,3 +87,45 @@ export function exampleAxis({color}) {
 ```
 
 ![docs-assets/example-axis.png](docs-assets/example-axis.png)
+
+## Overlay
+An overlay is any sort of element that appears on top of the chart when the user hovers over the
+chart. In a similar fashion to an axis, an overlay presents itself in the form of a function that is
+called by the user with configuration parameters. However, overlays are much more managed than axes
+- they are called as part a data join. Therefore, an overlay is expected to return an object from
+its top-level fucntion that contains three subkeys: `enter`, `merge`, and `exit`. Each is similar to
+the nexted-function inside of an axis: it takes a number of chart-specific configuration values and an
+selection to render within. Each function is called in its respective lifecycle step: `enter` when
+a new overlay is drawn, `merge` when the overlay should be updated, and `exit` when the overlay
+should be removed. Here's a basic example:
+
+```javascript
+function overlayExample({color}) {
+  return {
+    enter: (data, selection) => {
+      selection.append('rect')
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('fill', color)
+    },
+    merge: ({mouseX, mouseY}, selection) => {
+      selection.select('rect')
+      .attr('x', mouseX)
+      .attr('y', mouseY)
+    },
+    exit: (props, selection) => {
+      selection.remove()
+    },
+  };
+}
+
+// Overlay Usage
+
+<LineChart
+  ... other props
+  overlays={[
+    overlayExample({ color: 'red' }),
+  ]}
+  ... other props
+/>
+```
