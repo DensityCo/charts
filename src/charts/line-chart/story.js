@@ -3,12 +3,8 @@ import {storiesOf} from '@storybook/react';
 import {chartAsReactComponent} from '../index';
 import moment from 'moment';
 
-import lineChart, {
-  xAxisDailyTick,
-  yAxisMinMax,
-  dataWaterline,
-  overlayTwoPopups,
-} from './index';
+import lineChart, { dataWaterline, overlayTwoPopups } from './index';
+import { xAxisDailyTick, yAxisMinMax, exampleAxis } from './axes';
 
 const ONE_MINUTE_IN_MS = 60 * 1000,
       ONE_HOUR_IN_MS = ONE_MINUTE_IN_MS * 60,
@@ -27,6 +23,7 @@ storiesOf('Line Chart', module)
         timeBetweenTicksInMs: 1 * ONE_MINUTE_IN_MS,
         bottomOffset: 15,
       })}
+      // xAxis={exampleAxis({color: 'red'})}
 
       yAxis={yAxisMinMax({
         leftOffset: 20,
