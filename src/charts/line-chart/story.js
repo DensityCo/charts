@@ -1,11 +1,13 @@
 import * as React from 'react';
 import {storiesOf} from '@storybook/react';
 import {chartAsReactComponent} from '../index';
+import moment from 'moment';
 
 import lineChart, {
   xAxisDailyTick,
   yAxisMinMax,
   dataWaterline,
+  overlayTwoPopups,
 } from './index';
 
 const ONE_MINUTE_IN_MS = 60 * 1000,
@@ -18,10 +20,12 @@ storiesOf('Line Chart', module)
   .add('With no name', () => (
     <LineChart
       timeZone="UTC"
+      svgWidth={1000}
+      svgHeight={300}
 
       xAxis={xAxisDailyTick({
         timeBetweenTicksInMs: 1 * ONE_MINUTE_IN_MS,
-        bottomOffset: 40,
+        bottomOffset: 15,
       })}
 
       yAxis={yAxisMinMax({
@@ -36,6 +40,43 @@ storiesOf('Line Chart', module)
       yAxisEnd={40}
       yAxisStart={0}
 
+      overlayShowPoint={true}
+      overlayPointRadius={4.5}
+
+      overlays={[
+        overlayTwoPopups({
+          topPopupFormatter: {
+            enter: selection => {
+              selection.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-weight', '500')
+            },
+            merge: ({item, xScale, mouseX, topOverlayWidth}, selection) => {
+              selection.select('text')
+                .attr('transform', `translate(${topOverlayWidth / 2},26)`)
+                .text(`${item.value}`);
+            },
+            exit: selection => selection.remove(),
+          },
+          bottomPopupFormatter: {
+            enter: selection => {
+              selection.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-weight', '500')
+            },
+            merge: ({xScale, mouseX, bottomOverlayWidth}, selection) => {
+              selection.select('text')
+                .attr('transform', `translate(${bottomOverlayWidth / 2},26)`)
+                .text(`${moment.utc(xScale.invert(mouseX)).format()}`);
+            },
+            exit: selection => selection.remove(),
+          },
+
+          bottomOverlayTopMargin: 40,
+          topOverlayBottomMargin: 10,
+        }),
+      ]}
+
       data={[
         {
           name: 'default',
@@ -43,7 +84,7 @@ storiesOf('Line Chart', module)
           color: 'rgba(65, 152, 255, 0.2)',
           borderColor: 'rgb(65, 152, 255)',
           data: [
-            {value: 18, timestamp: '2018-04-16T14:00:00.000Z'},
+            {value: 40, timestamp: '2018-04-16T14:00:00.000Z'},
             {value: 7, timestamp: '2018-04-16T20:00:00.000Z'},
             {value: 8, timestamp: '2018-04-16T21:00:00.000Z'},
             {value: 10, timestamp: '2018-04-16T23:00:00.000Z'},
