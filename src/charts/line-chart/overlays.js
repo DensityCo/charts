@@ -26,12 +26,12 @@ export function overlayTwoPopups({
 
   bottomOverlayTopMargin,
   topOverlayBottomMargin,
-}) {
-  const topOverlayWidth = 100;
-  const topOverlayHeight = 42;
-  const bottomOverlayWidth = 200;
-  const bottomOverlayHeight = 42;
 
+  topOverlayWidth,
+  topOverlayHeight,
+  bottomOverlayWidth,
+  bottomOverlayHeight,
+}) {
   return {
     enter: ({xScale, yScale}, selection) => {
       // Add filter for use in making shadows behind things.
@@ -186,6 +186,72 @@ export function overlayTwoPopups({
       selection.remove()
     },
   };
+}
+
+// Can be passed to the `formatter` prop of the `overlayTwoPopups` overlay.
+// Renders the value as plain text, optionally running it through a mapping function first.
+export function overlayTwoPopupsPlainTextFormatter(mapping) {
+  return {
+    enter: selection => {
+      selection.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('font-weight', '500')
+    },
+    merge: (data, selection) => {
+      const {item, xScale, mouseX, topOverlayWidth} = data;
+      selection.select('text')
+        .attr('transform', `translate(${data.bottomOverlayWidth / 2},26)`)
+        .text(mapping ? mapping(item, data) : item.value);
+    },
+    exit: selection => selection.remove(),
+  }
+}
+
+// Can be passed to the `formatter` prop of the `overlayTwoPopups` overlay.
+// Renders the value as plain text, but with a person icon to the left of the plain text, optionally
+// running it through a mapping function first.
+export function overlayTwoPopupsPersonIconTextFormatter(mapping) {
+  return {
+    enter: selection => {
+      selection.append('text')
+        .attr('text-anchor', 'left')
+        .attr('font-weight', '500')
+        .attr('transform', `translate(42,27)`)
+
+      // Created via https://rawgit.com/jColeChanged/svg2d3js/master/index.html
+      const qv7a5d925c094c53a70 = selection.append('g')
+        .attr('stroke', 'none')
+        .attr('stroke-width', '1')
+        .attr('fill', 'none')
+        .attr('fill-rule', 'evenodd')
+        .attr('stroke-linejoin', 'round')
+        .attr('transform', 'translate(15,10)')
+      const qvf0621598a7e8cb863 = qv7a5d925c094c53a70.append('g')
+        .attr('transform', 'translate(-775.000000, -397.000000)')
+        .attr('stroke', '#4198FF')
+        .attr('stroke-width', '1.5')
+      const qvd28faf862aaae21da = qvf0621598a7e8cb863.append('g')
+        .attr('transform', 'translate(170.000000, 159.000000)');
+      const qvf4650fd1e11506470 = qvd28faf862aaae21da.append('g')
+        .attr('transform', 'translate(591.000000, 227.000000)');
+      const qv1fd943a9889237046 = qvf4650fd1e11506470.append('g')
+        .attr('transform', 'translate(15.000000, 12.000000)');
+      const qv6fd596351c7e83872 = qv1fd943a9889237046.append('path')
+        .attr('d', 'M9.42856667,4 C9.42856667,6.20911111 7.89356667,8 6.00001111,8 C4.10645556,8 2.57145556,6.20911111 2.57145556,4 C2.57145556,1.79088889 4.10645556,0 6.00001111,0 C7.89356667,0 9.42856667,1.79088889 9.42856667,4 L9.42856667,4 Z');
+      const qv79a38c2da85ee301f = qv1fd943a9889237046.append('path')
+        .attr('d', 'M12,16 L12,11 C12,9.33688889 10.6392222,8 8.97611111,8 L3.02388889,8 C1.36077778,8 0,9.33688889 0,11 L0,16 L12,16 L12,16 Z');
+      const qvd5bb95460496d63c4 = qv1fd943a9889237046.append('path')
+        .attr('d', 'M3,12 L3,16');
+      const qv3ba41bdbddbf151c1 = qv1fd943a9889237046.append('path')
+        .attr('d', 'M9,12 L9,16');
+    },
+    merge: (data, selection) => {
+      const {item, xScale, mouseX, topOverlayWidth} = data;
+      selection.select('text')
+        .text(mapping ? mapping(item, data) : item.value);
+    },
+    exit: selection => selection.remove(),
+  }
 }
 
 export function overlayExample({color}) {

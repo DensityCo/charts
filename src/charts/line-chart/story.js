@@ -5,7 +5,13 @@ import moment from 'moment';
 
 import lineChart, { dataWaterline } from './index';
 import { xAxisDailyTick, yAxisMinMax, exampleAxis } from './axes';
-import { overlayTwoPopups, overlayExample } from './overlays';
+import {
+  overlayTwoPopups,
+  overlayExample,
+
+  overlayTwoPopupsPlainTextFormatter,
+    overlayTwoPopupsPersonIconTextFormatter,
+} from './overlays';
 
 const ONE_MINUTE_IN_MS = 60 * 1000,
       ONE_HOUR_IN_MS = ONE_MINUTE_IN_MS * 60,
@@ -54,35 +60,19 @@ storiesOf('Line Chart', module)
 
       overlays={[
         overlayTwoPopups({
-          topPopupFormatter: {
-            enter: selection => {
-              selection.append('text')
-                .attr('text-anchor', 'middle')
-                .attr('font-weight', '500')
-            },
-            merge: ({item, xScale, mouseX, topOverlayWidth}, selection) => {
-              selection.select('text')
-                .attr('transform', `translate(${topOverlayWidth / 2},26)`)
-                .text(`${item.value}`);
-            },
-            exit: selection => selection.remove(),
-          },
-          bottomPopupFormatter: {
-            enter: selection => {
-              selection.append('text')
-                .attr('text-anchor', 'middle')
-                .attr('font-weight', '500')
-            },
-            merge: ({xScale, mouseX, bottomOverlayWidth}, selection) => {
-              selection.select('text')
-                .attr('transform', `translate(${bottomOverlayWidth / 2},26)`)
-                .text(`${moment.utc(xScale.invert(mouseX)).format()}`);
-            },
-            exit: selection => selection.remove(),
-          },
+          // topPopupFormatter: overlayTwoPopupsPlainTextFormatter(item => `${item.value}`),
+          topPopupFormatter: overlayTwoPopupsPersonIconTextFormatter(item => `${item.value}`),
+          bottomPopupFormatter: overlayTwoPopupsPlainTextFormatter(
+            (item, {mouseX, xScale}) => moment.utc(xScale.invert(mouseX)).format()
+          ),
 
           bottomOverlayTopMargin: 40,
           topOverlayBottomMargin: 10,
+
+          topOverlayWidth: 80,
+          topOverlayHeight: 42,
+          bottomOverlayWidth: 200,
+          bottomOverlayHeight: 42,
         }),
         // overlayExample({color: 'red'}),
       ]}
@@ -169,6 +159,11 @@ storiesOf('Line Chart', module)
 
           bottomOverlayTopMargin: 40,
           topOverlayBottomMargin: 10,
+
+          topOverlayWidth: 100,
+          topOverlayHeight: 42,
+          bottomOverlayWidth: 200,
+          bottomOverlayHeight: 42,
         }),
       ]}
 
@@ -239,6 +234,11 @@ storiesOf('Line Chart', module)
 
           bottomOverlayTopMargin: 40,
           topOverlayBottomMargin: 10,
+
+          topOverlayWidth: 100,
+          topOverlayHeight: 42,
+          bottomOverlayWidth: 200,
+          bottomOverlayHeight: 42,
         }),
       ]}
 
@@ -327,6 +327,11 @@ storiesOf('Line Chart', module)
 
               bottomOverlayTopMargin: 40,
               topOverlayBottomMargin: 10,
+
+              topOverlayWidth: 100,
+              topOverlayHeight: 42,
+              bottomOverlayWidth: 200,
+              bottomOverlayHeight: 42,
             }),
           ]}
 
