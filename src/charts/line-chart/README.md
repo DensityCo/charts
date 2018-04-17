@@ -1,7 +1,7 @@
 # Line Chart
 Chart for displaying information using lines on a 2d grid where the bottom axis is time [npm](https://npmjs.com/@density/chart-line-chart)
 
-*TODO: ADD PICTURE OF CHART*
+![docs-assets/readme.png](docs-assets/readme.png)
 
 ## Using this chart
 This chart has a single default export. This exported function takes two arguments: a dom element,
