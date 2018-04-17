@@ -91,8 +91,8 @@ export function exampleAxis({color}) {
 ## Overlay
 An overlay is any sort of element that appears on top of the chart when the user hovers over the
 chart. In a similar fashion to an axis, an overlay presents itself in the form of a function that is
-called by the user with configuration parameters. However, overlays are much more managed than axes
-- they are called as part a data join. Therefore, an overlay is expected to return an object from
+called by the user with configuration parameters. However, overlays are much more managed than axes - they
+are called as part a data join. Therefore, an overlay is expected to return an object from
 its top-level fucntion that contains three subkeys: `enter`, `merge`, and `exit`. Each is similar to
 the nexted-function inside of an axis: it takes a number of chart-specific configuration values and an
 selection to render within. Each function is called in its respective lifecycle step: `enter` when
