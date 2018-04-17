@@ -129,3 +129,5 @@ function overlayExample({color}) {
   ... other props
 />
 ```
+
+![docs-assets/example-overlay.png](docs-assets/example-overlay.png)

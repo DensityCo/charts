@@ -458,3 +458,22 @@ export function overlayTwoPopups({
     },
   };
 }
+
+export function overlayExample({color}) {
+  return {
+    enter: (data, selection) => {
+      selection.append('rect')
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('fill', color)
+    },
+    merge: ({mouseX, mouseY}, selection) => {
+      selection.select('rect')
+      .attr('x', mouseX)
+      .attr('y', mouseY)
+    },
+    exit: (props, selection) => {
+      selection.remove()
+    },
+  };
+}
