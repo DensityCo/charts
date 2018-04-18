@@ -103,7 +103,7 @@ styled to match the density aesthetic - a 14px font, in Sailec, and in `grayCind
 
 ![docs-assets/bottom-offset.png](docs-assets/bottom-offset.png)
 
-- Pick one of the two below to generate the tick values show non the axis:
+- Pick one of the two below to generate the tick values show on the axis:
   - `tickResolutionInMs: Number` *(optional)* - Specify a number of milliseconds of distance to put
     between each tick value.
 
@@ -111,7 +111,7 @@ styled to match the density aesthetic - a 14px font, in Sailec, and in `grayCind
     define the location of ticks on the axis. This is passed to the `.tickValues` method on the
     `d3.axisBottom`, and will be mapped through the `formatter` function if specified.
 
-  - If neither of the above are passed, `tickResolutionInMs` defaults to 1 hour between ticks.
+  - If neither of the above are passed, `tickResolutionInMs` is used with its default of 1 hour between ticks.
 
 <br />
 <br />
