@@ -13,7 +13,18 @@ import lineChart from '@density/chart-line-chart';
 // or: const lineChart = require('@density/chart-line-chart').default;
 
 const element = document.getElementById('chart-container');
-const props = {name: 'Bob'};
+const props = {
+  xAxis: exampleAxis({
+    prop1: 'value',
+    prop2: 'value',
+  }),
+  yAxis: exampleAxis({
+    prop1: 'value',
+    prop2: 'value',
+  }),
+
+  /* TODO: enter all props here */
+};
 
 // Make your chart
 const updateData = lineChart(element);
@@ -22,7 +33,11 @@ const updateData = lineChart(element);
 updateData(props);
 ```
 
-## Properties
+## Examples
+
+Take a look at the [story](./story.js) for a number of example charts.
+
+## Helper library
 
 In addition, if you'd like to render a chart in a context where the DOM is abstracted away from you,
 such as a React or Angular app, then check out [our companion helper library](https://github.com/DensityCo/charts#hold-on-then-how-do-i-render-my-chart-in-my-react-app).
