@@ -122,10 +122,6 @@ export function overlayTwoPopups({
         selection.remove();
         return
       }
-      if (dataPoints.firstEventXValue < xInMs && xInMs > dataPoints.lastEventXValue) {
-        selection.remove();
-        return
-      }
 
 
       const formatterData = {
@@ -195,7 +191,7 @@ export function overlayTwoPopups({
 
 // Can be passed to the `formatter` prop of the `overlayTwoPopups` overlay.
 // Renders the value as plain text, optionally running it through a mapping function first.
-export function overlayTwoPopupsPlainTextFormatter(mapping) {
+export function overlayTwoPopupsPlainTextFormatter(mapping, position='bottom') {
   return {
     enter: selection => {
       selection.append('text')
@@ -204,8 +200,9 @@ export function overlayTwoPopupsPlainTextFormatter(mapping) {
     },
     merge: (data, selection) => {
       const {item, xScale, mouseX, topOverlayWidth} = data;
+      const width = position === 'bottom' ? data.bottomOverlayWidth  : data.topOverlayWidth;
       selection.select('text')
-        .attr('transform', `translate(${data.bottomOverlayWidth / 2},26)`)
+        .attr('transform', `translate(${width / 2},26)`)
         .text(mapping ? mapping(item, data) : item.value);
     },
     exit: selection => selection.remove(),

@@ -3,6 +3,10 @@ import * as d3 from 'd3';
 import moment from 'moment';
 import 'moment-timezone';
 
+const ONE_MINUTE_IN_MS = 60 * 1000,
+      ONE_HOUR_IN_MS = ONE_MINUTE_IN_MS * 60,
+      ONE_DAY_IN_MS = ONE_HOUR_IN_MS * 60;
+
 const colorVariables = {
   "grayCinder": "#222A2E",
 
@@ -46,15 +50,25 @@ export function exampleAxis({color}) {
 export function xAxisDailyTick({
   formatter,
   tickValues,
+  tickResolutionInMs,
   bottomOffset, /* distance between the bottom edge of the svg and the axis labels */
 }) {
-  return ({timeZone, scale, bottomMargin}, element) => {
+  bottomOffset = bottomOffset || 15;
+
+  return ({timeZone, scale, bottomMargin, dataPoints}, element) => {
     const axisFontSize = 14;
 
-    // Use the proper font size for the axis
-    element.attr('font-size', axisFontSize)
+    // If manual tick values weren't specified, then generate our own using the `tickResolutionInMs`
+    // property.
+    tickValues = tickValues || d3.range(
+      dataPoints.startXValue,
+      dataPoints.endXValue,
+      (tickResolutionInMs || (1 * ONE_HOUR_IN_MS))
+    );
 
     let axis = d3.axisBottom(scale)
+      .tickValues(tickValues)
+
       // Position a tick at the first whole hour on the axis, then another tick for each hour
       // thereafter.
       .tickFormat(formatter || (n => {
@@ -66,11 +80,6 @@ export function xAxisDailyTick({
         ).toLowerCase();
       }));
 
-    // If tick values were passed, then use those values on the axis
-    if (tickValues) {
-      axis = axis.tickValues(tickValues);
-    }
-
     // Render the axis
     element.call(axis);
 
@@ -81,6 +90,7 @@ export function xAxisDailyTick({
     // Adjust the vertical spacing of each tick on the axis
     element.selectAll('.tick text')
       .attr('transform', `translate(0,${-10 + bottomOffset})`)
+      .attr('font-size', axisFontSize)
   };
 }
 
@@ -95,6 +105,12 @@ export function yAxisMinMax({
   axisRuleLineDashWidth,
   axisRuleLineDashSpacing,
 }) {
+  leftOffset = typeof leftOffset === 'undefined' ? 20 : leftOffset;
+  axisRuleLineDashWidth = typeof axisRuleLineDashWidth === 'undefined' ? 4 : axisRuleLineDashWidth;
+  axisRuleLineDashSpacing = typeof axisRuleLineDashSpacing === 'undefined' ? 10 : axisRuleLineDashSpacing;
+
+  points = points || [];
+
   /* both showMinimumPoint and showMaximumPoint default to true if unspecified */
   showMinimumPoint = typeof showMinimumPoint === 'undefined' ? true : showMinimumPoint;
   showMaximumPoint = typeof showMaximumPoint === 'undefined' ? true : showMaximumPoint;

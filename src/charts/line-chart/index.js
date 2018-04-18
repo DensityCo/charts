@@ -74,6 +74,15 @@ export default function lineChart(elem, props={}) {
       if (!item.data) {
         throw new Error(`Line Chart data item index ${ct} ('${item.name}') missing a data property. This is required!`);
       }
+
+      item.data.forEach((j, jct) => {
+        if (!j.timestamp) {
+          throw new Error(`Line Chart data item index ${ct} ('${item.name}') missing a timestamp property within the data property (index ${jct}). This is required!`);
+        }
+        if (typeof j.value !== 'number') {
+          throw new Error(`Line Chart data item index ${ct} ('${item.name}') missing a numeric value property (actual value: ${j.value}) within the data property (index ${jct}). This is required!`);
+        }
+      });
       return item;
     });
     overlays = overlays || [];
@@ -139,6 +148,8 @@ export default function lineChart(elem, props={}) {
     dataPoints.startYValue = typeof yAxisStart !== 'undefined' ? yAxisStart : dataPoints.eventWithSmallestValue.value;
     dataPoints.endYValue = typeof yAxisEnd !== 'undefined' ? yAxisEnd : dataPoints.eventWithLargestValue.value;
 
+    console.log('DATAPOINTS', dataPoints);
+
     const xScale = d3.scaleLinear()
       .rangeRound([0, graphWidth])
       .domain([dataPoints.startXValue, dataPoints.endXValue]);
@@ -154,6 +165,7 @@ export default function lineChart(elem, props={}) {
       scale: xScale,
       timeZone,
       bottomMargin,
+      dataPoints,
     }, layers.xAxis);
 
     // ------------------------------------------------------------------------
@@ -165,6 +177,7 @@ export default function lineChart(elem, props={}) {
       lastEventYValue: dataPoints.endYValue,
       graphWidth,
       leftMargin,
+      dataPoints,
     }, layers.yAxis);
 
     // ------------------------------------------------------------------------
@@ -311,21 +324,21 @@ export function dataWaterline({
     const waterlineSelection = d3.select(element).selectAll('.waterline').data([
       {
         data,
-        path: data.reduce((acc, i) => {
+        path: data.reduce((acc, i, ct) => {
           const timeEpoch = moment.utc(i.timestamp).valueOf();
           if (timeEpoch > dataPoints.endXValue) {
             return acc;
           }
           const xPosition = xScale(timeEpoch);
           const yPosition = yScale(i.value);
-          if (xPosition === 0) {
+          if (ct === 0) {
             // For the first plotted point, don't draw an outline on the left edge.
             return `${acc}M0,${yPosition-verticalBaselineOffset}`;
           } else if (xPosition > 0) {
             // Plot each point my moving horizontally then vertically.
             return `${acc}H${xPosition}V${yPosition-verticalBaselineOffset}`;
           } else {
-            return total;
+            return acc;
           }
         }, ''),
       },
