@@ -111,17 +111,22 @@ export function overlayTwoPopups({
       } = data;
       const xInMs = xScale.invert(mouseX);
 
-      // Ensure that the overlay is only being drawn when the user is hovering over the data
-      if (dataPoints.firstEventXValue < xInMs && xInMs > dataPoints.lastEventXValue) {
-        selection.remove();
-        return
-      }
-
       // Figure out the event at the user's current mouse position
       const eventIndexAtOverlayPosition = d3
         .bisector(d => moment.utc(d.timestamp).valueOf())
         .right(defaultDataset.data, xInMs) - 1;
       const eventAtPosition = defaultDataset.data[eventIndexAtOverlayPosition];
+
+      // Ensure that the overlay is only being drawn when the user is hovering over the data
+      if (!eventAtPosition) {
+        selection.remove();
+        return
+      }
+      if (dataPoints.firstEventXValue < xInMs && xInMs > dataPoints.lastEventXValue) {
+        selection.remove();
+        return
+      }
+
 
       const formatterData = {
         ...data,
@@ -214,9 +219,8 @@ export function overlayTwoPopupsPersonIconTextFormatter(mapping) {
   return {
     enter: selection => {
       selection.append('text')
-        .attr('text-anchor', 'left')
+        .attr('text-anchor', 'middle')
         .attr('font-weight', '500')
-        .attr('transform', `translate(42,27)`)
 
       // Created via https://rawgit.com/jColeChanged/svg2d3js/master/index.html
       const qv7a5d925c094c53a70 = selection.append('g')
@@ -248,6 +252,7 @@ export function overlayTwoPopupsPersonIconTextFormatter(mapping) {
     merge: (data, selection) => {
       const {item, xScale, mouseX, topOverlayWidth} = data;
       selection.select('text')
+        .attr('transform', `translate(${24 + ((topOverlayWidth - 24) / 2)},27)`)
         .text(mapping ? mapping(item, data) : item.value);
     },
     exit: selection => selection.remove(),

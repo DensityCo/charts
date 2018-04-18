@@ -147,11 +147,7 @@ export default function lineChart(elem, props={}) {
           const coordinates = d3.mouse(this);
           x = coordinates[0] - leftMargin;
           y = coordinates[1] - topMargin;
-
-          // Ensure that the user is hovering over data, and not over an empty space in the chart
-          if (!(dataPoints.firstEventXValue < xScale.invert(x) && xScale.invert(x) > dataPoints.lastEventXValue)) {
-            selectionData = [x];
-          }
+          selectionData = [x];
         }
 
         // Render the point on the graph that correspnds to where the user currently has their
@@ -169,8 +165,12 @@ export default function lineChart(elem, props={}) {
             const eventIndexAtOverlayPosition = d3
               .bisector(d => moment.utc(d.timestamp).valueOf())
               .right(defaultDataset.data, xInMs) - 1;
-            const eventAtPosition = defaultDataset.data[eventIndexAtOverlayPosition];
-            return topMargin + yScale(eventAtPosition.value);
+            const eventAtPosition = defaultDataset.data[eventIndexAtOverlayPosition] || defaultDataset.data[0];
+            if (eventAtPosition) {
+              return topMargin + yScale(eventAtPosition.value) - defaultDataset.verticalOffset;
+            } else {
+              return -100000000;
+            }
           });
         pointSelection.exit().remove();
 
@@ -265,13 +265,36 @@ export function dataWaterline({
   data,
   color,
   borderColor,
+  verticalOffset,
 }) {
   return ({xScale, yScale, graphHeight, dataPoints}, element) => {
     const waterlinePrefix = `M0,${graphHeight}` + /* move to the lower left of the graph */
-      `L0,${yScale(dataPoints.startYValue)}`; /* move to the first datapoint in the waterline */
-    const waterlinePostfix = `H${xScale(dataPoints.lastEventXValue)}V${graphHeight}H1`;
+      `M0,${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint's y value */
+    const waterlineFillPostfix = `H${xScale(dataPoints.endXValue)}V${graphHeight}H1`;
+    const waterlineStrokePostfix = `H${xScale(dataPoints.endXValue)}`;
 
-    const waterlineSelection = d3.select(element).selectAll('.waterline').data([data]);
+    const waterlineSelection = d3.select(element).selectAll('.waterline').data([
+      {
+        data,
+        path: data.reduce((acc, i) => {
+          const timeEpoch = moment.utc(i.timestamp).valueOf();
+          if (timeEpoch > dataPoints.endXValue) {
+            return acc;
+          }
+          const xPosition = xScale(timeEpoch);
+          const yPosition = yScale(i.value);
+          if (xPosition === 0) {
+            // For the first plotted point, don't draw an outline on the left edge.
+            return `${acc}M0,${yPosition-verticalOffset}`;
+          } else if (xPosition > 0) {
+            // Plot each point my moving horizontally then vertically.
+            return `${acc}H${xPosition}V${yPosition-verticalOffset}`;
+          } else {
+            return total;
+          }
+        }, ''),
+      },
+    ], d => d.data);
     const waterlineSelectionGroup = waterlineSelection.enter()
       .append('g')
         .attr('class', 'waterline');
@@ -287,22 +310,10 @@ export function dataWaterline({
 
     waterlineSelectionGroup.merge(waterlineSelection)
       .select('.waterline-fill')
-      .attr('d', d => {
-        return waterlinePrefix + d.reduce((acc, i) => {
-          const xPosition = xScale(moment.utc(i.timestamp).valueOf());
-          const yPosition = yScale(i.value);
-          return `${acc} H${xPosition} V${yPosition}`;
-        }, '') + waterlinePostfix;
-      });
+      .attr('d', d => waterlinePrefix + d.path + waterlineFillPostfix);
     waterlineSelectionGroup.merge(waterlineSelection)
       .select('.waterline-stroke')
-      .attr('d', d => {
-        return `M0,${graphHeight} M0,${yScale(dataPoints.firstEventYValue)}` + d.reduce((acc, i) => {
-          const xPosition = xScale(moment.utc(i.timestamp).valueOf());
-          const yPosition = yScale(i.value);
-          return `${acc} H${xPosition} V${yPosition}`;
-        }, '');
-      });
+      .attr('d', d => waterlinePrefix + d.path + waterlineStrokePostfix);
     waterlineSelection.exit().remove();
   };
 }
