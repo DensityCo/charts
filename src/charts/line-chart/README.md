@@ -93,6 +93,9 @@ export function exampleAxis({color}) {
 #### `exampleAxis`
 The above demo axis is implmented in this package too - `import { exampleAxis } from '@density/chart-line-chart/axes';`
 
+<br />
+<br />
+
 #### `xAxisDailyTick`
 This axis renders a time-based x axis using the builtin `d3.axisBottom`. After rendering, it's
 styled to match the density aesthetic - a 14px font, in Sailec, and in `grayCinder`.
@@ -114,6 +117,34 @@ styled to match the density aesthetic - a 14px font, in Sailec, and in `grayCind
     `d3.axisBottom`, and will be mapped through the `formatter` function if specified.
 
   - If neither of the above are passed, `tickResolutionInMs` defaults to 1 hour between ticks.
+
+<br />
+<br />
+
+#### `yAxisMinMax`
+This axis renders a y axis with by default two ticks - one at the maximum value and one at the
+minimum value. It can be customized to add ticks at arbitrary points, and to style those ticks in a
+number of ways.
+
+##### Props
+- `formatter: ({value, hasRule}) => String` *(optional)* - A mapping function that accepts a point
+  to render and returns the string value to render for that given point. Defaults to `d => d.value.toString()`.
+
+- `leftOffset: Number` *(optional)* - The distance between the axis and the left of the chart graph. Defaults to `20px`.
+
+![docs-assets/left-offset2.png](docs-assets/left-offset2.png)
+
+- `showMaximumPoint: Boolean` *(optional)* - Should the minumum point on the axis be rendered? Defaults to `false`.
+- `showMaximumPoint: Boolean` *(optional)* - Should the maximum point on the axis be rendered? Defaults to `false`.
+
+- `points: [{value: Number, hasRule: Boolean}]` - A number of additional points to render on the axis. Each `value`
+  is the location on the axis to draw that point, and each `hasRule` flag indicates if a dotted
+  rule should be drawn across the chart at the location of the point.
+
+![docs-assets/rules-and-points.png](docs-assets/rules-and-points.png)
+
+- `axisRuleLineDashWidth: Number` - The width in pixels of each rule dash. Defaults to `4`.
+- `axisRuleLineDashSpacing: Number` - The distance in pixels between each rule dash. Defaults to `10`.
 
 
 ## Overlay
