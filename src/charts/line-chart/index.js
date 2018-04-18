@@ -130,6 +130,9 @@ export default function lineChart(elem, props={}) {
     const dataPoints = {};
 
     const defaultDataset = data.find(i => i.name === 'default');
+    if (defaultDataset.data.length === 0) {
+      return;
+    }
 
     dataPoints.firstEvent = defaultDataset.data[0];
     dataPoints.lastEvent = defaultDataset.data.slice(-1)[0];
@@ -147,8 +150,6 @@ export default function lineChart(elem, props={}) {
 
     dataPoints.startYValue = typeof yAxisStart !== 'undefined' ? yAxisStart : dataPoints.eventWithSmallestValue.value;
     dataPoints.endYValue = typeof yAxisEnd !== 'undefined' ? yAxisEnd : dataPoints.eventWithLargestValue.value;
-
-    console.log('DATAPOINTS', dataPoints);
 
     const xScale = d3.scaleLinear()
       .rangeRound([0, graphWidth])

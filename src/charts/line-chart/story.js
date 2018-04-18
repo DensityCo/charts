@@ -31,88 +31,6 @@ function uncompressData(data) {
 }
 
 storiesOf('Line Chart', module)
-  .add('Everything possible', () => (
-    <LineChart
-      timeZone="UTC"
-      svgWidth={1000}
-      svgHeight={300}
-
-      xAxis={xAxisDailyTick({
-        timeBetweenTicksInMs: 1 * ONE_MINUTE_IN_MS,
-        bottomOffset: 15,
-      })}
-      // xAxis={exampleAxis({color: 'red'})}
-
-      yAxis={yAxisMinMax({
-        leftOffset: 20,
-        axisRuleLineDashWidth: 4,
-        axisRuleLineDashSpacing: 10,
-        points: [
-          {value: 20, hasRule: true},
-          {value: 10, hasRule: false},
-        ],
-        showMinimumPoint: true,
-        showMaximumPoint: true,
-      })}
-      yAxisEnd={40}
-      yAxisStart={0}
-
-      overlayShowPoint={true}
-      overlayPointRadius={4.5}
-
-      overlays={[
-        overlayTwoPopups({
-          // topPopupFormatter: overlayTwoPopupsPlainTextFormatter(item => `${item.value}`),
-          topPopupFormatter: overlayTwoPopupsPersonIconTextFormatter(item => `${item.value}`),
-          bottomPopupFormatter: overlayTwoPopupsPlainTextFormatter(
-            (item, {mouseX, xScale}) => {
-              const timestamp = moment.utc(xScale.invert(mouseX));
-              const time = timestamp.format(`h:mma`).slice(0, -1);
-              const date = timestamp.format(`ddd MMM Do`);
-              return `${time} ${date}`;
-            }
-          ),
-
-          bottomOverlayTopMargin: 40,
-          topOverlayBottomMargin: 10,
-
-          topOverlayWidth: 80,
-          topOverlayHeight: 42,
-          bottomOverlayWidth: 200,
-          bottomOverlayHeight: 42,
-        }),
-        // overlayExample({color: 'red'}),
-      ]}
-
-      data={[
-        {
-          name: 'default',
-          type: dataWaterline,
-          color: 'rgba(65, 152, 255, 0.2)',
-          borderColor: 'rgb(65, 152, 255)',
-          verticalBaselineOffset: 0,
-          data: [
-            {value: 40, timestamp: '2018-04-16T14:00:00.000Z'},
-            {value: 7, timestamp: '2018-04-16T20:00:00.000Z'},
-            {value: 8, timestamp: '2018-04-16T21:00:00.000Z'},
-            {value: 10, timestamp: '2018-04-16T23:00:00.000Z'},
-          ],
-        },
-        // {
-        //   name: 'secondary',
-        //   type: dataWaterline,
-        //   color: 'rgba(255, 0, 0, 0.2)',
-        //   borderColor: 'red',
-        //   data: [
-        //     {value: 18, timestamp: '2018-04-16T14:00:00.000Z'},
-        //     {value: 7, timestamp: '2018-04-16T20:00:00.000Z'},
-        //     {value: 20, timestamp: '2018-04-16T21:00:00.000Z'},
-        //     {value: 20, timestamp: '2018-04-16T23:00:00.000Z'},
-        //   ],
-        // },
-      ]}
-    />
-  ))
   .add('Small amount of artificial data, no overlay. Simplest possible chart use case.', () => (
     <LineChart
       svgWidth={1000}
@@ -759,6 +677,83 @@ storiesOf('Line Chart', module)
       ]}
     />
   ))
+  .add('Daily Metrics long-timespan chart', () => (
+    <LineChart
+      timeZone="America/New_York"
+      svgWidth={1000}
+      svgHeight={300}
+
+      xAxis={xAxisDailyTick({
+        tickResolutionInMs: 1 * ONE_DAY_IN_MS,
+        formatter: n => moment.utc(n).tz('America/New_York').format(`MM/DD`),
+      })}
+
+      yAxis={yAxisMinMax({})}
+
+      overlays={[
+        overlayTwoPopups({
+          topPopupFormatter: overlayTwoPopupsPlainTextFormatter(item => `${Math.round(item.value)} Total Events`, 'top'),
+          bottomPopupFormatter: overlayTwoPopupsPlainTextFormatter(
+            (item, {mouseX, xScale}) => {
+              const timestamp = moment.utc(xScale.invert(mouseX)).tz('America/New_York');
+              return timestamp.format(`ddd MMM DD YYYY`);
+            }
+          ),
+
+          bottomOverlayTopMargin: 40,
+          topOverlayBottomMargin: 20,
+
+          topOverlayWidth: 150,
+          topOverlayHeight: 42,
+          bottomOverlayWidth: 200,
+          bottomOverlayHeight: 42,
+        }),
+      ]}
+
+      data={[
+        {
+          name: 'default',
+          type: dataWaterline,
+          verticalBaselineOffset: 10,
+          data: [
+            { timestamp: "2018-03-17T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-18T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-19T04:00:00.000Z", value: 2 },
+            { timestamp: "2018-03-20T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-21T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-22T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-23T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-24T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-25T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-26T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-27T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-28T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-29T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-30T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-03-31T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-01T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-02T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-03T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-04T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-05T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-06T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-07T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-08T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-09T04:00:00.000Z", value: 32 },
+            { timestamp: "2018-04-10T04:00:00.000Z", value: 31 },
+            { timestamp: "2018-04-11T04:00:00.000Z", value: 57 },
+            { timestamp: "2018-04-12T04:00:00.000Z", value: 19 },
+            { timestamp: "2018-04-13T04:00:00.000Z", value: 22 },
+            { timestamp: "2018-04-14T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-15T04:00:00.000Z", value: 0 },
+            { timestamp: "2018-04-16T04:00:00.000Z", value: 77 },
+            { timestamp: "2018-04-17T04:00:00.000Z", value: 22 },
+            { timestamp: "2018-04-18T04:00:00.000Z", value: 0 },
+          ].sort((a, b) => moment.utc(a.timestamp).valueOf() - moment.utc(b.timestamp).valueOf()),
+        },
+      ]}
+    />
+  ))
   .add('With a day of data', () => (
     <LineChart
       timeZone="UTC"
@@ -832,7 +827,7 @@ storiesOf('Line Chart', module)
       ]}
     />
   ))
-  .add('With a partial day of data shown on a full-day chart', () => (
+  .add('With a partial day of data with explicit start and end (over a 24 hour span)', () => (
     <LineChart
       timeZone="UTC"
       svgWidth={1000}
@@ -907,6 +902,24 @@ storiesOf('Line Chart', module)
       ]}
     />
   ))
+  .add('Without any data. Should be empty.', () => (
+    <LineChart
+      svgWidth={1000}
+      svgHeight={300}
+
+      xAxis={xAxisDailyTick({})}
+      yAxis={yAxisMinMax({})}
+      overlays={[]}
+
+      data={[
+        {
+          name: 'default',
+          type: dataWaterline,
+          data: [],
+        },
+      ]}
+    />
+  ))
   .add(`With adding points to the graph over time. This is to show that the graph can receive updates.`, () => {
     class AddNewPointsToGraph extends React.Component {
       constructor(props) {
@@ -941,7 +954,6 @@ storiesOf('Line Chart', module)
           xAxis={xAxisDailyTick({
             tickResolutionInMs: 10 * 1000,
             formatter: (n) => {
-              // "5a" or "8p"
               const timeFormat = moment.utc(n).format('HH:mm:ss');
               return timeFormat.slice(
                 0, 
@@ -1013,6 +1025,88 @@ storiesOf('Line Chart', module)
     }
     return <AddNewPointsToGraph />;
   })
+  .add('Everything possible', () => (
+    <LineChart
+      timeZone="UTC"
+      svgWidth={1000}
+      svgHeight={300}
+
+      xAxis={xAxisDailyTick({
+        timeBetweenTicksInMs: 1 * ONE_MINUTE_IN_MS,
+        bottomOffset: 15,
+      })}
+      // xAxis={exampleAxis({color: 'red'})}
+
+      yAxis={yAxisMinMax({
+        leftOffset: 20,
+        axisRuleLineDashWidth: 4,
+        axisRuleLineDashSpacing: 10,
+        points: [
+          {value: 20, hasRule: true},
+          {value: 10, hasRule: false},
+        ],
+        showMinimumPoint: true,
+        showMaximumPoint: true,
+      })}
+      yAxisEnd={40}
+      yAxisStart={0}
+
+      overlayShowPoint={true}
+      overlayPointRadius={4.5}
+
+      overlays={[
+        overlayTwoPopups({
+          // topPopupFormatter: overlayTwoPopupsPlainTextFormatter(item => `${item.value}`),
+          topPopupFormatter: overlayTwoPopupsPersonIconTextFormatter(item => `${item.value}`),
+          bottomPopupFormatter: overlayTwoPopupsPlainTextFormatter(
+            (item, {mouseX, xScale}) => {
+              const timestamp = moment.utc(xScale.invert(mouseX));
+              const time = timestamp.format(`h:mma`).slice(0, -1);
+              const date = timestamp.format(`ddd MMM Do`);
+              return `${time} ${date}`;
+            }
+          ),
+
+          bottomOverlayTopMargin: 40,
+          topOverlayBottomMargin: 10,
+
+          topOverlayWidth: 80,
+          topOverlayHeight: 42,
+          bottomOverlayWidth: 200,
+          bottomOverlayHeight: 42,
+        }),
+        // overlayExample({color: 'red'}),
+      ]}
+
+      data={[
+        {
+          name: 'default',
+          type: dataWaterline,
+          color: 'rgba(65, 152, 255, 0.2)',
+          borderColor: 'rgb(65, 152, 255)',
+          verticalBaselineOffset: 0,
+          data: [
+            {value: 40, timestamp: '2018-04-16T14:00:00.000Z'},
+            {value: 7, timestamp: '2018-04-16T20:00:00.000Z'},
+            {value: 8, timestamp: '2018-04-16T21:00:00.000Z'},
+            {value: 10, timestamp: '2018-04-16T23:00:00.000Z'},
+          ],
+        },
+        // {
+        //   name: 'secondary',
+        //   type: dataWaterline,
+        //   color: 'rgba(255, 0, 0, 0.2)',
+        //   borderColor: 'red',
+        //   data: [
+        //     {value: 18, timestamp: '2018-04-16T14:00:00.000Z'},
+        //     {value: 7, timestamp: '2018-04-16T20:00:00.000Z'},
+        //     {value: 20, timestamp: '2018-04-16T21:00:00.000Z'},
+        //     {value: 20, timestamp: '2018-04-16T23:00:00.000Z'},
+        //   ],
+        // },
+      ]}
+    />
+  ))
 
 
 
