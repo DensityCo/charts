@@ -50,13 +50,6 @@ lower level function is called by the chart to pass more non-user-provided confi
 and an element to render the axis within. Effectively, an axis looks like this:
 
 ```jsx
-// Axis Usage
-
-<LineChart
-  ... other props
-  xAxis={exampleAxis({color: 'red'})}
-  ... other props
-/>
 export function exampleAxis({color}) {
   color = color || 'royalblue';
   return ({scale}, element) => {
@@ -100,6 +93,8 @@ The above demo axis is implmented in this package too - `import { exampleAxis } 
 This axis renders a time-based x axis using the builtin `d3.axisBottom`. After rendering, it's
 styled to match the density aesthetic - a 14px font, in Sailec, and in `grayCinder`.
 
+`import { xAxisDailyTick } from '@density/chart-line-chart/axes';`
+
 ##### Props
 - `formatter: (Number) => String` *(optional)* - A mapping function that accepts the epoch
   millisecond utc timestamp and returns the axis label for that timestamp.
@@ -125,6 +120,8 @@ styled to match the density aesthetic - a 14px font, in Sailec, and in `grayCind
 This axis renders a y axis with by default two ticks - one at the maximum value and one at the
 minimum value. It can be customized to add ticks at arbitrary points, and to style those ticks in a
 number of ways.
+
+`import { yAxisMinMax } from '@density/chart-line-chart/axes';`
 
 ##### Props
 - `formatter: ({value, hasRule}) => String` *(optional)* - A mapping function that accepts a point
