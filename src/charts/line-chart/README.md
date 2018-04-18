@@ -88,6 +88,34 @@ export function exampleAxis({color}) {
 
 ![docs-assets/example-axis.png](docs-assets/example-axis.png)
 
+### Implmented Axes
+
+#### `exampleAxis`
+The above demo axis is implmented in this package too - `import { exampleAxis } from '@density/chart-line-chart/axes';`
+
+#### `xAxisDailyTick`
+This axis renders a time-based x axis using the builtin `d3.axisBottom`. After rendering, it's
+styled to match the density aesthetic - a 14px font, in Sailec, and in `grayCinder`.
+
+##### Props
+- `formatter: (Number) => String` *(optional)* - A mapping function that accepts the epoch
+  millisecond utc timestamp and returns the axis label for that timestamp.
+
+- `bottomOffset: Number` *(optional)* - The distance between the axis and the bottom of the chart graph. Defaults to `15px`.
+
+![docs-assets/bottom-offset.png](docs-assets/bottom-offset.png)
+
+- Pick one of the two below to generate the tick values show non the axis:
+  - `tickResolutionInMs: Number` *(optional)* - Specify a number of milliseconds of distance to put
+    between each tick value.
+
+  - `tickValues: Array` *(optional)* - A list of values that can optionally be passed to explicitly
+    define the location of ticks on the axis. This is passed to the `.tickValues` method on the
+    `d3.axisBottom`, and will be mapped through the `formatter` function if specified.
+
+  - If neither of the above are passed, `tickResolutionInMs` defaults to 1 hour between ticks.
+
+
 ## Overlay
 An overlay is any sort of element that appears on top of the chart when the user hovers over the
 chart. In a similar fashion to an axis, an overlay presents itself in the form of a function that is
