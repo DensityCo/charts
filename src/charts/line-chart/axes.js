@@ -87,18 +87,24 @@ export function xAxisDailyTick({
 export function yAxisMinMax({
   formatter,
   leftOffset, /* distance between the left edge of the svg and the axis labels */
+  showMinimumPoint,
+  showMaximumPoint,
 
   points,
 
   axisRuleLineDashWidth,
   axisRuleLineDashSpacing,
 }) {
+  /* both showMinimumPoint and showMaximumPoint default to true if unspecified */
+  showMinimumPoint = typeof showMinimumPoint === 'undefined' ? true : showMinimumPoint;
+  showMaximumPoint = typeof showMaximumPoint === 'undefined' ? true : showMaximumPoint;
+
   return ({graphWidth, leftMargin, firstEventYValue, lastEventYValue, scale}, element) => {
     const axisFontSize = 14;
     const axisPoints = [
-      {value: firstEventYValue, hasRule: false},
+      ...(showMinimumPoint ? [{value: firstEventYValue, hasRule: false}] : []),
       ...(points || []),
-      {value: lastEventYValue, hasRule: false},
+      ...(showMaximumPoint ? [{value: lastEventYValue, hasRule: false}] : []),
     ];
 
     const selection = element.selectAll('.axis-y-point').data(axisPoints, d => JSON.stringify(d));

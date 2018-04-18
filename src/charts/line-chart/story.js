@@ -51,6 +51,8 @@ storiesOf('Line Chart', module)
           {value: 20, hasRule: true},
           {value: 10, hasRule: false},
         ],
+        showMinimumPoint: true,
+        showMaximumPoint: true,
       })}
       yAxisEnd={40}
       yAxisStart={0}
@@ -88,6 +90,7 @@ storiesOf('Line Chart', module)
           type: dataWaterline,
           color: 'rgba(65, 152, 255, 0.2)',
           borderColor: 'rgb(65, 152, 255)',
+          verticalBaselineOffset: 0,
           data: [
             {value: 40, timestamp: '2018-04-16T14:00:00.000Z'},
             {value: 7, timestamp: '2018-04-16T20:00:00.000Z'},
@@ -128,10 +131,11 @@ storiesOf('Line Chart', module)
         axisRuleLineDashWidth: 4,
         axisRuleLineDashSpacing: 10,
         points: [
-          {value: 20, hasRule: true},
-          {value: 10, hasRule: false},
+          {value: 4, hasRule: false},
         ],
+        showMaximumPoint: false,
       })}
+      yAxisEnd={5}
 
       overlayShowPoint={true}
       overlayPointRadius={4.5}
@@ -141,7 +145,7 @@ storiesOf('Line Chart', module)
           topPopupFormatter: overlayTwoPopupsPersonIconTextFormatter(item => `${item.value}`),
           bottomPopupFormatter: overlayTwoPopupsPlainTextFormatter(
             (item, {mouseX, xScale}) => {
-              const timestamp = moment.utc(xScale.invert(mouseX));
+              const timestamp = moment.utc(xScale.invert(mouseX)).tz('America/New_York');
               const time = timestamp.format(`h:mma`).slice(0, -1);
               const date = timestamp.format(`ddd MMM Do`);
               return `${time} ${date}`;
@@ -164,7 +168,7 @@ storiesOf('Line Chart', module)
           type: dataWaterline,
           color: 'rgba(65, 152, 255, 0.2)',
           borderColor: 'rgb(65, 152, 255)',
-          verticalOffset: 10,
+          verticalBaselineOffset: 10,
           data: [
             { timestamp: '2018-04-12T03:55:00.000Z', value: 0 },
             { timestamp: '2018-04-12T03:50:00.000Z', value: 0 },

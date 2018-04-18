@@ -62,6 +62,41 @@ export default function lineChart(elem, props={}) {
     overlayPointRadius,
   }) => {
     // ------------------------------------------------------------------------
+    // SET DEFAULT VALUES
+    // ------------------------------------------------------------------------
+    timeZone = timeZone || 'UTC';
+    data = data.map((item, ct) => {
+      item.name = item.name || 'default';
+      item.color = item.color || 'rgba(65, 152, 255, 0.2)';
+      item.borderColor = item.borderColor || 'rgb(65, 152, 255)';
+      item.verticalBaselineOffset = item.verticalBaselineOffset || 0;
+
+      if (!item.data) {
+        throw new Error(`Line Chart data item index ${ct} ('${item.name}') missing a data property. This is required!`);
+      }
+      return item;
+    });
+    overlays = overlays || [];
+
+    if (typeof svgWidth !== 'number') {
+      throw new Error(`Line Chart is missing the property 'svgWidth'. This is required!`);
+    }
+    if (typeof svgHeight !== 'number') {
+      throw new Error(`Line Chart is missing the property 'svgHeight'. This is required!`);
+    }
+
+    /* xAxis */
+    /* yAxis */
+
+    /* xAxisStart can be undefined */
+    /* xAxisEnd can be undefined */
+    /* yAxisStart can be undefined */
+    /* yAxisEnd can be undefined */
+
+    overlayShowPoint = typeof overlayShowPoint === 'undefined' ? true : overlayShowPoint;
+    overlayPointRadius = typeof overlayPointRadius === 'undefined' ? 4.5 : overlayPointRadius;
+
+    // ------------------------------------------------------------------------
     // ADJUST GRAPH SIZE
     // ------------------------------------------------------------------------
 
@@ -167,7 +202,7 @@ export default function lineChart(elem, props={}) {
               .right(defaultDataset.data, xInMs) - 1;
             const eventAtPosition = defaultDataset.data[eventIndexAtOverlayPosition] || defaultDataset.data[0];
             if (eventAtPosition) {
-              return topMargin + yScale(eventAtPosition.value) - defaultDataset.verticalOffset;
+              return topMargin + yScale(eventAtPosition.value) - defaultDataset.verticalBaselineOffset;
             } else {
               return -100000000;
             }
@@ -265,7 +300,7 @@ export function dataWaterline({
   data,
   color,
   borderColor,
-  verticalOffset,
+  verticalBaselineOffset,
 }) {
   return ({xScale, yScale, graphHeight, dataPoints}, element) => {
     const waterlinePrefix = `M0,${graphHeight}` + /* move to the lower left of the graph */
@@ -285,10 +320,10 @@ export function dataWaterline({
           const yPosition = yScale(i.value);
           if (xPosition === 0) {
             // For the first plotted point, don't draw an outline on the left edge.
-            return `${acc}M0,${yPosition-verticalOffset}`;
+            return `${acc}M0,${yPosition-verticalBaselineOffset}`;
           } else if (xPosition > 0) {
             // Plot each point my moving horizontally then vertically.
-            return `${acc}H${xPosition}V${yPosition-verticalOffset}`;
+            return `${acc}H${xPosition}V${yPosition-verticalBaselineOffset}`;
           } else {
             return total;
           }
