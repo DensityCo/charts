@@ -149,11 +149,13 @@ number of ways.
 - `showMaximumPoint: Boolean` *(optional)* - Should the minumum point on the axis be rendered? Defaults to `false`.
 - `showMaximumPoint: Boolean` *(optional)* - Should the maximum point on the axis be rendered? Defaults to `false`.
 
-- `points: [{value: Number, hasRule: Boolean}]` - A number of additional points to render on the axis. Each `value`
-  is the location on the axis to draw that point, and each `hasRule` flag indicates if a dotted
-  rule should be drawn across the chart at the location of the point.
+- `points: [{value: Number, hasRule: Boolean, hasShadow: Boolean}]` - A number of additional points
+  to render on the axis. Each `value` is the location on the axis to draw that point, each
+  `hasRule` flag indicates if a dotted rule should be drawn across the chart at the location of the
+  point, and the `hasShadow` flag determines if a shadow should be drawn below a line.
 
 ![docs-assets/rules-and-points.png](docs-assets/rules-and-points.png)
+![docs-assets/shadows.png](docs-assets/shadows.png)
 
 - `axisRuleLineDashWidth: Number` - The width in pixels of each rule dash. Defaults to `4`.
 - `axisRuleLineDashSpacing: Number` - The distance in pixels between each rule dash. Defaults to `10`.

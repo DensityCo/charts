@@ -118,9 +118,9 @@ export function yAxisMinMax({
   return ({graphWidth, leftMargin, firstEventYValue, lastEventYValue, scale}, element) => {
     const axisFontSize = 14;
     const axisPoints = [
-      ...(showMinimumPoint ? [{value: firstEventYValue, hasRule: false}] : []),
+      ...(showMinimumPoint ? [{value: firstEventYValue, hasRule: false, hasShadow: false}] : []),
       ...(points || []),
-      ...(showMaximumPoint ? [{value: lastEventYValue, hasRule: false}] : []),
+      ...(showMaximumPoint ? [{value: lastEventYValue, hasRule: false, hasShadow: false}] : []),
     ];
 
     const selection = element.selectAll('.axis-y-point').data(axisPoints, d => JSON.stringify(d));
@@ -135,6 +135,8 @@ export function yAxisMinMax({
       .attr('class', 'axis-y-point-label')
     enterSelectionGroup.append('path')
       .attr('class', 'axis-y-point-rule')
+    enterSelectionGroup.append('rect')
+      .attr('class', 'axis-y-point-shadow')
 
     // On merge, add the text to each datapoint on the axis.
     const mergeSelection = enterSelectionGroup.merge(enterSelection)
@@ -171,6 +173,18 @@ export function yAxisMinMax({
           }
           return linePath;
         })(graphWidth)}`;
+      });
+    mergeSelection.select('.axis-y-point-shadow')
+      .attr('x', leftMargin - leftOffset)
+      .attr('y', -1 * (axisFontSize * 0.4))
+      .attr('width', graphWidth)
+      .attr('height', d => scale(0) - scale(d.value))
+      .attr('fill', d => {
+        if (d.hasShadow) {
+          return 'rgba(65, 152, 255, 0.1)';
+        } else {
+          return 'transparent';
+        }
       });
 
     // On exit, remove any axis points that are no longer required

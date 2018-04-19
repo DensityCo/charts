@@ -149,6 +149,7 @@ storiesOf('Line Chart', module)
         axisRuleLineDashSpacing: 10,
         points: [
           {value: 4, hasRule: false},
+          {value: 4, hasShadow: true},
         ],
         showMaximumPoint: false,
       })}
