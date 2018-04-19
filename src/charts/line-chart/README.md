@@ -158,6 +158,11 @@ number of ways.
 - `axisRuleLineDashWidth: Number` - The width in pixels of each rule dash. Defaults to `4`.
 - `axisRuleLineDashSpacing: Number` - The distance in pixels between each rule dash. Defaults to `10`.
 
+<br />
+<br />
+<br />
+<br />
+<br />
 
 ## Overlay
 An overlay is any sort of element that appears on top of the chart when the user hovers over the
@@ -168,7 +173,9 @@ its top-level function that contains three subkeys: `enter`, `merge`, and `exit`
 the nested-function inside of an axis: it takes a number of chart-specific configuration values and an
 selection to render within. Each function is called in its respective life cycle step: `enter` when
 a new overlay is drawn, `merge` when the overlay should be updated, and `exit` when the overlay
-should be removed. Here's a basic example:
+should be removed.
+
+Here's a basic example:
 
 ```javascript
 function overlayExample({color}) {
@@ -207,10 +214,71 @@ lineChart({
 This overlay renders a small popup with a drop shadow above and below the chart when the user hovers
 over the chart on a system with a mouse or touches the chart on a system with a touchscreen.
 
-`import { xAxisDailyTick } from '@density/chart-line-chart/axes';`
+`import { overlayTwoPopups } from '@density/chart-line-chart/overlays';`
 
 ![docs-assets/overlay-two-popups.png](docs-assets/overlay-two-popups.png)
 
 ##### Props
-- `formatter: (Number) => String` *(optional)* - A mapping function that accepts the epoch
-  millisecond utc timestamp and returns the axis label for that timestamp.
+- `topPopupFormatter: {enter: (config, selection) => any, merge: (config, selection) => any, exit: (config, selection) => any}` *(optional)*
+
+A set of three functions that collectively describe the formatting of content of the the upper overlay popup,
+inspired by a d3 data join.
+
+When the popup is rendered for the first time, `enter` is called with a d3 selection - within this
+selection, you have access to modify the DOM with `d3` and can set up the structure required for
+your overlay to function. This is only called once.
+
+When the overlay needs to be re-rendered (due to a mouse movement, for example), `merge` is called.
+Just like `enter`, it's passed a d3 selection, but in addition it's also passed a number of
+configuration parameters (these are values that may be helpful in drawing the overlay contents, such
+as the overlay width and height, the data item that is currently hovered-over, the mouse position,
+etc... A complete list is below.). It's `merge`'s job to take the content rendered by `enter` and
+update the dom to reflect the new data in the configuration parameters.
+
+Finally, when the mouse cursor is moved out of the bounds of the chart, the `exit` function is
+called - this function should clean up any resources or dom elements that the top overlay has
+created in `enter` or `merge`.
+
+Here's a simple example of a formatter that could be passed to `topPopupFormatter`. This formatter
+renders a plain text label on the upper popup that indicates the current y value that is being
+hovered over:
+```javascript
+{
+  enter: selection => {
+    // Create a new `text` node to render the label within
+    selection.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('font-weight', '500')
+  },
+  merge: ({topOverlayWidth, item}, selection) => {
+    // Update the node to contain the value of the currently hovered-over item
+    selection.select('text')
+      .attr('transform', `translate(${topOverlayWidth / 2},26)`)
+      .text(item.value);
+  },
+  // Remove all nodes within the selection
+  exit: selection => selection.remove(),
+}
+```
+
+- `bottomPopupFormatter: {enter: (config, selection) => any, merge: (config, selection) => any, exit: (config, selection) => any}` *(optional)*
+
+A set of formatter functions that can be used to render the contents within the bottom popover. See
+the above documentation for `topPopupFormatter` for an explaination of `enter`, `merge`, and `exit`.
+
+- `bottomOverlayTopMargin: Number` - The spacing between the top of the bottom overlay and bottom of
+  the chart in pixels.
+
+![docs-assets/bottom-overlay-top-margin.png](docs-assets/bottom-overlay-top-margin.png)
+
+- `topOverlayBottomMargin: Number` - The spacing between the bottom of the top overlay and top of
+  the chart in pixels.
+
+![docs-assets/top-overlay-bottom-margin.png](docs-assets/top-overlay-bottom-margin.png)
+
+- `topOverlayWidth: Number` - The width of the top overlay, in pixels.
+- `topOverlayHeight: Number` - The height of the top overlay, in pixels.
+- `bottomOverlayWidth: Number` - The width of the bottom overlay, in pixels.
+- `bottomOverlayHeight: Number` - The height of the bottom overlay, in pixels.
+
+![docs-assets/overlay-width-height.png](docs-assets/overlay-width-height.png)
