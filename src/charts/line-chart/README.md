@@ -86,20 +86,18 @@ export function exampleAxis({color}) {
 }
 
 // Axis Usage
-
-<LineChart
-  ... other props
-  xAxis={exampleAxis({color: 'red'})}
-  ... other props
-/>
+const lineChart = LineChart(document.body);
+lineChart({
+  xAxis: exampleAxis({color: 'red'}),
+});
 ```
 
 ![docs-assets/example-axis.png](docs-assets/example-axis.png)
 
-### Implmented Axes
+### Implemented Axes
 
 #### `exampleAxis`
-The above demo axis is implmented in this package too - `import { exampleAxis } from '@density/chart-line-chart/axes';`
+The above demo axis is implemented in this package too - `import { exampleAxis } from '@density/chart-line-chart/axes';`
 
 <br />
 <br />
@@ -146,7 +144,7 @@ number of ways.
 
 ![docs-assets/left-offset2.png](docs-assets/left-offset2.png)
 
-- `showMaximumPoint: Boolean` *(optional)* - Should the minumum point on the axis be rendered? Defaults to `false`.
+- `showMaximumPoint: Boolean` *(optional)* - Should the minimum point on the axis be rendered? Defaults to `false`.
 - `showMaximumPoint: Boolean` *(optional)* - Should the maximum point on the axis be rendered? Defaults to `false`.
 
 - `points: [{value: Number, hasRule: Boolean, hasShadow: Boolean}]` - A number of additional points
@@ -166,9 +164,9 @@ An overlay is any sort of element that appears on top of the chart when the user
 chart. In a similar fashion to an axis, an overlay presents itself in the form of a function that is
 called by the user with configuration parameters. However, overlays are much more managed than axes - they
 are called as part a data join. Therefore, an overlay is expected to return an object from
-its top-level fucntion that contains three subkeys: `enter`, `merge`, and `exit`. Each is similar to
-the nexted-function inside of an axis: it takes a number of chart-specific configuration values and an
-selection to render within. Each function is called in its respective lifecycle step: `enter` when
+its top-level function that contains three subkeys: `enter`, `merge`, and `exit`. Each is similar to
+the nested-function inside of an axis: it takes a number of chart-specific configuration values and an
+selection to render within. Each function is called in its respective life cycle step: `enter` when
 a new overlay is drawn, `merge` when the overlay should be updated, and `exit` when the overlay
 should be removed. Here's a basic example:
 
@@ -193,14 +191,26 @@ function overlayExample({color}) {
 }
 
 // Overlay Usage
-
-<LineChart
-  ... other props
-  overlays={[
+const lineChart = LineChart(document.body);
+lineChart({
+  overlays: [
     overlayExample({ color: 'red' }),
-  ]}
-  ... other props
-/>
+  ],
+});
 ```
 
 ![docs-assets/example-overlay.png](docs-assets/example-overlay.png)
+
+### Implemented Overlays
+
+#### `overlayTwoPopups`
+This overlay renders a small popup with a drop shadow above and below the chart when the user hovers
+over the chart on a system with a mouse or touches the chart on a system with a touchscreen.
+
+`import { xAxisDailyTick } from '@density/chart-line-chart/axes';`
+
+![docs-assets/overlay-two-popups.png](docs-assets/overlay-two-popups.png)
+
+##### Props
+- `formatter: (Number) => String` *(optional)* - A mapping function that accepts the epoch
+  millisecond utc timestamp and returns the axis label for that timestamp.
