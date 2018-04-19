@@ -49,8 +49,8 @@ a component while developing. Basically, it's awesome.
 ```
 
 ### Chart structure
-Each chart contains a `index.js`, which must default-ly export a function. That function must accept
-a single element: a DOM element. This function contructs your chart and returns another fucntion
+Each chart contains a `index.js`, which must export a function by default. That function must accept
+a single element: a DOM element. This function constructs your chart and returns another function
 that can be used to inject props to your chart. Here's an example:
 
 ```javascript
@@ -76,20 +76,34 @@ updateMyChart({name: 'Bob'});
 The function is initially called when the chart first renders, and then called afterward when any
 value in `props` changes.
 
-### Why do it this way over a stateless React component?
-Great question. We foresee a future where not all of our projects will be react-based. In fact, many
-of our existing "web" projects aren't, including the marketing site and may of our internal customer
-projects. Therefore, we feel that favoring react over any other technology and forcing ourselves to
-use react into the future is a bad idea.
+### What are the benefits to a chart structure like this?
+A basic implementation for a chart might look something like this (this is a react example, but feel
+free to extrapolate to your preferred component specification):
+```jsx
+function GreetingChart({name}) {
+  return <svg>
+    <g className="chart">
+      <text> Hello {name || 'World'}!</text>
+    </g>
+  </svg>;
+}
 
-Instead, basing our charts on the raw DOM api gives us a few benefits:
-- Using libraries like d3 are a pain in the context of React since they both try to control the DOM.
-  Exposing a raw DOM api eliminates this problem.
-- Our charts will work anywhere that the DOM api is available, which includes non-react based
-  projects and react-based projects alike.
-- A chart can be nicely represented as a function.
+ReactDOM.render(<GreetingChart name="Density" />, document.body);
+```
 
-### How would I render my chart in a non-react application?
+However, rendering a chart like this in react has a few downsides:
+1. It has a dependency on React. What if someone else wants to use the chart in an angular
+   application? Or without a framework at all?
+2. React isn't meant to be used as a charting library, and other packages like `d3` have implemented
+   a lot of helpers like scales, axes, data joins, and more to make building charts easier. Also,
+   trying to embed `d3` in a react component can be difficult since they will both fight over the
+   DOM if not managed properly.
+
+Instead, keeping the charts platform agnostic means that they can be used within the context of any
+framework, and each chart can manage all of its own dependencies since a common dependency on react
+isn't required.
+
+### How would I render my chart in a React application?
 Luckily, there's a helper function to do just that:
 
 ```javascript
@@ -102,8 +116,15 @@ const MyChartComponent = chartAsReactComponent(myChart);
 ReactDOM.render(<MyChartComponent oneProp="foo" />, document.body);
 ```
 
+### What about other frameworks?
+Currently, there aren't helpers for other frameworks since we aren't using those extensively at
+Density. However, writing a wrapper similar to `chartAsReactComponent` above should be relatively
+trivial, and if you do, we'd love a contribution with it to this library!
+
 ### How would I create a react / angular / vue / some other framework-based chart?
-Here's a react example. These concepts should translate to any other framework.
+Here's a react example. These concepts should generally translate to any other framework that allows
+"mounting" of its output into the DOM at an arbitrary location.
+
 ```javascript
 import * as React from 'react';
 import ReactDOM from 'react-dom';
@@ -117,5 +138,5 @@ export default function myChart(elem) {
 }
 ```
 
-## How do I contribute code?
+### How do I contribute code?
 See [CONTRIBUTING.md](CONTRIBUTING.md).
