@@ -91,7 +91,10 @@ The line chart accepts a number of different modules to control how different co
 are rendered. Currently, there are three types of modules that this chart knows how to work with:
 `Datasets`, `Axes`, and `Overlays`.
 
-# Datasets
+<br/>
+<br/>
+
+## Dataset
 
 A `Dataset` is a collection of points to render on the graph and a number of associated properties
 that define how that data should be rendered. A line chart can accept multiple different datasets,
@@ -164,10 +167,18 @@ first moving horizontally and then vertically, rather than drawing a line direct
 It's called a waterline because I needed a spiffy name and it looks a bit like a low-poly wave in the
 default color scheme.
 
+![docs-assets/waterline.png](docs-assets/waterline.png)
+
 ##### Props
   - (requires a `data` prop, just like every dataset renderer)
-  - `color: String` - the fill color of the polygon underneath the top border. Defaults to `rgba(65, 152, 255, 0.2)`.
-  - `borderColor: String` - the stroke color of the top border of the waterline. Defaults to `rgb(65, 152, 255)`.
+  - `color: String` *(optional)* - the fill color of the polygon underneath the top border. Defaults to `rgba(65, 152, 255, 0.2)`.
+  - `borderColor: String` *(optional)* - the stroke color of the top border of the waterline. Defaults to `rgb(65, 152, 255)`.
+
+<br />
+<br />
+<br />
+<br />
+<br />
 
 ## Axis
 An `Axis` contains all the code required to render either the x or y axis on the chart. Each axis
@@ -249,7 +260,7 @@ number of ways.
 `import { yAxisMinMax } from '@density/chart-line-chart/axes';`
 
 ##### Props
-- `formatter: ({value, hasRule}) => String` *(optional)* - A mapping function that accepts a point
+- `formatter: ({value, hasRule, hasShadow}) => String` *(optional)* - A mapping function that accepts a point
   to render and returns the string value to render for that given point. Defaults to `d => d.value.toString()`.
 
 - `leftOffset: Number` *(optional)* - The distance between the axis and the left of the chart graph. Defaults to `20px`.
