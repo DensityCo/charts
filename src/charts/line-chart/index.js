@@ -336,7 +336,10 @@ export function dataWaterline({
   renderAfterLastDatapoint = typeof renderAfterLastDatapoint === 'undefined' ? false : true;
 
   return ({xScale, yScale, graphHeight, dataPoints}, element) => {
-    const waterlinePrefix = `M0,${graphHeight}` + /* move to the lower left of the graph */
+    const waterlineFillPrefix = `M0,${graphHeight}` + /* move to the lower left of the graph */
+      `L0,${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint's y value */
+
+    const waterlineStrokePrefix = `M0,${graphHeight}` + /* move to the lower left of the graph */
       `M0,${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint's y value */
 
     const waterlineFillPostfix = renderAfterLastDatapoint ?
@@ -355,6 +358,7 @@ export function dataWaterline({
           if (timeEpoch > dataPoints.endXValue) {
             return acc;
           }
+
           const xPosition = xScale(timeEpoch);
           const yPosition = yScale(i.value);
           if (ct === 0) {
@@ -375,6 +379,8 @@ export function dataWaterline({
     waterlineSelectionGroup.append('path')
       .attr('class', 'waterline-fill')
       .attr('shape-rendering', 'crispEdges')
+      .attr('stroke', color)
+      .attr('stroke-width', 2)
       .attr('fill', color);
     waterlineSelectionGroup.append('path')
       .attr('class', 'waterline-stroke')
@@ -384,10 +390,10 @@ export function dataWaterline({
 
     waterlineSelectionGroup.merge(waterlineSelection)
       .select('.waterline-fill')
-      .attr('d', d => waterlinePrefix + d.path + waterlineFillPostfix);
+      .attr('d', d => waterlineFillPrefix + d.path + waterlineFillPostfix);
     waterlineSelectionGroup.merge(waterlineSelection)
       .select('.waterline-stroke')
-      .attr('d', d => waterlinePrefix + d.path + waterlineStrokePostfix);
+      .attr('d', d => waterlineStrokePrefix + d.path + waterlineStrokePostfix);
     waterlineSelection.exit().remove();
   };
 }
