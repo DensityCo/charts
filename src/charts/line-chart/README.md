@@ -261,6 +261,35 @@ hovered over:
 }
 ```
 
+There are a few stock formatters:
+```javascript
+/*
+ * `overlayTwoPopupsPlainTextFormatter`: renders the given value centered within the overlay. Accepts
+ * a function to map the `config` argument passed to the value to render on the overlay, and the
+ * string `top` or `bottom` to pick which overlay's width to use for centering purposes.
+ */
+
+// For example:
+import { overlayTwoPopupsPlainTextFormatter } from '@density/chart-line-chart/overlays';
+const formatter = overlayTwoPopupsPlainTextFormatter( ({item}) => `${item.value}`, 'top' );
+// Now use `formatter` as the value for `topPopupFormatter` or `bottomPopupFormatter`!
+
+/*
+ * `overlayTwoPopupsPersonIconTextFormatter`: renders a "person" icon and the given value within the
+ * overlay. Accepts a function to map the `config` argument passed to the value to render on an
+ * overlay, and the string `top` or `bottom` to pick which overlay's width to use for performing
+ * icon-positioning calculations.
+ */
+
+// For example:
+import { overlayTwoPopupsPersonIconTextFormatter } from '@density/chart-line-chart/overlays';
+const formatter = overlayTwoPopupsPersonIconTextFormatter( ({item}) => `${item.value}`, 'top' );
+// Now use `formatter` as the value for `topPopupFormatter` or `bottomPopupFormatter`!
+```
+
+------
+
+
 - `bottomPopupFormatter: {enter: (config, selection) => any, merge: (config, selection) => any, exit: (config, selection) => any}` *(optional)*
 
 A set of formatter functions that can be used to render the contents within the bottom popover. See
