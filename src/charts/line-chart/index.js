@@ -3,27 +3,11 @@ import * as d3 from 'd3';
 import moment from 'moment';
 import 'moment-timezone';
 
+import colorVariables from '@density/ui/variables/colors.json';
+
 const ONE_MINUTE_IN_MS = 60 * 1000,
       ONE_HOUR_IN_MS = ONE_MINUTE_IN_MS * 60,
       ONE_DAY_IN_MS = ONE_HOUR_IN_MS * 60;
-
-const colorVariables = {
-  "grayCinder": "#222A2E",
-
-  "grayDarkest": "#4E5457",
-  "grayDarker": "#8E9299",
-  "grayDark": "#B4B8BF",
-  "gray": "#CBCFD6",
-  "grayLight": "#E8E8ED",
-  "grayLighter": "#F0F0F2",
-  "grayLightest": "#FAFAFA",
-
-  "brandPrimary": "#4198FF",
-  "brandSuccess": "#80CD80",
-  "brandDanger": "#FF5454",
-  "brandWarning": "#FFBA08",
-};
-
 
 export default function lineChart(elem, props={}) {
   const svg = d3.select(elem).append('svg');

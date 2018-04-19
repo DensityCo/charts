@@ -6,22 +6,7 @@ const ONE_MINUTE_IN_MS = 60 * 1000,
       ONE_HOUR_IN_MS = ONE_MINUTE_IN_MS * 60,
       ONE_DAY_IN_MS = ONE_HOUR_IN_MS * 60;
 
-const colorVariables = {
-  "grayCinder": "#222A2E",
-
-  "grayDarkest": "#4E5457",
-  "grayDarker": "#8E9299",
-  "grayDark": "#B4B8BF",
-  "gray": "#CBCFD6",
-  "grayLight": "#E8E8ED",
-  "grayLighter": "#F0F0F2",
-  "grayLightest": "#FAFAFA",
-
-  "brandPrimary": "#4198FF",
-  "brandSuccess": "#80CD80",
-  "brandDanger": "#FF5454",
-  "brandWarning": "#FFBA08",
-};
+import colorVariables from '@density/ui/variables/colors.json';
 
 // A "simple" example axis. This demonstrates how to build an axis that works with the line chart.
 // Usage as a react prop: xAxis={exampleAxis({color: 'red'})}
