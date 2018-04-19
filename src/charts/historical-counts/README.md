@@ -1,9 +1,14 @@
-# Count Graph Chart
+# DEPRECATED
+Please use the [Line Chart](https://github.com/DensityCo/charts/tree/trunk/src/charts/line-chart)
+instead - it looks the same but is much more flexible.
+
+## Count Graph Chart
 A graph of counts over time for a given space. [npm](https://npmjs.com/@density/chart-count-graph)
 
 ![Chart Example](https://i.imgur.com/IucfBdE.gif)
 
-# Using this chart
+
+## Using this chart
 This chart has a single default export. This exported function takes two arguments: a dom element,
 and an object full of properties. When called, this chart will render the chart inside the given DOM
 element. See the below example.
