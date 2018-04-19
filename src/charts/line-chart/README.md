@@ -122,6 +122,11 @@ potentially each with different rendering parameters.
   the chart. These values are passed through the renderer (`type` property) to draw them to the
   screen. `timestamp` is interpreted as epoch milliseconds if a `Number`, ISO time if a `String`,
   and used explicitly if a `moment`.
+- `renderAfterLastDatapoint: Boolean` *(optional)* - Should the data line be continued after the
+  final datapoint until the end of the graph? Defaults to `false`.
+
+![docs-assets/render-after-last-datapoint.png](docs-assets/render-after-last-datapoint.png)
+
 - `verticalBaselineOffset: Number` *(optional)* - The number of pixels of dead space below the
   bottom-most value in the y-direction. Defaults to `0`.
 

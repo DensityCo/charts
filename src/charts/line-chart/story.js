@@ -903,6 +903,82 @@ storiesOf('Line Chart', module)
       ]}
     />
   ))
+  .add('With a partial day of data with explicit start and end (over a 24 hour span), rendering after the last datapoint', () => (
+    <LineChart
+      timeZone="UTC"
+      svgWidth={1000}
+      svgHeight={300}
+
+      xAxis={xAxisDailyTick({
+        timeBetweenTicksInMs: 1 * ONE_MINUTE_IN_MS,
+        bottomOffset: 15,
+      })}
+      xAxisStart="2017-03-29T12:03:05.679Z"
+      xAxisEnd="2017-03-30T12:03:05.679Z"
+
+      yAxis={yAxisMinMax({
+        leftOffset: 20,
+        axisRuleLineDashWidth: 4,
+        axisRuleLineDashSpacing: 10,
+        points: [],
+      })}
+      yAxisEnd={100}
+      yAxisStart={0}
+
+      overlayShowPoint={true}
+      overlayPointRadius={4.5}
+
+      overlays={[
+        overlayTwoPopups({
+          topPopupFormatter: {
+            enter: selection => {
+              selection.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-weight', '500')
+            },
+            merge: ({item, xScale, mouseX, topOverlayWidth}, selection) => {
+              selection.select('text')
+                .attr('transform', `translate(${topOverlayWidth / 2},26)`)
+                .text(`${item.value}`);
+            },
+            exit: selection => selection.remove(),
+          },
+          bottomPopupFormatter: {
+            enter: selection => {
+              selection.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-weight', '500')
+            },
+            merge: ({xScale, mouseX, bottomOverlayWidth}, selection) => {
+              selection.select('text')
+                .attr('transform', `translate(${bottomOverlayWidth / 2},26)`)
+                .text(`${moment.utc(xScale.invert(mouseX)).format()}`);
+            },
+            exit: selection => selection.remove(),
+          },
+
+          bottomOverlayTopMargin: 40,
+          topOverlayBottomMargin: 10,
+
+          topOverlayWidth: 100,
+          topOverlayHeight: 42,
+          bottomOverlayWidth: 200,
+          bottomOverlayHeight: 42,
+        }),
+      ]}
+
+      data={[
+        {
+          name: 'default',
+          type: dataWaterline,
+          color: 'rgba(65, 152, 255, 0.2)',
+          borderColor: 'rgb(65, 152, 255)',
+          renderAfterLastDatapoint: true,
+          data: uncompressData(partialDayOfData),
+        },
+      ]}
+    />
+  ))
   .add('Without any data. Should be empty.', () => (
     <LineChart
       svgWidth={1000}

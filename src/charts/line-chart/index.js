@@ -228,7 +228,9 @@ export default function lineChart(elem, props={}) {
               .bisector(d => moment.utc(d.timestamp).valueOf())
               .right(defaultDataset.data, xInMs) - 1;
             const eventAtPosition = defaultDataset.data[eventIndexAtOverlayPosition] || defaultDataset.data[0];
-            if (eventAtPosition) {
+
+            const renderAfterLastDatapoint = typeof defaultDataset.renderAfterLastDatapoint === 'undefined' ? false : true;
+            if (eventAtPosition && (renderAfterLastDatapoint ? true : xInMs <= dataPoints.lastEventXValue)) {
               return topMargin + yScale(eventAtPosition.value) - defaultDataset.verticalBaselineOffset;
             } else {
               return -100000000;
@@ -328,12 +330,22 @@ export function dataWaterline({
   color,
   borderColor,
   verticalBaselineOffset,
+
+  renderAfterLastDatapoint,
 }) {
+  renderAfterLastDatapoint = typeof renderAfterLastDatapoint === 'undefined' ? false : true;
+
   return ({xScale, yScale, graphHeight, dataPoints}, element) => {
     const waterlinePrefix = `M0,${graphHeight}` + /* move to the lower left of the graph */
       `M0,${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint's y value */
-    const waterlineFillPostfix = `H${xScale(dataPoints.endXValue)}V${graphHeight}H1`;
-    const waterlineStrokePostfix = `H${xScale(dataPoints.endXValue)}`;
+
+    const waterlineFillPostfix = renderAfterLastDatapoint ?
+      `H${xScale(dataPoints.endXValue)}V${graphHeight}H1` :
+      `H${xScale(dataPoints.lastEventXValue)}V${graphHeight}H1`;
+
+    const waterlineStrokePostfix = renderAfterLastDatapoint ?
+      `H${xScale(dataPoints.endXValue)}` :
+      `H${xScale(dataPoints.lastEventXValue)}`;
 
     const waterlineSelection = d3.select(element).selectAll('.waterline').data([
       {

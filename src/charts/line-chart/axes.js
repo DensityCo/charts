@@ -1,7 +1,6 @@
 import * as d3 from 'd3';
 
 import moment from 'moment';
-import 'moment-timezone';
 
 const ONE_MINUTE_IN_MS = 60 * 1000,
       ONE_HOUR_IN_MS = ONE_MINUTE_IN_MS * 60,
@@ -73,7 +72,7 @@ export function xAxisDailyTick({
       // thereafter.
       .tickFormat(formatter || (n => {
         // "5a" or "8p"
-        const timeFormat = moment.utc(n).tz(timeZone).format(`hA`);
+        const timeFormat = moment.utc(n).format(`hA`);
         return timeFormat.slice(
           0, 
           timeFormat.startsWith('12') ? -1 : -2

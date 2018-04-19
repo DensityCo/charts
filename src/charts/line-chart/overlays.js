@@ -118,7 +118,13 @@ export function overlayTwoPopups({
       const eventAtPosition = defaultDataset.data[eventIndexAtOverlayPosition];
 
       // Ensure that the overlay is only being drawn when the user is hovering over the data
-      if (!eventAtPosition) {
+      //
+      const renderAfterLastDatapoint = typeof defaultDataset.renderAfterLastDatapoint === 'undefined' ? false : true;
+      if (!(
+        eventAtPosition && (
+          renderAfterLastDatapoint ? true : xInMs <= dataPoints.lastEventXValue
+        )
+      )) {
         selection.remove();
         return
       }
