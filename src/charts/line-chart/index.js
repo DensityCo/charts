@@ -83,6 +83,19 @@ export default function lineChart(elem, props={}) {
           throw new Error(`Line Chart data item index ${ct} ('${item.name}') missing a numeric value property (actual value: ${j.value}) within the data property (index ${jct}). This is required!`);
         }
       });
+
+      // Verify the order of the data by comparing the first and second values to ensure that order is
+      // oldest to newest
+      if (item.data.length > 0) {
+        if (moment.utc(item.data[0].timestamp).valueOf() - moment.utc(item.data[1].timestamp).valueOf() > 0) {
+          throw new Error([
+            `Line Chart data item index ${ct} ('${item.name}') looks to have data in the wrong order`,
+            `(item index 0 was newer than item index 1). Please presort data from oldest to newest`,
+            `before passing it to this chart.`
+          ].join(' '));
+        }
+      }
+
       return item;
     });
     overlays = overlays || [];

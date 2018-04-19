@@ -130,6 +130,9 @@ given to the main dataset in the chart. This dataset is then used for determinin
 axis (if not specified explicitly), drawing the overlay point / any custom overlays, and in general
 anything that requires data in order to function.
 
+### Note on dataset order
+Datasets must be ordered from oldest to newest. If not, the chart will throw an error.
+
 ### Dataset Renderers
 
 A dataset renderer is a special function that takes a dataset as a first parameter, and a DOM element as
