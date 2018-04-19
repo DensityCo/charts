@@ -22,8 +22,7 @@ const props = {
     prop1: 'value',
     prop2: 'value',
   }),
-
-  /* TODO: enter all props here */
+  /* and more... see the 'chart props' section below */
 };
 
 // Make your chart
@@ -51,11 +50,121 @@ such as a React or Angular app, then check out [our companion helper library](ht
 └── styles.scss     # Contains all chart styles.
 ```
 
+# Chart props
+
+- `xAxis: Axis` and `yAxis: Axis` - defines the horizontal and vertical axes used to render the
+  chart. See [below](#Axis) for a definition of what makes an `Axis`.
+
+- `xAxisStart: Number | String | moment` *(optional)* - The first value to use on the x axis of the
+  chart. If a `Number`, it's interpreted as epoch milliseconds. If a `String`, it's parsed as an ISO
+  timestamp.  And, if a moment, it's used as is for chart calculations. If unspecified, it defaults
+  to the first value in the [default dataset](#datasets).
+
+- `xAxisEnd: Number | String | moment` *(optional)* - The last value to use on the x axis of the
+  chart. If a `Number`, it's interpreted as epoch milliseconds. If a `String`, it's parsed as an ISO
+  timestamp.  And, if a moment, it's used as is for chart calculations. If unspecified, it defaults
+  to the last value in the [default dataset](#datasets).
+
+- `yAxisStart: Number` *(optional)* - The smallest value to render on the y axis. If unspecified, defaults to the
+  smallest value in the [default dataset](#datasets).
+
+- `yAxisEnd: Number` *(optional)* - The largest value to render on the y axis. If unspecified, defaults to the
+  largest value in the [default dataset](#datasets).
+
+- `overlayShowPoint: Boolean` *(optional)* - When the user hovers over the graph, should a point be drawn along
+  the default dataset's path? Defaults to `true`.
+
+- `overlayPointRadius: Number` *(optional)* - The radius of the point to render in pixels when the
+  user hovers over the graph. This value is only used if `overlayShowPoint` is `true`. Defaults to
+  `4.5`.
+
+- `overlays: [Overlay]` *(optional)* - An array of overlays to show when the user hovers over the
+  chart. See the [overlay](#overlay) documentation below to learn more about how overlays are
+  rendered.
+
+- `data: [Dataset]` - A number of datasets to render on the chart. See the below documentation on
+  [datasets](#datsets) to learn more about the format of a dataset.
+
 # Chart subcomponents
 
 The line chart accepts a number of different modules to control how different core chart components
-are rendered. Currently, there are two types of modules that this chart knows how to work with:
-`Axes` and `Overlays`.
+are rendered. Currently, there are three types of modules that this chart knows how to work with:
+`Datasets`, `Axes`, and `Overlays`.
+
+# Datasets
+
+A `Dataset` is a collection of points to render on the graph and a number of associated properties
+that define how that data should be rendered. A line chart can accept multiple different datasets,
+potentially each with different rendering parameters.
+
+```javascript
+[
+  {
+    name: 'default',
+    type: dataWaterline,
+    data: [
+      { timestamp: '2018-04-12T03:55:00.000Z', value: 0 },
+      { timestamp: '2018-04-12T03:50:00.000Z', value: 3 },
+      { timestamp: '2018-04-12T03:45:00.000Z', value: 1 },
+      { timestamp: '2018-04-12T03:40:00.000Z', value: 5 },
+    ],
+  }
+]
+```
+
+### Props
+- `name: String` *(optional)* - An optional name to give to the dataset. This value defaults to `default`.
+- `type: DatasetRenderer` *(optional)* - A function to render the dataset to the chart.
+- `data: [{timestamp: String | Number | moment, value: Number}]` - A collection of data to render to
+  the chart. These values are passed through the renderer (`type` property) to draw them to the
+  screen. `timestamp` is interpreted as epoch milliseconds if a `Number`, ISO time if a `String`,
+  and used explicitly if a `moment`.
+- `verticalBaselineOffset: Number` *(optional)* - The number of pixels of dead space below the
+  bottom-most value in the y-direction. Defaults to `0`.
+
+![docs-assets/vertical-baseline-offset2.png](docs-assets/vertical-baseline-offset2.png)
+
+### Naming datasets, and the `default` name
+Each dataset rendered to the chart has a name associated with it. The special value `default` is
+given to the main dataset in the chart. This dataset is then used for determining bounds of each
+axis (if not specified explicitly), drawing the overlay point / any custom overlays, and in general
+anything that requires data in order to function.
+
+### Dataset Renderers
+
+A dataset renderer is a special function that takes a dataset as a first parameter, and a DOM element as
+it's second parameter. Its job is to render the contents of the dataset passed to it into the DOM
+within the DOM element passed to it.
+
+```javascript
+// Example Dataset Renderer
+function dataExample({data}) {
+  return ({xScale, yScale}, element) => {
+    const selection = element.selectAll('path').data(data);
+    selection.enter()
+      .append('path')
+    .merge(selection)
+      .attr('d', d => d.reduce((acc, i) => {
+        // Draw lines to each datapoint in the dataset
+        return `${acc} L${xScale(moment.utc(i.timestamp).valueOf())},${yScale(i.value)}`
+      }, ''));
+    selection.exit().remove();
+  }
+}
+```
+
+### Implemented Dataset Renderers
+
+#### `dataWaterline`
+Renders a filled polygon reflecting the datapoints with a border on top. Datapoints are drawn by
+first moving horizontally and then vertically, rather than drawing a line directly point-to-point.
+It's called a waterline because I needed a spiffy name and it looks a bit like a low-poly wave in the
+default color scheme.
+
+##### Props
+  - (requires a `data` prop, just like every dataset renderer)
+  - `color: String` - the fill color of the polygon underneath the top border. Defaults to `rgba(65, 152, 255, 0.2)`.
+  - `borderColor: String` - the stroke color of the top border of the waterline. Defaults to `rgb(65, 152, 255)`.
 
 ## Axis
 An `Axis` contains all the code required to render either the x or y axis on the chart. Each axis
