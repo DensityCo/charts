@@ -192,6 +192,7 @@ export default function lineChart(elem, props={}) {
       graphWidth,
       leftMargin,
       dataPoints,
+      defaultDataset,
     }, layers.yAxis);
 
     // ------------------------------------------------------------------------

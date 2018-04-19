@@ -114,7 +114,7 @@ export function yAxisMinMax({
   showMinimumPoint = typeof showMinimumPoint === 'undefined' ? true : showMinimumPoint;
   showMaximumPoint = typeof showMaximumPoint === 'undefined' ? true : showMaximumPoint;
 
-  return ({graphWidth, leftMargin, firstEventYValue, lastEventYValue, scale}, element) => {
+  return ({graphWidth, leftMargin, firstEventYValue, lastEventYValue, scale, defaultDataset}, element) => {
     const axisFontSize = 14;
     const axisPoints = [
       ...(showMinimumPoint ? [{value: firstEventYValue, hasRule: false, hasShadow: false}] : []),
@@ -141,12 +141,11 @@ export function yAxisMinMax({
     const mergeSelection = enterSelectionGroup.merge(enterSelection)
       .attr('transform', d => {
         let x = -1 * (leftMargin - leftOffset);
-        let y = scale(d.value);
+        let y = scale(d.value) + axisFontSize * 0.4;
 
-        // For all datapoints except for the first one, draw them a bit higher so the label is
-        // centered about the datapoint (instead, the datapoint would be at the bottom of the point)
-        if (d !== firstEventYValue) {
-          y += axisFontSize / 2
+        // Adjust the first datapoint to match with the vertical baseline of the chart.
+        if (d.value === firstEventYValue) {
+          y -= (defaultDataset.verticalBaselineOffset || 0);
         }
         return `translate(${x},${y})`;
       });
