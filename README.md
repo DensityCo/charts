@@ -22,7 +22,7 @@ out dashboard and dispatch email alerts.
 $ git clone git@github.com:densityco/charts.git
 $ cd charts/
 $ npm install
-$ npm run installall # install all dependencies in each chart subpackage
+$ npm run install-all # install all dependencies in each chart subpackage
 $ npm start # start the storybook
 ```
 
