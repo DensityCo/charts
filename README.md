@@ -23,7 +23,7 @@ $ git clone git@github.com:densityco/charts.git
 $ cd charts/
 $ npm install
 $ npm run installall # install all dependencies in each chart subpackage
-$ npm run storybook # start the storybook
+$ npm start # start the storybook
 ```
 
 ### This uses React Storybook.
