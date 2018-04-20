@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 6006 -c .storybook",
     "build-storybook": "build-storybook",
-    "install-all": "for i in $(find charts/* -type d ! -path '*node_modules*' ! -name 'template' ); do cd $i && yarn && cd -; done",
+    "install-all": "for chart in $(make charts-list); do echo ==${chart} && pushd charts/${chart} && npm i && popd; done",
     "clean-all": "rm -rf ./node_modules && rm -rf charts/*/node_modules/"
   },
   "keywords": [
