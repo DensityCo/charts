@@ -322,14 +322,13 @@ export function dataWaterline({
 
   return ({xScale, yScale, graphHeight, dataPoints}, element) => {
     const waterlineFillPrefix = `M0,${graphHeight}` + /* move to the lower left of the graph */
-      `L0,${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint's y value */
+      `V${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint's y value */
 
-    const waterlineStrokePrefix = `M0,${graphHeight}` + /* move to the lower left of the graph */
-      `M0,${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint's y value */
+    const waterlineStrokePrefix = `M0,${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint */
 
     const waterlineFillPostfix = renderAfterLastDatapoint ?
-      `H${xScale(dataPoints.endXValue)}V${graphHeight}H1` :
-      `H${xScale(dataPoints.lastEventXValue)}V${graphHeight}H1`;
+      `H${xScale(dataPoints.endXValue)}V${graphHeight}H0` :
+      `H${xScale(dataPoints.lastEventXValue)}V${graphHeight}H0`;
 
     const waterlineStrokePostfix = renderAfterLastDatapoint ?
       `H${xScale(dataPoints.endXValue)}` :
@@ -364,8 +363,6 @@ export function dataWaterline({
     waterlineSelectionGroup.append('path')
       .attr('class', 'waterline-fill')
       .attr('shape-rendering', 'crispEdges')
-      .attr('stroke', color)
-      .attr('stroke-width', 2)
       .attr('fill', color);
     waterlineSelectionGroup.append('path')
       .attr('class', 'waterline-stroke')
