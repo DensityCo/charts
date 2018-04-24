@@ -139,8 +139,14 @@ export default function lineChart(elem, props={}) {
     dataPoints.lastEventXValue = moment.utc(dataPoints.lastEvent.timestamp).valueOf(); /* epoch ms */
     dataPoints.lastEventYValue = dataPoints.lastEvent.value;
 
-    dataPoints.eventWithSmallestValue = defaultDataset.data.reduce((a, b) => a.value < b.value ? a : b, {value: Infinity});
-    dataPoints.eventWithLargestValue = defaultDataset.data.reduce((a, b) => a.value > b.value ? a : b, {value: -1});
+    const extremes = defaultDataset.data.reduce(({smallest, largest}, item) => {
+      return {
+        smallest: smallest < item.value ? smallest : item,
+        largest: largest > item.value ? largest : item,
+      };
+    }, {smallest: Infinity, largest: -Infinity});
+    dataPoints.eventWithSmallestValue = extremes.smallest;
+    dataPoints.eventWithLargestValue = extremes.largest;
 
     dataPoints.startXValue = xAxisStart ? moment.utc(xAxisStart).valueOf() : dataPoints.firstEventXValue;
     dataPoints.endXValue = xAxisEnd ? moment.utc(xAxisEnd).valueOf() : dataPoints.lastEventXValue;
