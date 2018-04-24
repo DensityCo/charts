@@ -1,7 +1,7 @@
 {
-  "name": "@density/chart-daily-metrics",
-  "version": "0.5.0",
-  "description": "Daily Metrics chart",
+  "name": "@density/chart-line-chart",
+  "version": "0.3.0",
+  "description": "Line Chart chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
   "scss": "dist/_styles.scss",
@@ -11,7 +11,9 @@
   "author": "Density <team+javascript@density.io>",
   "license": "MIT",
   "dependencies": {
-    "d3": "^4.13.0",
-    "moment": "^2.18.1"
+    "@density/ui": "^4.9.0",
+    "d3": "^5.0.0",
+    "moment": "^2.22.1",
+    "moment-timezone": "^0.5.14"
   }
 }
