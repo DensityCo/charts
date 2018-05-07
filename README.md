@@ -126,7 +126,7 @@ Here's a react example. These concepts should generally translate to any other f
 "mounting" of its output into the DOM at an arbitrary location.
 
 ```javascript
-import * as React from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
 function MyChartComponent({foo}) {
