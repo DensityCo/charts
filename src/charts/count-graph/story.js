@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {chartAsReactComponent} from '../index';
 import moment from 'moment';

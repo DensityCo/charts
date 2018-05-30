@@ -1,7 +1,7 @@
 "use strict";
-import * as React from 'react';
+import React from 'react';
 
-function chartAsReactComponent(chart) {
+export function chartAsReactComponent(chart) {
   return class extends React.Component {
     render() {
       return <div ref={ref => {
@@ -16,7 +16,7 @@ function chartAsReactComponent(chart) {
   }
 }
 
-function chartAsReactComponentAutoUpdate(chart) {
+export function chartAsReactComponentAutoUpdate(chart) {
   return class extends React.Component {
     componentDidMount() {
       const animate = frame => {
@@ -49,5 +49,3 @@ function chartAsReactComponentAutoUpdate(chart) {
     }
   }
 }
-
-module.exports = {chartAsReactComponent, chartAsReactComponentAutoUpdate};
