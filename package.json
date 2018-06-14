@@ -1,6 +1,6 @@
 {
   "name": "@density/charts",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "A bunch of charts we use in all of our dashboards",
   "main": "dist/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "@density/node-sass-json-importer": "^4.1.0",
-    "@density/ui": "^4.8.1",
+    "@density/ui": "^5.0.1",
     "create-react-class": "^15.5.2",
     "react": "^16.3.2",
     "react-scripts": "1.0.14"

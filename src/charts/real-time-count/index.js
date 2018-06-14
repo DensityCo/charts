@@ -16,7 +16,7 @@ const eventMarkerInfoPopupHeightDefault = 20; // Height of the info popup, not i
 const eventMarkerInfoPopupWidthDefault = 20; // Width of the info popup that shows if more than one event happened.
 const eventMarkerInfoPopupSpacingFromMarkerDefault = 10; // Spacing between the info popup and the event marker.
 const eventMarkerInfoPopupCaretWidthDefault = 5;
-const eventMarkerInfoPopupFontSizeDefault = 12;
+const eventMarkerInfoPopupFontSizeDefault = 13;
 const cardHeightInPx = 160;
 const graphDurationInMin = 1;
 
@@ -188,7 +188,8 @@ export default function ingressEgress(elem) {
       .attr('rx', 2)
       .attr('ry', 2);
     dataEnterSelectionIndicator.append('text')
-      .attr('class', 'real-time-capacity-info-content-label');
+      .attr('class', 'real-time-capacity-info-content-label')
+      .attr('dy', 2);
     dataEnterSelectionIndicator.append('path')
       .attr('class', 'real-time-capacity-info-pointer');
 
