@@ -20,8 +20,8 @@ const eventMarkerInfoPopupFontSizeDefault = 13;
 const cardHeightInPx = 160;
 const graphDurationInMin = 1;
 
-// The Sailec font doesn't have a properly aligned baseline! Offset it manually :(
-const sailecBaselineOffset = 3;
+// Sailec still needs a baseline offset of 1px
+const sailecBaselineOffset = 1;
 
 // Generate the proper time label for each fraction of the total time
 function getTimeLabel(graphDurationInMin, fraction) {
@@ -188,8 +188,7 @@ export default function ingressEgress(elem) {
       .attr('rx', 2)
       .attr('ry', 2);
     dataEnterSelectionIndicator.append('text')
-      .attr('class', 'real-time-capacity-info-content-label')
-      .attr('dy', 2);
+      .attr('class', 'real-time-capacity-info-content-label');
     dataEnterSelectionIndicator.append('path')
       .attr('class', 'real-time-capacity-info-pointer');
 
