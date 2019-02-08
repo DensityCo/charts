@@ -450,12 +450,6 @@ template {
   display: none;
 }
 
-// Non-component bits of density-ui
-@import "../../node_modules/@density/ui/styles/font";
-@import "../../node_modules/@density/ui/styles/clearfix";
-@import "../../node_modules/@density/ui/styles/grid";
-
-
 * {
   font-family: 'Sailec', 'Helvetica', 'Arial', sans-serif;
 }

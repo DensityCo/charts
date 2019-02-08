@@ -49,9 +49,9 @@ export default function dailyMetrics(elem, props={}) {
     // Enter
     //
 
-    const dataSelectionEnter = dataSelection.enter();
-    const dataSelectionEnterGroup = dataSelectionEnter.append('g')
-      .attr('class', 'daily-metrics-bar-group');
+    const dataSelectionEnterGroup = dataSelection.enter().append('g')
+      .attr('class', 'daily-metrics-bar-group')
+      .attr('transform', d => `translate(${xScale(d.label)},${yScale(d.value)})`);
     dataSelectionEnterGroup.append('rect')
       .attr('class', 'daily-metrics-bar')
       .attr('x', 0)
@@ -65,16 +65,18 @@ export default function dailyMetrics(elem, props={}) {
     //
     // Merge
     //
-    const dataSelectionMerge = dataSelectionEnter.merge(dataSelection);
-    dataSelectionMerge.selectAll('.daily-metrics-bar-group')
-      .attr('transform', d => `translate(${xScale(d.label)},${yScale(d.value)})`)
-    dataSelectionMerge.selectAll('.daily-metrics-bar')
+    dataSelectionEnterGroup.merge(dataSelection)
+      .attr('transform', d => `translate(${xScale(d.label)},${yScale(d.value)})`);
+    dataSelectionEnterGroup.merge(dataSelection)
+      .selectAll('.daily-metrics-bar')
       .attr('width', xScale.bandwidth())
       .attr('height', d => graphHeight - yScale(d.value));
-    dataSelectionMerge.selectAll('.daily-metrics-bar-outline')
+    dataSelectionEnterGroup.merge(dataSelection)
+      .selectAll('.daily-metrics-bar-outline')
       .attr('d', d => `M0,${graphHeight - yScale(d.value)} V0 H${xScale.bandwidth()} V${graphHeight - yScale(d.value)}`);
-    dataSelectionMerge.selectAll('.daily-metrics-bar-label')
+    dataSelectionEnterGroup.merge(dataSelection)
+      .selectAll('.daily-metrics-bar-label')
       .attr('transform', d => `translate(${xScale.bandwidth() / 2},-10)`)
-      .text(d => d.value)
+      .text(d => d.value);
   }
 }
