@@ -176,8 +176,8 @@ default color scheme.
 
 ##### Props
   - (requires a `data` prop, just like every dataset renderer)
-  - `color: String` *(optional)* - the fill color of the polygon underneath the top border. Defaults to `rgba(65, 152, 255, 0.2)`.
-  - `borderColor: String` *(optional)* - the stroke color of the top border of the waterline. Defaults to `rgb(65, 152, 255)`.
+  - `color: String` *(optional)* - the fill color of the polygon underneath the top border. Defaults to `rgba(54, 99, 229, 0.2)`.
+  - `borderColor: String` *(optional)* - the stroke color of the top border of the waterline. Defaults to `rgb(54, 99, 229)`.
 
 <br />
 <br />

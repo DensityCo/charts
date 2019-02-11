@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-line-chart",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Line Chart chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",

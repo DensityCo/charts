@@ -164,7 +164,7 @@ export function yAxisMinMax({
       .attr('height', d => scale(0) - scale(d.value))
       .attr('fill', d => {
         if (d.hasShadow) {
-          return 'rgba(65, 152, 255, 0.1)';
+          return 'rgba(54, 99, 229, 0.1)';
         } else {
           return 'transparent';
         }

@@ -105,8 +105,8 @@ storiesOf('Line Chart', module)
         {
           name: 'default',
           type: dataWaterline,
-          color: 'rgba(65, 152, 255, 0.2)',
-          borderColor: 'rgb(65, 152, 255)',
+          color: 'rgba(54, 99, 229, 0.2)',
+          borderColor: 'rgb(54, 99, 229)',
           verticalBaselineOffset: 0,
           data: [
             {value: 40, timestamp: '2018-04-16T14:00:00.000Z'},
@@ -184,8 +184,8 @@ storiesOf('Line Chart', module)
         {
           name: 'default',
           type: dataWaterline,
-          color: 'rgba(65, 152, 255, 0.2)',
-          borderColor: 'rgb(65, 152, 255)',
+          color: 'rgba(54, 99, 229, 0.2)',
+          borderColor: 'rgb(54, 99, 229)',
           verticalBaselineOffset: 10,
           data: [
             { timestamp: '2018-04-12T03:55:00.000Z', value: 0 },
@@ -531,8 +531,8 @@ storiesOf('Line Chart', module)
         {
           name: 'default',
           type: dataWaterline,
-          color: 'rgba(65, 152, 255, 0.2)',
-          borderColor: 'rgb(65, 152, 255)',
+          color: 'rgba(54, 99, 229, 0.2)',
+          borderColor: 'rgb(54, 99, 229)',
           verticalBaselineOffset: 10,
           data: [
             { timestamp: "2018-04-11T00:10:26Z", value: 5 },
@@ -821,8 +821,8 @@ storiesOf('Line Chart', module)
         {
           name: 'default',
           type: dataWaterline,
-          color: 'rgba(65, 152, 255, 0.2)',
-          borderColor: 'rgb(65, 152, 255)',
+          color: 'rgba(54, 99, 229, 0.2)',
+          borderColor: 'rgb(54, 99, 229)',
           data: uncompressData(fullDayOfData),
         },
       ]}
@@ -896,8 +896,8 @@ storiesOf('Line Chart', module)
         {
           name: 'default',
           type: dataWaterline,
-          color: 'rgba(65, 152, 255, 0.2)',
-          borderColor: 'rgb(65, 152, 255)',
+          color: 'rgba(54, 99, 229, 0.2)',
+          borderColor: 'rgb(54, 99, 229)',
           data: uncompressData(partialDayOfData),
         },
       ]}
@@ -971,8 +971,8 @@ storiesOf('Line Chart', module)
         {
           name: 'default',
           type: dataWaterline,
-          color: 'rgba(65, 152, 255, 0.2)',
-          borderColor: 'rgb(65, 152, 255)',
+          color: 'rgba(54, 99, 229, 0.2)',
+          borderColor: 'rgb(54, 99, 229)',
           renderAfterLastDatapoint: true,
           data: uncompressData(partialDayOfData),
         },
@@ -1092,8 +1092,8 @@ storiesOf('Line Chart', module)
             {
               name: 'default',
               type: dataWaterline,
-              color: 'rgba(65, 152, 255, 0.2)',
-              borderColor: 'rgb(65, 152, 255)',
+              color: 'rgba(54, 99, 229, 0.2)',
+              borderColor: 'rgb(54, 99, 229)',
               data: this.state.data,
             },
           ]}
@@ -1159,8 +1159,8 @@ storiesOf('Line Chart', module)
         {
           name: 'default',
           type: dataWaterline,
-          color: 'rgba(65, 152, 255, 0.2)',
-          borderColor: 'rgb(65, 152, 255)',
+          color: 'rgba(54, 99, 229, 0.2)',
+          borderColor: 'rgb(54, 99, 229)',
           verticalBaselineOffset: 0,
           data: [
             {value: 40, timestamp: '2018-04-16T14:00:00.000Z'},

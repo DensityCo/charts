@@ -51,8 +51,8 @@ export default function lineChart(elem, props={}) {
     timeZone = timeZone || 'UTC';
     data = data.map((item, ct) => {
       item.name = item.name || 'default';
-      item.color = item.color || 'rgba(65, 152, 255, 0.2)';
-      item.borderColor = item.borderColor || 'rgb(65, 152, 255)';
+      item.color = item.color || 'rgba(54, 99, 229, 0.2)';
+      item.borderColor = item.borderColor || 'rgb(54, 99, 229)';
       item.verticalBaselineOffset = item.verticalBaselineOffset || 0;
 
       if (!item.data) {
