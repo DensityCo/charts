@@ -220,7 +220,7 @@ export function overlayTwoPopupsPersonIconTextFormatter(mapping) {
         .attr('transform', 'translate(15,10)')
       const qvf0621598a7e8cb863 = qv7a5d925c094c53a70.append('g')
         .attr('transform', 'translate(-775.000000, -397.000000)')
-        .attr('stroke', '#4198FF')
+        .attr('stroke', '#3663E5')
         .attr('stroke-width', '1.5')
       const qvd28faf862aaae21da = qvf0621598a7e8cb863.append('g')
         .attr('transform', 'translate(170.000000, 159.000000)');

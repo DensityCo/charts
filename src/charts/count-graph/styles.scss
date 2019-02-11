@@ -41,14 +41,14 @@
 /* Flag lines */
 
 .graph-countgraph .flag .flag-line {
-  stroke: #4198ff;
+  stroke: #3663E5;
 }
 .graph-countgraph .flag .flag-line-label {
   fill: #fff;
   transform: translate(10px, 20px);
 }
 .graph-countgraph .flag .flag-line-label-background {
-  fill: #4198ff;
+  fill: #3663E5;
 }
 
 /* Overlay marker line (the line with the circle that tracks the mouse cursor) */
@@ -59,7 +59,7 @@
 }
 
 .graph-countgraph .overlay-line circle {
-  fill: #4198ff;
+  fill: #3663E5;
 }
 
 /* Overlay marker dialog (the popup with time / count in it) */
@@ -79,7 +79,7 @@
   user-select: none;
 }
 .graph-countgraph .overlay-dialog-bg-primary {
-  fill: #4198ff;
+  fill: #3663E5;
   user-select: none;
 }
 
@@ -91,6 +91,6 @@
 
 .graph-countgraph .overlay-dialog-count {
   font-size: 16px;
-  fill: #4198ff;
+  fill: #3663E5;
   font-weight: 600;
 }

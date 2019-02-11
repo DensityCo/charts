@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-historical-counts",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Historical Counts chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",

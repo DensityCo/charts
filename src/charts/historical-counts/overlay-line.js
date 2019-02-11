@@ -95,7 +95,7 @@ export default function overlayLine(selection,
         .attr('transform', `translate(${-1 * overlayDialogTopIconCenterOffset},${-1 * ((overlayDialogTopHeight + overlayDialogTopBottomMargin) / 2) - 14})`)
         .attr('fill', 'none')
         .attr('fill-rule', 'evenodd')
-        .attr('stroke', `#4198FF`)
+        .attr('stroke', `#3663E5`)
         .attr('stroke-width', 1.5)
         .attr('stroke-linejoin', 'round')
 
