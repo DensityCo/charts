@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-daily-metrics",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Daily Metrics chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
