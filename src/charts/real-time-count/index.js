@@ -82,7 +82,7 @@ export function getIndicatorLocations(data, minimumStackDistance=1500) {
 // Generate the proper time label for each fraction of the total time
 export default function ingressEgress(elem) {
   const card = d3.select(elem).append('div')
-    .attr('class', 'card card-dark ingress-egress-card')
+    .attr('class', 'ingress-egress-card')
 
 
   // add legend to card to explain what stuff means

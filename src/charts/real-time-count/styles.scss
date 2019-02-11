@@ -1,13 +1,10 @@
-.card-dark {
-  background-color: #222A2E;
-  color: #F5F6F7;
-}
-
 .ingress-egress-card {
   height: 162px;
   display: flex;
   flex-direction: column;
   position: relative;
+  background-color: #222A2E;
+  color: #F5F6F7;
 }
 
 .real-time-capacity-labels {
