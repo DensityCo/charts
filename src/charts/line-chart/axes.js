@@ -128,10 +128,9 @@ export function yAxisMinMax({
         let x = -1 * (leftMargin - leftOffset);
         let y = scale(d.value) + axisFontSize * 0.4;
 
-        // Adjust the first datapoint to match with the vertical baseline of the chart.
-        if (d.value === firstEventYValue) {
-          y -= (defaultDataset.verticalBaselineOffset || 0);
-        }
+        // Adjust datapoints upward to take into account vertical offset defined on default dataset
+        y -= (defaultDataset.verticalBaselineOffset || 0);
+
         return `translate(${x},${y})`;
       });
     mergeSelection.select('.axis-y-point-label')
@@ -161,7 +160,7 @@ export function yAxisMinMax({
       .attr('x', leftMargin - leftOffset)
       .attr('y', -1 * (axisFontSize * 0.4))
       .attr('width', graphWidth)
-      .attr('height', d => scale(0) - scale(d.value))
+      .attr('height', d => (scale(0) - scale(d.value)) + (defaultDataset.verticalBaselineOffset || 0))
       .attr('fill', d => {
         if (d.hasShadow) {
           return 'rgba(54, 99, 229, 0.1)';
