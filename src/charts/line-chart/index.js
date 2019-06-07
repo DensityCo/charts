@@ -133,10 +133,15 @@ export default function lineChart(elem, props={}) {
 
     dataPoints.firstEvent = defaultDataset.data[0];
     dataPoints.lastEvent = defaultDataset.data.slice(-1)[0];
+    dataPoints.nextToLastEvent = defaultDataset.data.length > 1 ? defaultDataset.data.slice(-2)[0] : null;
+    dataPoints.bucketMillis = dataPoints.nextToLastEvent ?
+      moment.utc(dataPoints.lastEvent.timestamp).diff(moment.utc(dataPoints.nextToLastEvent.timestamp), 'milliseconds') :
+      0;
+
 
     dataPoints.firstEventXValue = moment.utc(dataPoints.firstEvent.timestamp).valueOf(); /* epoch ms */
     dataPoints.firstEventYValue = dataPoints.firstEvent.value;
-    dataPoints.lastEventXValue = moment.utc(dataPoints.lastEvent.timestamp).valueOf(); /* epoch ms */
+    dataPoints.lastEventXValue = moment.utc(dataPoints.lastEvent.timestamp).valueOf() + dataPoints.bucketMillis; /* epoch ms */
     dataPoints.lastEventYValue = dataPoints.lastEvent.value;
 
     const defaultDatasetValues = defaultDataset.data.map(i => i.value);
@@ -221,7 +226,7 @@ export default function lineChart(elem, props={}) {
 
             const renderAfterLastDatapoint = typeof defaultDataset.renderAfterLastDatapoint === 'undefined' ? false : true;
             if (eventAtPosition && (renderAfterLastDatapoint ? true : xInMs <= dataPoints.lastEventXValue)) {
-              return topMargin + yScale(eventAtPosition.value) - defaultDataset.verticalBaselineOffset;
+              return topMargin + yScale(eventAtPosition.value);
             } else {
               return -100000000;
             }
@@ -332,8 +337,8 @@ export function dataWaterline({
     const waterlineStrokePrefix = `M0,${yScale(dataPoints.firstEvent.value)}`; /* Move to the first datapoint */
 
     const waterlineFillPostfix = renderAfterLastDatapoint ?
-      `H${xScale(dataPoints.endXValue)}V${graphHeight}H0` :
-      `H${xScale(dataPoints.lastEventXValue)}V${graphHeight}H0`;
+      `H${xScale(dataPoints.endXValue)}V${graphHeight + verticalBaselineOffset}H0` :
+      `H${xScale(dataPoints.lastEventXValue)}V${graphHeight + verticalBaselineOffset}H0`;
 
     const waterlineStrokePostfix = renderAfterLastDatapoint ?
       `H${xScale(dataPoints.endXValue)}` :
@@ -352,10 +357,10 @@ export function dataWaterline({
           const yPosition = yScale(i.value);
           if (ct === 0) {
             // For the first plotted point, don't draw an outline on the left edge.
-            return `${acc}M0,${yPosition-verticalBaselineOffset}`;
+            return `${acc}M0,${yPosition}`;
           } else if (xPosition > 0) {
             // Plot each point my moving horizontally then vertically.
-            return `${acc}H${xPosition}V${yPosition-verticalBaselineOffset}`;
+            return `${acc}H${xPosition}V${yPosition}`;
           } else {
             return acc;
           }

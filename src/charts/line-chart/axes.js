@@ -73,7 +73,7 @@ export function xAxisDailyTick({
 
     // Adjust the vertical spacing of each tick on the axis
     element.selectAll('.tick text')
-      .attr('transform', `translate(0,${-10 + bottomOffset})`)
+      .attr('transform', `translate(0,${bottomOffset})`)
       .attr('font-size', axisFontSize)
   };
 }
@@ -83,11 +83,12 @@ export function yAxisMinMax({
   leftOffset, /* distance between the left edge of the svg and the axis labels */
   showMinimumPoint,
   showMaximumPoint,
+  verticalBaselineOffset = 10,
 
   points,
 
   axisRuleLineDashWidth,
-  axisRuleLineDashSpacing,
+  axisRuleLineDashSpacing
 }) {
   leftOffset = typeof leftOffset === 'undefined' ? 20 : leftOffset;
   axisRuleLineDashWidth = typeof axisRuleLineDashWidth === 'undefined' ? 4 : axisRuleLineDashWidth;
@@ -117,7 +118,7 @@ export function yAxisMinMax({
       .attr('font-size', axisFontSize)
     enterSelectionGroup.append('text')
       .attr('class', 'axis-y-point-label')
-    enterSelectionGroup.append('path')
+    enterSelectionGroup.append('line')
       .attr('class', 'axis-y-point-rule')
     enterSelectionGroup.append('rect')
       .attr('class', 'axis-y-point-shadow')
@@ -126,42 +127,29 @@ export function yAxisMinMax({
     const mergeSelection = enterSelectionGroup.merge(enterSelection)
       .attr('transform', d => {
         let x = -1 * (leftMargin - leftOffset);
-        let y = scale(d.value) + axisFontSize * 0.4;
-
-        // Adjust the first datapoint to match with the vertical baseline of the chart.
-        if (d.value === firstEventYValue) {
-          y -= (defaultDataset.verticalBaselineOffset || 0);
-        }
+        let y = scale(d.value);
         return `translate(${x},${y})`;
       });
     mergeSelection.select('.axis-y-point-label')
+      .attr('transform', 'translate(0,5)')
       .text(formatter || (d => {
         return `${d.value}`;
       }));
     mergeSelection.select('.axis-y-point-rule')
-      .attr('transform', `translate(${leftMargin - leftOffset},${-1 * (axisFontSize * 0.4)})`)
-      .attr('stroke', colorVariables.gray)
+      .attr('transform', `translate(${leftMargin - leftOffset},0)`)
+      .attr('stroke', d => d.hasRule ? colorVariables.gray : 'transparent')
       .attr('stroke-width', '1')
       .attr('shape-rendering', 'crispEdges')
-      .attr('d', d => {
-        // Don't add horizontal lines for points that don't specify a rule is required.
-        if (!d.hasRule) {
-          return '';
-        }
-
-        return `M0,0 ${(function(graphWidth) {
-          let linePath = '';
-          for (let i = 0; i < graphWidth; i += axisRuleLineDashWidth + axisRuleLineDashSpacing) {
-            linePath += `H${i+axisRuleLineDashWidth} M${i+axisRuleLineDashWidth+axisRuleLineDashSpacing},0`;
-          }
-          return linePath;
-        })(graphWidth)}`;
-      });
+      .attr('x1', '0')
+      .attr('x2', graphWidth)
+      .attr('y1', 0)
+      .attr('y2', 0)
+      .attr('stroke-dasharray', '5,5');
     mergeSelection.select('.axis-y-point-shadow')
       .attr('x', leftMargin - leftOffset)
-      .attr('y', -1 * (axisFontSize * 0.4))
+      .attr('y', 0)
       .attr('width', graphWidth)
-      .attr('height', d => scale(0) - scale(d.value))
+      .attr('height', d => scale(0) - scale(d.value) + verticalBaselineOffset)
       .attr('fill', d => {
         if (d.hasShadow) {
           return 'rgba(54, 99, 229, 0.1)';

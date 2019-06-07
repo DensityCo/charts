@@ -148,8 +148,7 @@ storiesOf('Line Chart', module)
         axisRuleLineDashWidth: 4,
         axisRuleLineDashSpacing: 10,
         points: [
-          {value: 4, hasRule: false},
-          {value: 4, hasShadow: true},
+          {value: 4, hasRule: true, hasShadow: true},
         ],
         showMaximumPoint: false,
       })}
@@ -585,8 +584,8 @@ storiesOf('Line Chart', module)
             { timestamp: "2018-04-11T08:20:52Z", value: 7.5 },
             { timestamp: "2018-04-11T08:31:18Z", value: 7.5 },
             { timestamp: "2018-04-11T08:41:44Z", value: 10 },
-            { timestamp: "2018-04-11T08:52:10Z", value: 7.5 },
-            { timestamp: "2018-04-11T09:02:36Z", value: 10 },
+            { timestamp: "2018-04-11T08:52:10Z", value: 100 },
+            { timestamp: "2018-04-11T09:02:36Z", value: 100 },
             { timestamp: "2018-04-11T09:13:02Z", value: 12.5 },
             { timestamp: "2018-04-11T09:23:28Z", value: 12.5 },
             { timestamp: "2018-04-11T09:33:54Z", value: 12.5 },
