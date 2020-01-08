@@ -1,6 +1,6 @@
 {
   "name": "@density/charts",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A bunch of charts we use in all of our dashboards",
   "main": "dist/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "author": "Density <team+javascript@density.io>",
   "license": "MIT",
   "dependencies": {
-    "@density/node-sass-json-importer": "^4.1.0",
+    "@density/node-sass-json-importer": "^5.0.0",
     "@density/ui": "^6.0.0",
     "create-react-class": "^15.5.2",
     "react": "^16.3.2",
@@ -36,7 +36,7 @@
     "babel-preset-react": "^6.23.0",
     "css-loader": "^0.28.1",
     "moment": "^2.18.1",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.0",
     "react-dom": "^16.3.2",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.17.0",
