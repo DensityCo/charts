@@ -1,6 +1,6 @@
 {
   "name": "@density/charts",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "description": "A bunch of charts we use in all of our dashboards",
   "main": "dist/index.js",
   "scripts": {
