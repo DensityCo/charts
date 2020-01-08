@@ -1,6 +1,6 @@
 {
   "name": "@density/chart-line-chart",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Line Chart chart",
   "main": "dist/index.js",
   "style": "dist/styles.css",
@@ -11,7 +11,7 @@
   "author": "Density <team+javascript@density.io>",
   "license": "MIT",
   "dependencies": {
-    "@density/ui": "^6.0.0",
+    "@density/ui": "^20.4.0",
     "d3": "^5.0.0",
     "moment": "^2.22.1",
     "moment-timezone": "^0.5.14"
